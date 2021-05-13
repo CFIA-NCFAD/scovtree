@@ -1,0 +1,31 @@
+name: msa
+description: Multiple alignment program for amino acid or nucleotide sequences
+keywords:
+    - covid
+    - multiple sequence alignment
+tools:
+    - star:
+        description: |
+            Multiple alignment program for amino acid or nucleotide sequences
+        homepage: http://mafft.cbrc.jp/alignment/software/
+        manual: http://mafft.cbrc.jp/alignment/software/
+input:
+    - meta:
+        type: map
+        description: |
+            Groovy Map containing sample information
+    - fasta:
+        type: file
+        description: |
+            Consensus Sequenes
+output:
+    - fasta:
+        type: file
+        description: Multiple Sequence Alignment of Consensus Sequences
+        pattern: "*.{fasta}"
+    - version:
+        type: file
+        description: File containing software version
+        pattern: "*.{version.txt}"
+authors:
+    - "@nhhaidee"
