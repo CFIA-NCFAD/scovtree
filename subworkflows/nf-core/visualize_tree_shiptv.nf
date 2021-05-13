@@ -1,13 +1,11 @@
 
 params.options    = [:]
-include { SHIPTV_VISUALIZATION } from '../../modules/nf-core/phylogenetictree_snps'  addParams( options: params.options    )
+include { SHIPTV_VISUALIZATION } from '../../modules/nf-core/software/shiptv/main'  addParams( options: params.options    )
 
-workflow VISUALIZATION_TREE_SNPS {
+workflow VISUALIZATION_SHIPTV {
     take:
     newick
-    alleles
-    lineages
 
     main:
-    PHYLOGENETICTREE_SNPS (newick, alleles, lineages)
+    SHIPTV_VISUALIZATION (newick)
 }

@@ -4,10 +4,9 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process MAFFT {
+process MAFFT_MSA {
 
-    tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
@@ -20,23 +19,21 @@ process MAFFT {
     }
 
     input:
-    tuple val(meta), path (consensus_sequences)
-    path (ch_reference_fasta)
+    path (consensus_sequences)
+    path (reference_fasta)
 
     output:
-    path "*.fasta"                , emit: ch_msa_mafft
-    path  '*.version.txt'         , emit: version
+    path  "*.fasta"               , emit: fasta
+    path  "*.version.txt"         , emit: version
 
     script:
     def software = getSoftwareName(task.process)
-    def prefix   = options.suffix ? "${meta.id}.${options.suffix}" : "${meta.id}"
     """
     mafft \\
         $options.args \\
         --thread ${task.cpus} \\
         --addfragments ${consensus_sequences}\\
-        $ch_reference_fasta > sequences_alignment.fasta
+        $reference_fasta > sequences_alignment.fasta
     mafft --version | sed "s/mafft //g" > ${software}.version.txt
     """
-
 }
