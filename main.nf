@@ -31,10 +31,11 @@ log.info NfcoreSchema.params_summary_log(workflow, params, json_schema)
 
 workflow SCOV2_TREE {
 
-    if (params.gisiad_filters){
+    if (params.filter_gisaid){
 
-        include { GISIADFILTERS } from './workflows/gisiadfilters'
+        include { FILTERS_GISIAD } from './workflows/filters_gisiad'
 
+        FILTERS_GISIAD()
     }
     else {
 

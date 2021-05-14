@@ -5,14 +5,11 @@
     "description": "Phylogenetic Analysis for SARS-COV2",
     "type": "object",
     "definitions": {
-        "input_output_options": {
-            "title": "Input/output options",
+        "phylogenetic_analysis_options": {
+            "title": "Phylogenetic analysis options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "input"
-            ],
             "properties": {
                 "input": {
                     "type": "string",
@@ -29,6 +26,61 @@
                 "reference_fasta": {
                     "type": "string",
                     "description": "Input Fasta file of reference sequences.",
+                    "fa_icon": "fas fa-folder-open"
+                }
+            }
+        },
+        "filter_gisiad_options": {
+            "title": "Filter sequences against GISIAD options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "properties": {
+                "filter_gisaid": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Enable/disable Filter sequences against GISIAD workflow.",
+                    "help_text": "Enable/disable Filter sequences against GISIAD workflow"
+                },
+                "gisiad_sequences": {
+                    "type": "string",
+                    "description": "Directory path to gisiad sequences.",
+                    "fa_icon": "fas fa-align-center",
+                    "help_text": "Directory path to gisiad sequences"
+                },
+                "gisiad_metadata": {
+                    "type": "string",
+                    "description": "Directory path to gisiad metadata.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "country": {
+                    "type": "string",
+                    "description": "Country to filter.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "region": {
+                    "type": "string",
+                    "description": "Region to filter.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "sample_lineage": {
+                    "type": "string",
+                    "description": "Sample Lineage to filter.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "lmin": {
+                    "type": "integer",
+                    "description": "Remove sequences that length < lmin.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "lmax": {
+                    "type": "integer",
+                    "description": "Remove sequences that length > lmax.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "xambig": {
+                    "type": "integer",
+                    "description": "Remove sequences that have number of ambiguous sequence  > xambig.",
                     "fa_icon": "fas fa-folder-open"
                 }
             }
@@ -214,7 +266,10 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/phylogenetic_analysis_options"
+        },
+        {
+            "$ref": "#/definitions/filter_gisiad_options"
         },
         {
             "$ref": "#/definitions/generic_options"

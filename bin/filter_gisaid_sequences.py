@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import logging
-from rich.logging import RichHandler
+#from rich.logging import RichHandler
 import click
 import pandas as pd
 from Bio.SeqIO.FastaIO import SimpleFastaParser
@@ -21,7 +21,6 @@ def format_date(sampling_date: str) -> str:
             return sampling_date + '-XX'  # 2020-02-XX
         elif len(sampling_date_list) == 3:
             return sampling_date # 2020-02-01
-
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.option("-lmin", "--lmin", help="ignore sequences w/length < lmin", required=False, type=int, default=27000)
