@@ -4,10 +4,10 @@ include { NW_REROOT } from '../../modules/nf-core/software/newickutils/main'  ad
 
 workflow REROOT_TREE {
     take:
-    newick_tree
+    ch_newick_tree
 
     main:
-    NW_REROOT (newick_tree, params.reference_fasta)
+    NW_REROOT (ch_newick_tree, params.reference_fasta)
 
     emit:
     newick_treefile = NW_REROOT.out.newick

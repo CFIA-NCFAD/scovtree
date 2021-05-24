@@ -6,6 +6,7 @@ options        = initOptions(params.options)
 
 process SHIPTV_VISUALIZATION {
 
+    label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
@@ -19,6 +20,8 @@ process SHIPTV_VISUALIZATION {
 
     input:
     path (newick_tree)
+    path (leaflist)
+    path (metadata)
 
     output:
     path  "*.html"               , emit: visualization_html
@@ -26,6 +29,6 @@ process SHIPTV_VISUALIZATION {
 
     script:
     """
-    shiptv -n ${newick_tree} -o shiptv_phylogenetic_tree.html -m shiptv_metadata.tsv
+    shiptv -n ${newick_tree} --leaflist $leaflist -M $metadata  -o shiptv_phylogenetic_tree.html -m shiptv_metadata.tsv
     """
 }

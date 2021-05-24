@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process FILTERS_GISIAD {
+process FILTERS_MSA {
 
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
@@ -18,25 +18,18 @@ process FILTERS_GISIAD {
     }
 
     input:
-    path (gisaid_sequences)
-    path (gisaid_metadata)
+    path (msa)
     path (lineage_report)
+    path (metadata)
 
     output:
-    path "*.fasta"         , emit: fasta
-    path "*_1.tsv"         , emit: metadata_1
-    path "*_2.tsv"         , emit: metadata_2
-    path "*t.tsv"          , emit: stat
+    path "*.fasta"       , emit: fasta
+    path "*.tsv"         , emit: metadata
 
     script:  // This script is bundled with the pipeline, in /bin folder
-    filtered_fasta_output     = "filtered_gisiad_sequences.fasta"
-    filtered_metadata_output1 = "metadata_1.tsv"
-    filtered_metadata_output2 = "metadata_2.tsv"
-    statistics_output         = "stat.tsv"
+    filtered_msa_output      = "filtered_msa_sequences.fasta"
+    filtered_metadata_output = "filtered_metadata.tsv"
     """
-    filter_gisaid_sequences.py -i $gisaid_sequences -m $gisaid_metadata \\
-                               -s '${params.sample_lineage}' -R $lineage_report -r '${params.region}' -c '${params.country}' \\
-                               -of $filtered_fasta_output -om1 $filtered_metadata_output1 -om2 $filtered_metadata_output2 \\
-                               -lmin ${params.lmin} -lmax ${params.lmax} -x ${params.xambig} -ot $statistics_output
+    filter_msa_align.py -i $msa -M $metadata -r $lineage_report -o $filtered_msa_output -m $filtered_metadata_output
     """
 }

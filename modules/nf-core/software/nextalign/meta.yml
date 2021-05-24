@@ -1,0 +1,27 @@
+name: nextalign
+description: Viral genome clade assignment, mutation calling, and sequence quality checks
+keywords:
+    - covid
+    - multiple sequence alignment
+tools:
+    - star:
+        description: |
+            Viral genome clade assignment, mutation calling, and sequence quality checks
+        homepage: https://github.com/nextstrain/nextclade/tree/master/packages/nextalign_cli
+        manual: https://github.com/nextstrain/nextclade/tree/master/packages/nextalign_cli
+input:
+    - fasta:
+        type: file
+        description: |
+            Consensus Sequenes
+output:
+    - fasta:
+        type: file
+        description: Multiple Sequence Alignment of Consensus Sequences
+        pattern: "*.{fasta}"
+    - version:
+        type: file
+        description: File containing software version
+        pattern: "*.{version.txt}"
+authors:
+    - "@nhhaidee"

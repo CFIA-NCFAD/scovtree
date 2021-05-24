@@ -1,14 +1,26 @@
 
 params.options    = [:]
-include { MAFFT_MSA } from '../../modules/nf-core/software/mafft/main'  addParams( options: params.options    )
+include { MAFFT_MSA } from '../../modules/nf-core/software/mafft/main'          addParams( options: params.options    )
+include { NEXTALIGN_MSA } from '../../modules/nf-core/software/nextalign/main'  addParams( options: params.options    )
 
 workflow MSA_MAFFT {
     take:
-    consensus_sequences
+    ch_consensus_sequences
 
     main:
-    MAFFT_MSA (consensus_sequences, params.reference_fasta)
+    MAFFT_MSA (ch_consensus_sequences, params.reference_fasta)
 
     emit:
     msa = MAFFT_MSA.out.fasta
+}
+
+workflow MSA_NEXTALIGN {
+    take:
+    ch_consensus_sequences
+
+    main:
+    NEXTALIGN_MSA (ch_consensus_sequences, params.reference_fasta)
+
+    emit:
+    msa = NEXTALIGN_MSA.out.fasta
 }

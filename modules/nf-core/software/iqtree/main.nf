@@ -33,9 +33,17 @@ process IQTREE_PHYLOGENETICTREE {
     """
     iqtree \\
         -s ${msa_mafft} \\
+        -redo \\
+        -o ${params.reference_name} \\
         -T ${task.cpus} \\
+        -ninit 2 \\
+        -n 5 \\
+        -me 1.0 \\
+        -experimental \\
+        -t NJ-R \\
+        --no-opt-gamma-inv \\
         -m ${params.substitution_model}\\
-        -o ${params.reference_name}
+        --prefix iqtree-MN908947.3-GTR
     iqtree --version | sed "s/iqtree //g" > ${software}.version.txt
     """
 }

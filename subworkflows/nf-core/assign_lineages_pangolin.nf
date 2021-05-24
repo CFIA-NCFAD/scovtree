@@ -4,10 +4,10 @@ include { PANGOLIN_LINEAGES } from '../../modules/nf-core/software/pangolin/main
 
 workflow LINEAGES_PANGOLIN{
     take:
-    fasta
+    ch_fasta
 
     main:
-    PANGOLIN_LINEAGES (fasta)
+    PANGOLIN_LINEAGES (ch_fasta)
 
     emit:
     report = PANGOLIN_LINEAGES.out.report
