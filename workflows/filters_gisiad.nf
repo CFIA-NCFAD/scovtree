@@ -10,7 +10,7 @@ def tree_snps_options     = modules['tree_snps']
 def reroot_tree_options   = modules['reroot_tree']
 def shiptv_tree_options   = modules['shiptv']
 def filter_gisiad_options = modules['filters_gisiad']
-def filter_msa_options    = modules['filters_gisiad']
+def filter_msa_options    = modules['filters_msa']
 def get_subtree_options   = modules['subtree']
 
 include { MSA_MAFFT                }   from '../subworkflows/nf-core/multiple_sequence_alignment'        addParams ( options: msa_mafft_options       )
@@ -24,7 +24,7 @@ include { VISUALIZATION_SHIPTV     }   from '../subworkflows/nf-core/visualize_t
 include { GISIAD_FILTERS           }   from '../subworkflows/local/find_closest_sequences_gisiad'        addParams ( options: filter_gisiad_options   )
 include { SEQUENCES_CAT            }   from '../subworkflows/nf-core/cat_sequences'
 include { FILTER_10K_STRAINS       }   from '../subworkflows/local/find_10K_strain'                      addParams ( options: filter_msa_options      )
-include { GET_SUBTREE              }   from '../subworkflows/local/get_subtree'                          addParams ( options: filter_msa_options      )
+include { GET_SUBTREE              }   from '../subworkflows/local/get_subtree'                          addParams ( options: get_subtree_options     )
 
 workflow FILTERS_GISIAD {
 
@@ -36,8 +36,8 @@ workflow FILTERS_GISIAD {
     .collectFile( name: 'consensus_seqs.fa' ){
     ">${it.id}\n${it.sequence}"
     }
-    LINEAGES_PANGOLIN       (ch_consensus_seqs) //Find Lineage of sequences
-    GISIAD_FILTERS          (ch_gisiad_sequences, ch_gisiad_metadata, LINEAGES_PANGOLIN.out.report) //Pull out sequences that belong to lineage in previous step from GISIAD
+    LINEAGES_PANGOLIN       (ch_consensus_seqs)
+    GISIAD_FILTERS          (ch_gisiad_sequences, ch_gisiad_metadata, LINEAGES_PANGOLIN.out.report)
     SEQUENCES_CAT           (GISIAD_FILTERS.out.sequences, ch_consensus_seqs)
     MSA_NEXTALIGN           (SEQUENCES_CAT.out.merged_sequences)
     FILTER_10K_STRAINS      (MSA_NEXTALIGN.out.msa, LINEAGES_PANGOLIN.out.report, GISIAD_FILTERS.out.metadata_1)

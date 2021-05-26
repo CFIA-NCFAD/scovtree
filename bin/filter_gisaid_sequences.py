@@ -4,6 +4,7 @@ import click
 import pandas as pd
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 from collections import Counter
+import tarfile
 
 def count_ambig_nt(seq: str) -> int:
     counter = Counter(seq.lower())
@@ -28,7 +29,7 @@ def format_strain_name(strain: str) -> str:
 
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
-@click.option("-lmin", "--lmin", help="ignore sequences w/length < lmin", required=False, type=int, default=27000)
+@click.option("-lmin", "--lmin", help="ignore sequences w/length < lmin", required=False, type=int, default=20000)
 @click.option("-lmax", "--lmax", help="ignore sequences w/length >= lmax", required=False, type=int, default=32000)
 @click.option("-x", "--xambig", help="ignore sequences with >=  xambig ambiguous residues", required=False, type=int,
               default=3000)
@@ -79,7 +80,12 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisiad_metadata, lineage_report, 
                     "N-Content",
                     "GC-Content"]
     # Parse gisiad metadata into dataframe
-    df_gisiad = pd.read_table(gisiad_metadata)
+    if tarfile.is_tarfile(gisiad_metadata):
+        with tarfile.open(gisiad_metadata, "r:*") as tar:
+            csv_path = list(n for n in tar.getnames() if n.endswith('.tsv'))[0]
+            df_gisiad = pd.read_table(tar.extractfile(csv_path))
+    else:
+        df_gisiad = pd.read_table(gisiad_metadata)
     # Rename columns according to column_names
     df_gisiad.columns = column_names
 
@@ -128,7 +134,7 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisiad_metadata, lineage_report, 
                     strains = strains.replace(' ', '_')
                 if strains not in strains_of_interest:
                     continue
-                if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (strains not in added_strains):
+                if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (strains not in added_strains) :
                     num_seqs_found = num_seqs_found + 1
                     added_strains.append(strains)
                     # Get metadata information
@@ -170,9 +176,7 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisiad_metadata, lineage_report, 
     else:
         logging.basicConfig(format='%(message)s',
                             datefmt='[%Y-%m-%d %X]',
-                            level=logging.WARNING,
-                            handlers=[RichHandler(rich_tracebacks=True,
-                                                  tracebacks_show_locals=True)])
+                            level=logging.WARNING)
         log = logging.getLogger("rich")
         log.warning("No Interest Strains Found!")
 
