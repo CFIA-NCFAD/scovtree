@@ -27,8 +27,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
 4. Start running your own analysis!
-   
-   * Typical command for phylogenetic analysis is as follow:
+
+    * Typical command for phylogenetic analysis is as follow:
 
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
@@ -36,22 +36,19 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --reference_name 'MN908947.3' \
             --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
             --input '/path/to/consensus/*.fasta'
-        
-        --input                      The directory path to consensus sequences
-        --reference_name             Name of reference sequence (MN908947.3)
-        --reference_fasta            Directory path to reference fasta file
         ```
-   * Typical command for phylogenetic analysis with GISAID Sequences is as follow:
+
+    * Typical command for phylogenetic analysis with GISAID Sequences is as follow:
 
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
-             --filter_gisaid true \
-             --gisiad_sequences /path/to/sequences.fasta \
-             --gisiad_metadata /path/to/metadata.tsv \
-             --input '/path/to/consensus/*.fasta' \
-             --reference_fasta '/path/to/nCoV-2019.reference.fasta'
+            --filter_gisaid true \
+            --gisiad_sequences /path/to/sequences.fasta \
+            --gisiad_metadata /path/to/metadata.tsv \
+            --input '/path/to/consensus/*.fasta' \
+            --reference_fasta '/path/to/nCoV-2019.reference.fasta'
         ```
-
+      
 ## Credits
 
 nhhaidee/scovtree was originally written by Hai Nguyen.
