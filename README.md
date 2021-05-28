@@ -26,7 +26,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     ```bash
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
-   
+
 4. Start running your own analysis!
 
     * Typical command for phylogenetic analysis is as follow:
@@ -49,7 +49,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --input '/path/to/consensus/*.fasta' \
             --reference_fasta '/path/to/nCoV-2019.reference.fasta'
         ```
-      
+
 ## Credits
 
 nhhaidee/scovtree was originally written by Hai Nguyen.
