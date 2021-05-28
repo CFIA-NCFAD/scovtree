@@ -1,11 +1,11 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-                         nf-core/scovtree
+                         nhhaidee/scovtree
 ========================================================================================
- nf-core/scovtree Analysis Pipeline.
+ nhhaidee/scovtree Analysis Pipeline.
  #### Homepage / Documentation
- https://github.com/nf-core/scovtree
+ https://github.com/nhhaidee/scovtree
 ----------------------------------------------------------------------------------------
 */
 

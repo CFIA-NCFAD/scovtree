@@ -23,9 +23,20 @@
                     "fa_icon": "fas fa-align-center",
                     "help_text": "Name of reference SARS-COV2 MN908947.3"
                 },
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "reference_fasta": {
                     "type": "string",
                     "description": "Input Fasta file of reference sequences.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "substitution_model": {
+                    "type": "string",
+                    "description": "Substitution model for building phylogenetic tree",
                     "fa_icon": "fas fa-folder-open"
                 }
             }
@@ -163,6 +174,19 @@
                     "default": "${params.outdir}/pipeline_info",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
+                },
+                "enable_conda": {
+                    "type": "boolean",
+                    "hidden": true,
+                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
+                    "fa_icon": "fas fa-bacon"
+                },
+                "singularity_pull_docker_container": {
+                    "type": "boolean",
+                    "hidden": true,
+                    "description": "Instead of directly downloading Singularity images for use with Singularity, force the workflow to pull and convert Docker containers instead.",
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This may be useful for example if you are unable to directly pull Singularity containers to run the pipeline due to http/https proxy issues."
                 },
                 "show_hidden_params": {
                     "type": "boolean",
