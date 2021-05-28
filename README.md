@@ -11,7 +11,8 @@
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/scovtree** is a bioinformatics pipeline for sars-cov2 phylogenetic analysis, given a consensus sequences the workflow will output phylogenetic tree and SNP information. The pipeline also allows to filter and find the most related sequences in GISAID. The GISIAD filters workflow will output filtered sequences and metadata in old format (GISIAD changed format of metadata recently) so the output then can be used with Nextstrain (https://github.com/nextstrain/ncov) locally.
+**nf-core/scovtree** is a bioinformatics pipeline for sars-cov2 phylogenetic analysis, given a consensus sequences the workflow will output phylogenetic tree and SNP information. The pipeline also allows to filter and find the most related sequences in GISAID. The GISIAD filters workflow will output filtered sequences and metadata in old format (GISIAD changed format of metadata recently) so the output then can be used with [Nextstrain](https://github.com/nextstrain/ncov) locally.
+
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -26,6 +27,32 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     ```bash
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
+4. Start running your own analysis!
+   
+    * Typical command for phylogenetic analysis is as follow:
+
+        ```bash
+        nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
+            --filter_gisaid false \
+            --reference_name 'MN908947.3' \
+            --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
+            --input '/path/to/consensus/*.fasta'
+        
+        --input                      The directory path to consensus sequences
+        --reference_name             Name of reference sequence (MN908947.3)
+        --reference_fasta            Directory path to reference fasta file
+        ```
+
+    * Typical command for Illumina amplicon analysis:
+
+        ```bash
+        nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
+             --filter_gisaid true \
+             --gisiad_sequences /path/to/sequences.fasta \
+             --gisiad_metadata /path/to/metadata.tsv \
+             --input '/path/to/consensus/*.fasta' \
+             --reference_fasta '/path/to/nCoV-2019.reference.fasta'
+        ```
 
 ## Credits
 
