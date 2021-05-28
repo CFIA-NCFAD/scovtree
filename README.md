@@ -26,38 +26,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     ```bash
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
-##  Usage
-
-Options for building phylogenetic tree of consensus sequences, typical command to run is as follow:
-    
-    nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
-            --filter_gisaid false \
-            --reference_name 'MN908947.3' \
-            --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
-            --input '/path/to/consensus/*.fasta'
-
-    --input                      The direroty path to consensus sequences
-    --reference_name             Name of reference sequenc (MN908947.3)
-    --reference_fasta            Directory path to reference fasta file
-
-Options for filtering sequences against GISIAD, typical command is as follow:
-
-    nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
-             --filter_gisaid true \
-             --gisiad_sequences /path/to/seq.fasta \
-             --gisiad_metadata /path/to/metadata.tsv \
-             --sample_lineage B.1.1.306 --region 'North America' --country 'Canada
-
-    --filter_gisaid              Filter against GISIAD sequences or not (Default is false)
-    --gisiad_sequences           Directory path to GISIADS sequences (Download GISIAD sequences form gisaid.org), this is mandotory of filter_gisaid is true
-    --gisiad_metadata            Direcorty path to metadata file of GISIAD Sequences
-    --country                    Find sequences belong to country (Canada)
-    --region                     Find sequences belong to region (North America)
-    --sample_lineage             Lineage of sample that we want to filters
-    --lmin                       Remove sequences that lenght < lmin
-    --lmax                       Remove sequences that lenght > lmax
-    --xambig                     Remove sequences that have number of ambiguous sequences > xambig
-
 
 ## Credits
 
