@@ -26,10 +26,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     ```bash
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
-   
 4. Start running your own analysis!
    
-    * Typical command for phylogenetic analysis is as follow:
+   * Typical command for phylogenetic analysis is as follow:
 
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
@@ -42,8 +41,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
         --reference_name             Name of reference sequence (MN908947.3)
         --reference_fasta            Directory path to reference fasta file
         ```
-
-    * Typical command for phylogenetic analysis with GISAID Sequences is as follow:
+   * Typical command for phylogenetic analysis with GISAID Sequences is as follow:
 
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
