@@ -14,17 +14,17 @@ from collections import Counter
 @click.option("-r", "--lineage_report", help="Pangolin report of input sequences", type=click.Path(exists=False),
               required=False, default='')
 @click.option("-R", "--ref_name", help="Name of reference sequence", required=False, type=str, default='MN908947.3')
-@click.option("-a", "--avg_sequences", help="Maximum of sequences after filtering", required=False, type=int,
+@click.option("-t", "--threshold", help="The threshold to filter down sequences in MSA to managebale number", required=False, type=int,
               default=10000)
-@click.option("-o", "--fasta_output", help="Miltiple Sequence Alignment after filtering", type=click.Path(exists=False),
+@click.option("-o", "--fasta_output", help="Multiple Sequence Alignment after filtering", type=click.Path(exists=False),
               required=False)
 @click.option("-m", "--metadata_output", help="Metadata file of Multiple Sequence Alignment after filtering ",
               type=click.Path(exists=False), required=False)
-def main(msa_sequences, metadata_input, lineage_report, ref_name, avg_sequences, fasta_output, metadata_output):
+def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fasta_output, metadata_output):
 
     # Read Metadata of Multiple Sequence Alignment
     df_metadata_msa = pd.read_table(metadata_input, sep='\t')
-    if len(df_metadata_msa) > 10000: # only filter when number of MSA sequences > 10000
+    if len(df_metadata_msa) > threshold: # only filter when number of MSA sequences > 10000
         df_metadata_output = pd.DataFrame(columns = df_metadata_msa.columns)
 
         # df_input_metadata = pd.read_table(lineage_report, sep='\t')
@@ -87,7 +87,7 @@ def main(msa_sequences, metadata_input, lineage_report, ref_name, avg_sequences,
 
         #df_less_n_gaps = df_seq_recs.query('seq_n <= 60 and seq_gap <= @seq_gap_75')
 
-        sampled_strains = df_less_n_gaps.strain.sample(n=(avg_sequences - len(df_skip_strains))).tolist()
+        sampled_strains = df_less_n_gaps.strain.sample(n=(threshold - len(df_skip_strains))).tolist()
 
         for item in skip_strains:
             if item not in sampled_strains:

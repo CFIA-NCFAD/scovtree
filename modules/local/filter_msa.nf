@@ -30,6 +30,6 @@ process FILTERS_MSA {
     filtered_msa_output      = "filtered_msa_sequences.fasta"
     filtered_metadata_output = "filtered_metadata.tsv"
     """
-    filter_msa_align.py -i $msa -M $metadata -r $lineage_report -o $filtered_msa_output -m $filtered_metadata_output
+    filter_msa_align.py -i $msa -M $metadata -r $lineage_report -t ${params.msa_threshold_filter} -o $filtered_msa_output -m $filtered_metadata_output
     """
 }

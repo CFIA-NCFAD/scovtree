@@ -93,6 +93,11 @@
                     "type": "integer",
                     "description": "Remove sequences that have number of ambiguous sequence  > xambig.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "msa_threshold_filter": {
+                    "type": "integer",
+                    "description": "The threshold filter sequences in MSA result to manageable number",
+                    "fa_icon": "fas fa-folder-open"
                 }
             }
         },
