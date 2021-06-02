@@ -1,0 +1,4 @@
+files_unchanged:
+  - .github/PULL_REQUEST_TEMPLATE.md
+  - .github/workflows/linting.yml
+  - lib/NfcoreSchema.groovy

@@ -87,10 +87,6 @@ jobs:
 
   nf-core:
     runs-on: ubuntu-latest
-    files_unchanged:
-      - .github/PULL_REQUEST_TEMPLATE.md
-      - .github/workflows/linting.yml
-      - lib/NfcoreSchema.groovy
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2
