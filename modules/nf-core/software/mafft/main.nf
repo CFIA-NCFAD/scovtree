@@ -32,7 +32,7 @@ process MAFFT_MSA {
     mafft \\
         $options.args \\
         --thread ${task.cpus} \\
-        --keeplength
+        --keeplength \\
         --addfragments ${consensus_sequences}\\
         $reference_fasta > sequences_alignment.fasta
     mafft --version | sed "s/mafft //g" > ${software}.version.txt

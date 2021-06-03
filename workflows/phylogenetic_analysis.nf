@@ -20,11 +20,13 @@ include { VISUALIZATION_SHIPTV     }   from '../subworkflows/nf-core/visualize_t
 workflow PHYLOGENETIC_ANALYSIS {
 
     ch_consensus_seqs = Channel
-    .fromPath(params.input)
+    .fromPath(params.input, checkIfExists: false)
+    /*
     .splitFasta( record: [id: true, sequence: true])
     .collectFile( name: 'consensus_seqs.fa' ){
     ">${it.id}\n${it.sequence}"
     }
+    */
 
     MSA_MAFFT               (ch_consensus_seqs)
     PHYLOGENETICTREE_IQTREE (MSA_MAFFT.out.msa)
@@ -32,6 +34,6 @@ workflow PHYLOGENETIC_ANALYSIS {
     ALLELES                 (MSA_MAFFT.out.msa)
     LINEAGES_PANGOLIN       (ch_consensus_seqs)
     VISUALIZATION_TREE_SNPS (REROOT_TREE.out.newick_treefile, ALLELES.out.alleles, LINEAGES_PANGOLIN.out.report)
-    VISUALIZATION_SHIPTV    (REROOT_TREE.out.newick_treefile)
+    //VISUALIZATION_SHIPTV    (REROOT_TREE.out.newick_treefile)
 
 }

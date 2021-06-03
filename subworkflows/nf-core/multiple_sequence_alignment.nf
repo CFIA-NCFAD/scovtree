@@ -17,9 +17,10 @@ workflow MSA_MAFFT {
 workflow MSA_NEXTALIGN {
     take:
     ch_consensus_sequences
+    ch_ref_sequence
 
     main:
-    NEXTALIGN_MSA (ch_consensus_sequences, params.reference_fasta)
+    NEXTALIGN_MSA (ch_consensus_sequences, ch_ref_sequence)
 
     emit:
     msa = NEXTALIGN_MSA.out.fasta

@@ -30,16 +30,18 @@ workflow FILTERS_GISIAD {
 
     ch_gisiad_sequences = Channel.fromPath(params.gisiad_sequences)
     ch_gisiad_metadata  = Channel.fromPath(params.gisiad_metadata)
-    ch_consensus_seqs   = Channel
-    .fromPath(params.input)
+    ch_ref_sequence     = Channel.fromPath(params.reference_fasta)
+    ch_consensus_seqs   = Channel.fromPath(params.input)
+    /*
     .splitFasta( record: [id: true, sequence: true])
     .collectFile( name: 'consensus_seqs.fa' ){
     ">${it.id}\n${it.sequence}"
     }
+     */
     LINEAGES_PANGOLIN       (ch_consensus_seqs)
     GISIAD_FILTERS          (ch_gisiad_sequences, ch_gisiad_metadata, LINEAGES_PANGOLIN.out.report)
-    SEQUENCES_CAT           (GISIAD_FILTERS.out.sequences, ch_consensus_seqs)
-    MSA_NEXTALIGN           (SEQUENCES_CAT.out.merged_sequences)
+    SEQUENCES_CAT           (GISIAD_FILTERS.out.sequences, ch_consensus_seqs, ch_ref_sequence)
+    MSA_NEXTALIGN           (SEQUENCES_CAT.out.merged_sequences, ch_ref_sequence)
     FILTER_10K_STRAINS      (MSA_NEXTALIGN.out.msa, LINEAGES_PANGOLIN.out.report, GISIAD_FILTERS.out.metadata_1)
     PHYLOGENETICTREE_IQTREE (FILTER_10K_STRAINS.out.msa_filtered)
     GET_SUBTREE             (PHYLOGENETICTREE_IQTREE.out.treefile, LINEAGES_PANGOLIN.out.report, FILTER_10K_STRAINS.out.metadata_filtered)
