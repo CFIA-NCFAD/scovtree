@@ -24,7 +24,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```bash
-    nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
+    nextflow run nhhaidee/scovtree -profile test_gisaid,<docker/singularity/conda>
     ```
 
 4. Start running your own analysis!

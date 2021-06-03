@@ -25,12 +25,12 @@ jobs:
       - name: Check out pipeline code
         uses: actions/checkout@v2
 
-      - name: Check if Dockerfile or Conda environment changed
-        uses: technote-space/get-diff-action@v4
-        with:
-          FILES: |
-            Dockerfile
-            environment.yml
+      #- name: Check if Dockerfile or Conda environment changed
+      #  uses: technote-space/get-diff-action@v4
+      #  with:
+      #    FILES: |
+      #      Dockerfile
+      #      environment.yml
 
       #- name: Build new docker image
       #  if: env.MATCHED_FILES
