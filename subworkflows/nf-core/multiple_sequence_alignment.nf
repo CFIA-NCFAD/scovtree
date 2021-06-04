@@ -6,9 +6,10 @@ include { NEXTALIGN_MSA } from '../../modules/nf-core/software/nextalign/main'  
 workflow MSA_MAFFT {
     take:
     ch_consensus_sequences
+    ch_ref_sequence
 
     main:
-    MAFFT_MSA (ch_consensus_sequences, params.reference_fasta)
+    MAFFT_MSA (ch_consensus_sequences, ch_ref_sequence)
 
     emit:
     msa = MAFFT_MSA.out.fasta

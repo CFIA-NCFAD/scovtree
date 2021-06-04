@@ -80,7 +80,7 @@ def main(newick_tree_input, metadata_input, metadata_output, ref_name, lineage_r
                                                               "city"])
         df_metadata_input.to_csv(metadata_output, sep='\t', index=False)
         tree = Phylo.read(newick_tree_input, 'newick')
-        with open('leaflist', 'w') as fout:
+        with open(leaflist, 'w') as fout:
            for node in tree.get_terminals():
                 fout.write(f'{node.name}\n')
 

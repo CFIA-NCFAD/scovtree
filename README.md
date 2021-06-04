@@ -25,6 +25,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
     ```bash
     nextflow run nhhaidee/scovtree -profile test_gisaid,<docker/singularity/conda>
+    nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
 
 4. Start running your own analysis!
@@ -36,7 +37,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --filter_gisaid false \
             --reference_name 'MN908947.3' \
             --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
-            --input '/path/to/consensus/*.fasta'
+            --input '/path/to/consensus/consensus_sequences.fasta'
         ```
 
     * Typical command for phylogenetic analysis with GISAID Sequences is as follow:
@@ -46,7 +47,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --filter_gisaid true \
             --gisiad_sequences /path/to/sequences.fasta \
             --gisiad_metadata /path/to/metadata.tsv \
-            --input '/path/to/consensus/*.fasta' \
+            --input '/path/to/consensus/consensus_sequences.fasta' \
             --reference_fasta '/path/to/nCoV-2019.reference.fasta'
         ```
 

@@ -16,24 +16,20 @@ include { ALLELES                  }   from '../subworkflows/local/alleles'     
 include { VISUALIZATION_TREE_SNPS  }   from '../subworkflows/local/visualize_tree_snps'                  addParams ( options: tree_snps_options   )
 include { REROOT_TREE              }   from '../subworkflows/nf-core/reroot_tree'                        addParams ( options: reroot_tree_options )
 include { VISUALIZATION_SHIPTV     }   from '../subworkflows/nf-core/visualize_tree_shiptv'              addParams ( options: shiptv_tree_options )
+include { SHIPTV_METADATA          }   from '../subworkflows/local/get_metadata_shiptv'
 
 workflow PHYLOGENETIC_ANALYSIS {
 
-    ch_consensus_seqs = Channel
-    .fromPath(params.input, checkIfExists: false)
-    /*
-    .splitFasta( record: [id: true, sequence: true])
-    .collectFile( name: 'consensus_seqs.fa' ){
-    ">${it.id}\n${it.sequence}"
-    }
-    */
+    ch_consensus_seqs   = Channel.fromPath(params.input)
+    ch_ref_sequence     = Channel.fromPath(params.reference_fasta)
 
-    MSA_MAFFT               (ch_consensus_seqs)
+    MSA_MAFFT               (ch_consensus_seqs, ch_ref_sequence)
     PHYLOGENETICTREE_IQTREE (MSA_MAFFT.out.msa)
     REROOT_TREE             (PHYLOGENETICTREE_IQTREE.out.treefile)
     ALLELES                 (MSA_MAFFT.out.msa)
     LINEAGES_PANGOLIN       (ch_consensus_seqs)
     VISUALIZATION_TREE_SNPS (REROOT_TREE.out.newick_treefile, ALLELES.out.alleles, LINEAGES_PANGOLIN.out.report)
-    //VISUALIZATION_SHIPTV    (REROOT_TREE.out.newick_treefile)
+    SHIPTV_METADATA         (REROOT_TREE.out.newick_treefile, LINEAGES_PANGOLIN.out.report)
+    VISUALIZATION_SHIPTV    (REROOT_TREE.out.newick_treefile, SHIPTV_METADATA.out.leaflist, SHIPTV_METADATA.out.metadata)
 
 }
