@@ -9,6 +9,9 @@ workflow VISUALIZATION_SHIPTV {
     ch_metadata
 
     main:
-
     SHIPTV_VISUALIZATION (ch_newick, ch_leaflist, ch_metadata)
+
+    emit:
+
+    metadata  = SHIPTV_VISUALIZATION.out.metadata_tsv
 }

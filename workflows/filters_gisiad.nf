@@ -12,6 +12,7 @@ def shiptv_tree_options   = modules['shiptv']
 def filter_gisiad_options = modules['filters_gisiad']
 def filter_msa_options    = modules['filters_msa']
 def get_subtree_options   = modules['subtree']
+def nextclade_options     = modules['nextclade']
 
 include { MSA_MAFFT                }   from '../subworkflows/nf-core/multiple_sequence_alignment'        addParams ( options: msa_mafft_options       )
 include { MSA_NEXTALIGN            }   from '../subworkflows/nf-core/multiple_sequence_alignment'        addParams ( options: msa_nextalign_options   )
@@ -25,6 +26,9 @@ include { GISIAD_FILTERS           }   from '../subworkflows/local/find_closest_
 include { SEQUENCES_CAT            }   from '../subworkflows/nf-core/cat_sequences'
 include { FILTER_10K_STRAINS       }   from '../subworkflows/local/find_10K_strain'                      addParams ( options: filter_msa_options      )
 include { GET_SUBTREE              }   from '../subworkflows/local/get_subtree'                          addParams ( options: get_subtree_options     )
+include { NEXTCLADE_SEQUENCES      }   from '../subworkflows/local/get_sequences_nextclade'              addParams ( options: nextclade_options       )
+include { RUN_NEXTCLADE            }   from '../subworkflows/nf-core/run_nextclade'                      addParams ( options: nextclade_options       )
+include { AASUB_NEXTCLADE          }   from '../subworkflows/nf-core/aa_sub_nextclade'                   addParams ( options: nextclade_options       )
 
 workflow FILTERS_GISIAD {
 
@@ -46,4 +50,7 @@ workflow FILTERS_GISIAD {
     PHYLOGENETICTREE_IQTREE (FILTER_10K_STRAINS.out.msa_filtered)
     GET_SUBTREE             (PHYLOGENETICTREE_IQTREE.out.treefile, LINEAGES_PANGOLIN.out.report, FILTER_10K_STRAINS.out.metadata_filtered)
     VISUALIZATION_SHIPTV    (PHYLOGENETICTREE_IQTREE.out.treefile, GET_SUBTREE.out.leaflist, GET_SUBTREE.out.metadata)
+    NEXTCLADE_SEQUENCES     (VISUALIZATION_SHIPTV.out.metadata, SEQUENCES_CAT.out.merged_sequences)
+    RUN_NEXTCLADE           (NEXTCLADE_SEQUENCES.out.sequences, 'csv' )
+    AASUB_NEXTCLADE         (RUN_NEXTCLADE.out.nextclade_metadata)
 }
