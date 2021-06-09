@@ -8,7 +8,7 @@ workflow GISAID_FILTERS {
     ch_gisaid_metadata
     ch_lineage_report
     main:
-    FILTERS_GISIAD (ch_gisaid_sequences, ch_gisaid_metadata, ch_lineage_report)
+    FILTERS_GISAID (ch_gisaid_sequences, ch_gisaid_metadata, ch_lineage_report)
 
     emit:
     sequences   = FILTERS_GISAID.out.fasta

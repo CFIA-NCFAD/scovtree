@@ -11,7 +11,7 @@ process CAT_SEQUENCES {
     }
 
     input:
-    path (filter_gisiad_sequences)
+    path (filter_gisaid_sequences)
     path (input_sequences)
     path (ref_sequence)
 
@@ -21,6 +21,6 @@ process CAT_SEQUENCES {
     script:
 
     """
-    cat ${ref_sequence} ${filter_gisiad_sequences} ${input_sequences} > merged_sequences.fasta
+    cat ${ref_sequence} ${filter_gisaid_sequences} ${input_sequences} > merged_sequences.fasta
     """
 }
