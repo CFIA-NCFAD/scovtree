@@ -90,7 +90,7 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisiad_metadata, lineage_report, 
     df_gisiad.columns = column_names
 
     # Reformat sampling date
-    df_gisiad['date'] = df_gisiad['date'].apply(format_date)
+    #df_gisiad['date'] = df_gisiad['date'].apply(format_date)
     # Reformat strain name
     df_gisiad['strain'] = df_gisiad['strain'].apply(format_strain_name)
 
