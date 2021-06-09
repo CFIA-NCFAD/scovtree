@@ -20,6 +20,7 @@
                 "reference_name": {
                     "type": "string",
                     "description": "Name of reference sequence.",
+                    "default": "MN908947.3",
                     "fa_icon": "fas fa-align-center",
                     "help_text": "Name of reference SARS-COV2 MN908947.3"
                 },
@@ -32,11 +33,13 @@
                 "reference_fasta": {
                     "type": "string",
                     "description": "Input Fasta file of reference sequences.",
+                    "default": "s3://scovtree/nCoV-2019.reference.fasta",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "substitution_model": {
                     "type": "string",
                     "description": "Substitution model for building phylogenetic tree",
+                    "default": "GTR",
                     "fa_icon": "fas fa-folder-open"
                 }
             }
