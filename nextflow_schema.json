@@ -41,8 +41,8 @@
                 }
             }
         },
-        "filter_gisiad_options": {
-            "title": "Filter sequences against GISIAD options",
+        "filter_gisaid_options": {
+            "title": "Filter sequences against GISAID options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
@@ -50,18 +50,18 @@
                 "filter_gisaid": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
-                    "description": "Enable/disable Filter sequences against GISIAD workflow.",
-                    "help_text": "Enable/disable Filter sequences against GISIAD workflow"
+                    "description": "Enable/disable Filter sequences against GISAID workflow.",
+                    "help_text": "Enable/disable Filter sequences against GISAID workflow"
                 },
-                "gisiad_sequences": {
+                "gisaid_sequences": {
                     "type": "string",
-                    "description": "Directory path to gisiad sequences.",
+                    "description": "Directory path to gisaid sequences.",
                     "fa_icon": "fas fa-align-center",
-                    "help_text": "Directory path to gisiad sequences"
+                    "help_text": "Directory path to gisaid sequences"
                 },
-                "gisiad_metadata": {
+                "gisaid_metadata": {
                     "type": "string",
-                    "description": "Directory path to gisiad metadata.",
+                    "description": "Directory path to gisaid metadata.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "country": {
@@ -298,7 +298,7 @@
             "$ref": "#/definitions/phylogenetic_analysis_options"
         },
         {
-            "$ref": "#/definitions/filter_gisiad_options"
+            "$ref": "#/definitions/filter_gisaid_options"
         },
         {
             "$ref": "#/definitions/generic_options"

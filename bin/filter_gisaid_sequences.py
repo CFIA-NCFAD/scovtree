@@ -34,7 +34,7 @@ def format_strain_name(strain: str) -> str:
 @click.option("-x", "--xambig", help="ignore sequences with >=  xambig ambiguous residues", required=False, type=int,
               default=3000)
 @click.option("-i", "--gisaid_sequences", type=click.Path(exists=True), required=True)
-@click.option("-m", "--gisiad_metadata", type=click.Path(exists=True), required=True)
+@click.option("-m", "--gisaid_metadata", type=click.Path(exists=True), required=True)
 @click.option("-R", "--lineage_report", type=click.Path(exists=True), required=False, default ='')
 # @click.option("-ref", "--ref_sequence", type=click.Path(exists=True), required=False)
 # @click.option("-seq", "--input_seq", type=click.Path(exists=True), required=False)
@@ -45,7 +45,7 @@ def format_strain_name(strain: str) -> str:
 @click.option("-om1", "--metadata_output1", help="New format of metadata", type=click.Path(exists=False), required=True)
 @click.option("-om2", "--metadata_output2", help="Old format of metadata", type=click.Path(exists=False), required=True)
 @click.option("-ot", "--statistics_output", help="Statistics output", type=click.Path(exists=False), required=True)
-def main(lmin, lmax, xambig, gisaid_sequences, gisiad_metadata, lineage_report, sample_lineage, country, region, fasta_output,
+def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, sample_lineage, country, region, fasta_output,
          metadata_output1, metadata_output2, statistics_output):
 
     lineage = ''
@@ -56,7 +56,7 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisiad_metadata, lineage_report, 
     else:
         lineage = sample_lineage
 
-    # Rename gisiad metadata according below format, 22 columns in metadata file
+    # Rename gisaid metadata according below format, 22 columns in metadata file
     column_names = ["strain",
                     "virus",
                     "gisaid_epi_isl",
@@ -79,43 +79,43 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisiad_metadata, lineage_report, 
                     "Is low coverage?",
                     "N-Content",
                     "GC-Content"]
-    # Parse gisiad metadata into dataframe
-    if tarfile.is_tarfile(gisiad_metadata):
-        with tarfile.open(gisiad_metadata, "r:*") as tar:
+    # Parse gisaid metadata into dataframe
+    if tarfile.is_tarfile(gisaid_metadata):
+        with tarfile.open(gisaid_metadata, "r:*") as tar:
             csv_path = list(n for n in tar.getnames() if n.endswith('.tsv'))[0]
-            df_gisiad = pd.read_table(tar.extractfile(csv_path))
+            df_gisaid = pd.read_table(tar.extractfile(csv_path))
     else:
-        df_gisiad = pd.read_table(gisiad_metadata)
+        df_gisaid = pd.read_table(gisaid_metadata)
     # Rename columns according to column_names
-    df_gisiad.columns = column_names
+    df_gisaid.columns = column_names
 
     # Reformat sampling date
-    #df_gisiad['date'] = df_gisiad['date'].apply(format_date)
+    #df_gisaid['date'] = df_gisaid['date'].apply(format_date)
     # Reformat strain name
-    df_gisiad['strain'] = df_gisiad['strain'].apply(format_strain_name)
+    df_gisaid['strain'] = df_gisaid['strain'].apply(format_strain_name)
 
     # Extract details of location into separate column
-    df_locations = df_gisiad['location'].str.split(r'\s*/\s*', n=3, expand=True)
+    df_locations = df_gisaid['location'].str.split(r'\s*/\s*', n=3, expand=True)
     df_locations.columns = ['region', 'country', 'division', 'city']
     df_locations = df_locations.astype('category')
     # add extracted location info to output DF
-    df_gisiad_metadata = pd.concat([df_gisiad, df_locations], axis=1)
+    df_gisaid_metadata = pd.concat([df_gisaid, df_locations], axis=1)
 
-    #df_gisiad_metadata.drop_duplicates(subset=['strain'], inplace=True)
+    #df_gisaid_metadata.drop_duplicates(subset=['strain'], inplace=True)
 
     # Filter sequences
     if country != '' and region != '':
-        df_subset = df_gisiad_metadata.loc[((df_gisiad_metadata['pango lineage'] == lineage) &
-                                            df_gisiad_metadata['location'].str.contains(region) & df_gisiad_metadata[
+        df_subset = df_gisaid_metadata.loc[((df_gisaid_metadata['pango lineage'] == lineage) &
+                                            df_gisaid_metadata['location'].str.contains(region) & df_gisaid_metadata[
                                                 'location'].str.contains(country)), :]
     elif country == '' and region != '':
-        df_subset = df_gisiad_metadata.loc[((df_gisiad_metadata['pango lineage'] == lineage) &
-                                            df_gisiad_metadata['location'].str.contains(region)), :]
+        df_subset = df_gisaid_metadata.loc[((df_gisaid_metadata['pango lineage'] == lineage) &
+                                            df_gisaid_metadata['location'].str.contains(region)), :]
     elif country != '' and region == '':
-        df_subset = df_gisiad_metadata.loc[((df_gisiad_metadata['pango lineage'] == lineage) &
-                                            df_gisiad_metadata['location'].str.contains(country)), :]
+        df_subset = df_gisaid_metadata.loc[((df_gisaid_metadata['pango lineage'] == lineage) &
+                                            df_gisaid_metadata['location'].str.contains(country)), :]
     elif country == '' and region == '':
-        df_subset = df_gisiad_metadata.loc[(df_gisiad_metadata['pango lineage'] == lineage), :]
+        df_subset = df_gisaid_metadata.loc[(df_gisaid_metadata['pango lineage'] == lineage), :]
 
     num_lineage_found = df_subset.shape[0]
     # Drop rows have duplicate strain names

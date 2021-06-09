@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process FILTERS_GISIAD {
+process FILTERS_GISAID {
 
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
@@ -29,7 +29,7 @@ process FILTERS_GISIAD {
     path "*t.tsv"          , emit: stat
 
     script:  // This script is bundled with the pipeline, in /bin folder
-    filtered_fasta_output     = "filtered_gisiad_sequences.fasta"
+    filtered_fasta_output     = "filtered_gisaid_sequences.fasta"
     filtered_metadata_output1 = "metadata_1.tsv"
     filtered_metadata_output2 = "metadata_2.tsv"
     statistics_output         = "stat.tsv"
