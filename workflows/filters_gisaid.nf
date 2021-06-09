@@ -9,7 +9,7 @@ def alleles_options       = modules['alleles']
 def tree_snps_options     = modules['tree_snps']
 def reroot_tree_options   = modules['reroot_tree']
 def shiptv_tree_options   = modules['shiptv']
-def filter_gisiad_options = modules['filters_gisiad']
+def filter_gisaid_options = modules['filters_gisaid']
 def filter_msa_options    = modules['filters_msa']
 def get_subtree_options   = modules['subtree']
 def nextclade_options     = modules['nextclade']
@@ -22,7 +22,7 @@ include { ALLELES                  }   from '../subworkflows/local/alleles'     
 include { VISUALIZATION_TREE_SNPS  }   from '../subworkflows/local/visualize_tree_snps'                  addParams ( options: tree_snps_options       )
 include { REROOT_TREE              }   from '../subworkflows/nf-core/reroot_tree'                        addParams ( options: reroot_tree_options     )
 include { VISUALIZATION_SHIPTV     }   from '../subworkflows/nf-core/visualize_tree_shiptv'              addParams ( options: shiptv_tree_options     )
-include { GISIAD_FILTERS           }   from '../subworkflows/local/find_closest_sequences_gisiad'        addParams ( options: filter_gisiad_options   )
+include { GISAID_FILTERS           }   from '../subworkflows/local/find_closest_sequences_gisaid'        addParams ( options: filter_gisaid_options   )
 include { SEQUENCES_CAT            }   from '../subworkflows/nf-core/cat_sequences'
 include { FILTER_10K_STRAINS       }   from '../subworkflows/local/find_10K_strain'                      addParams ( options: filter_msa_options      )
 include { GET_SUBTREE              }   from '../subworkflows/local/get_subtree'                          addParams ( options: get_subtree_options     )
@@ -30,10 +30,10 @@ include { NEXTCLADE_SEQUENCES      }   from '../subworkflows/local/get_sequences
 include { RUN_NEXTCLADE            }   from '../subworkflows/nf-core/run_nextclade'                      addParams ( options: nextclade_options       )
 include { AASUB_NEXTCLADE          }   from '../subworkflows/nf-core/aa_sub_nextclade'                   addParams ( options: nextclade_options       )
 
-workflow FILTERS_GISIAD {
+workflow FILTERS_GISAID {
 
-    ch_gisiad_sequences = Channel.fromPath(params.gisiad_sequences)
-    ch_gisiad_metadata  = Channel.fromPath(params.gisiad_metadata)
+    ch_gisaid_sequences = Channel.fromPath(params.gisaid_sequences)
+    ch_gisaid_metadata  = Channel.fromPath(params.gisaid_metadata)
     ch_ref_sequence     = Channel.fromPath(params.reference_fasta)
     ch_consensus_seqs   = Channel.fromPath(params.input)
     /*
@@ -43,10 +43,10 @@ workflow FILTERS_GISIAD {
     }
      */
     LINEAGES_PANGOLIN       (ch_consensus_seqs)
-    GISIAD_FILTERS          (ch_gisiad_sequences, ch_gisiad_metadata, LINEAGES_PANGOLIN.out.report)
-    SEQUENCES_CAT           (GISIAD_FILTERS.out.sequences, ch_consensus_seqs, ch_ref_sequence)
+    GISAID_FILTERS          (ch_gisaid_sequences, ch_gisaid_metadata, LINEAGES_PANGOLIN.out.report)
+    SEQUENCES_CAT           (GISAID_FILTERS.out.sequences, ch_consensus_seqs, ch_ref_sequence)
     MSA_NEXTALIGN           (SEQUENCES_CAT.out.merged_sequences, ch_ref_sequence)
-    FILTER_10K_STRAINS      (MSA_NEXTALIGN.out.msa, LINEAGES_PANGOLIN.out.report, GISIAD_FILTERS.out.metadata_1)
+    FILTER_10K_STRAINS      (MSA_NEXTALIGN.out.msa, LINEAGES_PANGOLIN.out.report, GISAID_FILTERS.out.metadata_1)
     PHYLOGENETICTREE_IQTREE (FILTER_10K_STRAINS.out.msa_filtered)
     GET_SUBTREE             (PHYLOGENETICTREE_IQTREE.out.treefile, LINEAGES_PANGOLIN.out.report, FILTER_10K_STRAINS.out.metadata_filtered)
     VISUALIZATION_SHIPTV    (PHYLOGENETICTREE_IQTREE.out.treefile, GET_SUBTREE.out.leaflist, GET_SUBTREE.out.metadata)
