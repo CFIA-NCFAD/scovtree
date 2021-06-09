@@ -14,6 +14,8 @@ def filter_msa_options    = modules['filters_msa']
 def get_subtree_options   = modules['subtree']
 def nextclade_options     = modules['nextclade']
 
+//include { PANGOLIN_LINEAGES } from '../../modules/nf-core/software/pangolin/main'  addParams( options: pangolin_options   )
+
 include { MSA_MAFFT                }   from '../subworkflows/nf-core/multiple_sequence_alignment'        addParams ( options: msa_mafft_options       )
 include { MSA_NEXTALIGN            }   from '../subworkflows/nf-core/multiple_sequence_alignment'        addParams ( options: msa_nextalign_options   )
 include { PHYLOGENETICTREE_IQTREE  }   from '../subworkflows/nf-core/build_tree_iqtree'                  addParams ( options: iqtree_options          )
