@@ -33,9 +33,9 @@ workflow SCOV2_TREE {
 
     if (params.filter_gisaid){
 
-        include { FILTERS_GISAID } from './workflows/filters_gisaid'
+        include { PHYLOGENETIC_GISAID } from './workflows/phylogenetic_gisaid'
 
-        FILTERS_GISAID()
+        PHYLOGENETIC_GISAID()
     }
     else {
 
