@@ -27,9 +27,9 @@ process FILTERS_MSA {
     path "*.tsv"         , emit: metadata
 
     script:  // This script is bundled with the pipeline, in /bin folder
-    filtered_msa_output      = "filtered_msa_sequences.fasta"
-    filtered_metadata_output = "filtered_metadata.tsv"
+    filtered_msa_fasta      = "filtered_msa_sequences.fasta"
+    filtered_msa_metadata   = "filtered_msa_metadata.tsv"
     """
-    filter_msa_align.py -i $msa -M $metadata -r $lineage_report -t ${params.msa_threshold_filter} -o $filtered_msa_output -m $filtered_metadata_output
+    filter_msa_align.py -i $msa -M $metadata -r $lineage_report -t ${params.msa_threshold_filter} -o $filtered_msa_fasta -m $filtered_msa_metadata
     """
 }

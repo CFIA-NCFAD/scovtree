@@ -4,9 +4,9 @@ import pandas as pd
 from Bio import Phylo
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
-@click.option("-i", "--newick_tree_input", type=click.Path(exists=True), required=False, default='')
-@click.option("-m", "--metadata_output", type=click.Path(exists=False), required=False, default='')
-@click.option("-r", "--lineage_report", help="Pangolin report of input sequences", type=click.Path(exists=False),
+@click.option("-i", "--newick-tree-input", type=click.Path(exists=True), required=False, default='')
+@click.option("-m", "--metadata-output", type=click.Path(exists=False), required=False, default='')
+@click.option("-r", "--lineage-report", help="Pangolin report of input sequences", type=click.Path(exists=False),
               required=False, default='')
 @click.option("-l", "--leaflist", help="Leaves list", type=click.Path(exists=False), required=False)
 def main(newick_tree_input, metadata_output, lineage_report, leaflist):

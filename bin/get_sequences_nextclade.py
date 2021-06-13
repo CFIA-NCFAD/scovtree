@@ -4,9 +4,9 @@ import pandas as pd
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
-@click.option("-i", "--input_sequences", type=click.Path(exists=True), required=False, default='')
-@click.option("-m", "--metadata_input", type=click.Path(exists=True), required=False,default='')
-@click.option("-o", "--output_sequences", type=click.Path(exists=False), required=False, default='')
+@click.option("-i", "--input-sequences", type=click.Path(exists=True), required=False, default='')
+@click.option("-m", "--metadata-input", type=click.Path(exists=True), required=False,default='')
+@click.option("-o", "--output-sequences", type=click.Path(exists=False), required=False, default='')
 def main(input_sequences, metadata_input, output_sequences):
 
     # read metadata

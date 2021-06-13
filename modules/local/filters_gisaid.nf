@@ -23,20 +23,20 @@ process FILTERS_GISAID {
     path (lineage_report)
 
     output:
-    path "*.fasta"         , emit: fasta
-    path "*_1.tsv"         , emit: metadata_1
-    path "*_2.tsv"         , emit: metadata_2
-    path "*t.tsv"          , emit: stat
+    path "*.fasta"                       , emit: fasta
+    path "filtered_metadata.tsv"         , emit: filtered_metadata
+    path "nextstrain_metadata.tsv"       , emit: nextstrain_metadata
+    path "stat.tsv"                      , emit: stat
 
     script:  // This script is bundled with the pipeline, in /bin folder
     filtered_fasta_output     = "filtered_gisaid_sequences.fasta"
-    filtered_metadata_output1 = "metadata_1.tsv"
-    filtered_metadata_output2 = "metadata_2.tsv"
+    filtered_metadata         = "filtered_metadata.tsv"
+    nextstrain_metadata       = "nextstrain_metadata.tsv"
     statistics_output         = "stat.tsv"
     """
     filter_gisaid_sequences.py -i $gisaid_sequences -m $gisaid_metadata \\
                                -s '${params.sample_lineage}' -R $lineage_report -r '${params.region}' -c '${params.country}' \\
-                               -of $filtered_fasta_output -om1 $filtered_metadata_output1 -om2 $filtered_metadata_output2 \\
+                               -of $filtered_fasta_output -fm $filtered_metadata -nm $nextstrain_metadata \\
                                -lmin ${params.lmin} -lmax ${params.lmax} -x ${params.xambig} -ot $statistics_output
     """
 }

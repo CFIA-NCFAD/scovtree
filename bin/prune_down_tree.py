@@ -5,13 +5,13 @@ import pandas as pd
 from Bio import Phylo
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
-@click.option("-i", "--newick_tree_input", type=click.Path(exists=True), required=False, default='')
-@click.option("-M", "--metadata_input", type=click.Path(exists=True), required=False,default='')
-@click.option("-m", "--metadata_output", type=click.Path(exists=False), required=False, default='')
-@click.option("-R", "--ref_name", help="Name of reference sequence", required=False, type=str, default='MN908947.3')
-@click.option("-r", "--lineage_report", help="Pangolin report of input sequences", type=click.Path(exists=False),
+@click.option("-i", "--newick-tree-input", type=click.Path(exists=True), required=False, default='')
+@click.option("-M", "--metadata-input", type=click.Path(exists=True), required=False,default='')
+@click.option("-m", "--metadata-output", type=click.Path(exists=False), required=False, default='')
+@click.option("-R", "--ref-name", help="Name of reference sequence", required=False, type=str, default='MN908947.3')
+@click.option("-r", "--lineage-report", help="Pangolin report of input sequences", type=click.Path(exists=False),
               required=False, default='')
-@click.option("-max", "--max_taxa", required=False, type=int, default=100)
+@click.option("-max", "--max-taxa", required=False, type=int, default=100)
 @click.option("-l", "--leaflist", help="Leaves list", type=click.Path(exists=False), required=False)
 def main(newick_tree_input, metadata_input, metadata_output, ref_name, lineage_report, max_taxa, leaflist):
 
@@ -42,42 +42,10 @@ def main(newick_tree_input, metadata_input, metadata_output, ref_name, lineage_r
                 df_metadata_output = df_metadata_output.append(df_metadata_input.loc[row_index])
                 fout.write(f'{x}\n')
 
-        df_metadata_output = df_metadata_output.drop(columns=["virus",
-                                                              "Additional location information",
-                                                              "clade",
-                                                              "pangolin version",
-                                                              "variant",
-                                                              "AA Substitutions",
-                                                              "Submission date",
-                                                              "Is reference?",
-                                                              "Is complete?",
-                                                              "Is high coverage?",
-                                                              "Is low coverage?",
-                                                              "N-Content",
-                                                              "GC-Content",
-                                                              "region",
-                                                              "country",
-                                                              "division",
-                                                              "city"])
+        df_metadata_output = df_metadata_output.drop(columns=["region", "country", "division", "city"])
         df_metadata_output.to_csv(metadata_output, sep='\t', index=False)
     else:
-        df_metadata_input = df_metadata_input.drop(columns=["virus",
-                                                              "Additional location information",
-                                                              "clade",
-                                                              "pangolin version",
-                                                              "variant",
-                                                              "AA Substitutions",
-                                                              "Submission date",
-                                                              "Is reference?",
-                                                              "Is complete?",
-                                                              "Is high coverage?",
-                                                              "Is low coverage?",
-                                                              "N-Content",
-                                                              "GC-Content",
-                                                              "region",
-                                                              "country",
-                                                              "division",
-                                                              "city"])
+        df_metadata_input = df_metadata_input.drop(columns=["region", "country", "division", "city"])
         df_metadata_input.to_csv(metadata_output, sep='\t', index=False)
         tree = Phylo.read(newick_tree_input, 'newick')
         with open(leaflist, 'w') as fout:

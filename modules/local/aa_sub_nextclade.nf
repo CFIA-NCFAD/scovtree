@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process NEXTCLADE_AASUB {
+process AA_SUBSTITUTION {
 
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
