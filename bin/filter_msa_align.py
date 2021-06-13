@@ -7,18 +7,18 @@ from collections import Counter
 
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
-@click.option("-i", "--msa_sequences", help="Multiple Sequence Alignment", type=click.Path(exists=True), required=False)
-@click.option("-M", "--metadata_input",
+@click.option("-i", "--msa-sequences", help="Multiple Sequence Alignment", type=click.Path(exists=True), required=False)
+@click.option("-M", "--metadata-input",
               help="Metadata of Multiple Sequence Alignment (It is a metadata file after gisaid filtering step)",
               type=click.Path(exists=True), required=False)
-@click.option("-r", "--lineage_report", help="Pangolin report of input sequences", type=click.Path(exists=False),
+@click.option("-r", "--lineage-report", help="Pangolin report of input sequences", type=click.Path(exists=False),
               required=False, default='')
-@click.option("-R", "--ref_name", help="Name of reference sequence", required=False, type=str, default='MN908947.3')
+@click.option("-R", "--ref-name", help="Name of reference sequence", required=False, type=str, default='MN908947.3')
 @click.option("-t", "--threshold", help="The threshold to filter down sequences in MSA to managebale number", required=False, type=int,
               default=10000)
-@click.option("-o", "--fasta_output", help="Multiple Sequence Alignment after filtering", type=click.Path(exists=False),
+@click.option("-o", "--fasta-output", help="Multiple Sequence Alignment after filtering", type=click.Path(exists=False),
               required=False)
-@click.option("-m", "--metadata_output", help="Metadata file of Multiple Sequence Alignment after filtering ",
+@click.option("-m", "--metadata-output", help="Metadata file of Multiple Sequence Alignment after filtering ",
               type=click.Path(exists=False), required=False)
 def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fasta_output, metadata_output):
 
@@ -84,9 +84,7 @@ def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fas
         seq_gap_75= df_percentile_75.loc['75%', 'seq_gap']
 
         df_less_n_gaps = df_seq_recs.query('seq_n <= @seq_n_75 and seq_gap <= @seq_gap_75')
-
         #df_less_n_gaps = df_seq_recs.query('seq_n <= 60 and seq_gap <= @seq_gap_75')
-
         sampled_strains = df_less_n_gaps.strain.sample(n=(threshold - len(df_skip_strains))).tolist()
 
         for item in skip_strains:
@@ -98,7 +96,7 @@ def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fas
                 for strains_list in sampled_strains:
                     if strains_value == strains_list:
                         for strain in strains_list:
-                            row_index = df_metadata_msa.loc[df_metadata_msa['strain'] == strain].index
+                            row_index = df_metadata_msa.loc[df_metadata_msa['Virus_name'] == strain].index
                             df_metadata_output = df_metadata_output.append(df_metadata_msa.loc[row_index])
                             fout.write(f'>{strain}\n{seq_key}\n')
                         break

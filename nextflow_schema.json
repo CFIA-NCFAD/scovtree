@@ -53,6 +53,7 @@
                 "filter_gisaid": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
+                    "default": true,
                     "description": "Enable/disable Filter sequences against GISAID workflow.",
                     "help_text": "Enable/disable Filter sequences against GISAID workflow"
                 },
@@ -69,38 +70,221 @@
                 },
                 "country": {
                     "type": "string",
+                    "default": "Canada",
                     "description": "Country to filter.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "region": {
                     "type": "string",
+                    "default": "North Ameria",
                     "description": "Region to filter.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "sample_lineage": {
                     "type": "string",
+                    "default": "B.1.2",
                     "description": "Sample Lineage to filter.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "lmin": {
                     "type": "integer",
+                    "default": 20000,
                     "description": "Remove sequences that length < lmin.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "lmax": {
                     "type": "integer",
+                    "default": 32000,
                     "description": "Remove sequences that length > lmax.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "xambig": {
                     "type": "integer",
+                    "default": 3000,
                     "description": "Remove sequences that have number of ambiguous sequence  > xambig.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "msa_threshold_filter": {
                     "type": "integer",
+                    "default": 10000,
                     "description": "The threshold filter sequences in MSA result to manageable number",
                     "fa_icon": "fas fa-folder-open"
+                }
+            }
+        },
+        "shiptv_visualization_options": {
+            "title": "Options for Shiptv visualization",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where metadata columns will be kept for visualization",
+            "properties": {
+                "skip_virus_name": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_virus_name",
+                    "help_text": "skip_virus_name"
+                },
+                "skip_type": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_type",
+                    "help_text": "skip_type"
+                },
+                "skip_accession_id": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_accession_id",
+                    "help_text": "skip_accession_id"
+                },
+                "skip_collection_date": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_collection_date",
+                    "help_text": "skip_collection_date"
+                },
+                "skip_location": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_location",
+                    "help_text": "skip_location"
+                },
+                "skip_additional_location_information": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_additional_location_information",
+                    "help_text": "skip_additional_location_information"
+                },
+                "skip_sequence_length": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_sequence_length",
+                    "help_text": "skip_sequence_length"
+                },
+                "skip_host": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_sequence_length",
+                    "help_text": "skip_sequence_length"
+                },
+                "skip_patient_age": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_patient_age",
+                    "help_text": "skip_patient_age"
+                },
+                "skip_gender": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_gender",
+                    "help_text": "skip_gender"
+                },
+                "skip_clade": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_clade",
+                    "help_text": "skip_clade"
+                },
+                "skip_pango_lineage": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_pango_lineage",
+                    "help_text": "skip_pango_lineage"
+                },
+                "skip_pangolin_version": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_pangolin_version",
+                    "help_text": "skip_pangolin_version"
+                },
+                "skip_variant": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_variant",
+                    "help_text": "skip_variant"
+                },
+                "skip_aa_substitutions": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_aa_substitutions",
+                    "help_text": "skip_aa_substitutions"
+                },
+                "skip_submission_date": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_submission_date",
+                    "help_text": "skip_submission_date"
+                },
+                "skip_is_reference": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_is_reference",
+                    "help_text": "skip_is_reference"
+                },
+                "skip_is_complete": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_is_complete",
+                    "help_text": "skip_is_complete"
+                },
+                "skip_is_high_coverage": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_is_high_coverage",
+                    "help_text": "skip_is_high_coverage"
+                },
+                "skip_is_low_coverage": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_is_low_coverage",
+                    "help_text": "skip_is_low_coverage"
+                },
+                "skip_n_content": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_n_content",
+                    "help_text": "skip_n_content"
+                },
+                "skip_gc_content": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_gc_content",
+                    "help_text": "skip_gc_content"
+                },
+                "skip_aa_substitution_change": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_aa_substitution_change",
+                    "help_text": "skip_aa_substitution_change"
+                },
+                "skip_nextclade": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": false,
+                    "description": "skip_nextclade",
+                    "help_text": "skip_nextclade"
                 }
             }
         },
@@ -302,6 +486,9 @@
         },
         {
             "$ref": "#/definitions/filter_gisaid_options"
+        },
+        {
+            "$ref": "#/definitions/shiptv_visualization_options"
         },
         {
             "$ref": "#/definitions/generic_options"

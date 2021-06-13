@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
-@click.option("-m", "--metadata_input", type=click.Path(exists=True), required=False,default='')
-@click.option("-o", "--metadata_output", type=click.Path(exists=False), required=False, default='')
+@click.option("-m", "--metadata-input", type=click.Path(exists=True), required=False,default='')
+@click.option("-o", "--metadata-output", type=click.Path(exists=False), required=False, default='')
 def main(metadata_input, metadata_output):
 
     df_nextclade =pd.read_table(metadata_input, sep=';')
