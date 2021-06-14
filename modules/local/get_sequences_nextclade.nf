@@ -21,6 +21,7 @@ process SEQUENCES_NEXTCLADE {
     input:
     path (metadata)
     path (sequences)
+    path (pangolin_report)
 
     output:
     path "*.fasta", optional:true, emit: fasta
@@ -28,6 +29,6 @@ process SEQUENCES_NEXTCLADE {
     script:  // This script is bundled with the pipeline, in /bin folder
     nextclade_sequences = "nextclade_sequences.fasta"
     """
-    get_sequences_nextclade.py -i $sequences -m $metadata -o $nextclade_sequences
+    get_sequences_nextclade.py -i $sequences -m $metadata -mp $pangolin_report -o $nextclade_sequences
     """
 }

@@ -42,13 +42,12 @@ workflow PHYLOGENETIC_GISAID {
     FILTERS_MSA               (NEXTALIGN_MSA.out.fasta, PANGOLIN_LINEAGES.out.report, FILTERS_GISAID.out.filtered_metadata)
     IQTREE_PHYLOGENETICTREE   (FILTERS_MSA.out.fasta)
     PRUNE_DOWN_TREE           (IQTREE_PHYLOGENETICTREE.out.treefile, PANGOLIN_LINEAGES.out.report, FILTERS_MSA.out.metadata)
-    FILTERS_SHIPTV_METADATA   (PRUNE_DOWN_TREE.out.metadata)
+    SEQUENCES_NEXTCLADE       (PRUNE_DOWN_TREE.out.metadata, CAT_SEQUENCES.out.merged_sequences, PANGOLIN_LINEAGES.out.report)
+    NEXTCLADE                 (SEQUENCES_NEXTCLADE.out.fasta, 'csv')
+    AA_SUBSTITUTION           (NEXTCLADE.out.csv)
+    FILTERS_SHIPTV_METADATA   (PRUNE_DOWN_TREE.out.metadata, AA_SUBSTITUTION.out.tsv, PANGOLIN_LINEAGES.out.report)
     SHIPTV_VISUALIZATION      (IQTREE_PHYLOGENETICTREE.out.treefile, PRUNE_DOWN_TREE.out.leaflist, FILTERS_SHIPTV_METADATA.out.metadata)
-    if (!params.skip_nextclade){
-        SEQUENCES_NEXTCLADE       (PRUNE_DOWN_TREE.out.metadata, CAT_SEQUENCES.out.merged_sequences)
-        NEXTCLADE                 (SEQUENCES_NEXTCLADE.out.fasta, 'csv')
-        AA_SUBSTITUTION           (NEXTCLADE.out.csv)
-    }
+
 
 
 }

@@ -278,13 +278,6 @@
                     "default": false,
                     "description": "skip_aa_substitution_change",
                     "help_text": "skip_aa_substitution_change"
-                },
-                "skip_nextclade": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "skip_nextclade",
-                    "help_text": "skip_nextclade"
                 }
             }
         },
