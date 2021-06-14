@@ -113,7 +113,7 @@
             }
         },
         "shiptv_visualization_options": {
-            "title": "Options for Shiptv visualization",
+            "title": "Shiptv visualization Options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where metadata columns will be kept for visualization",

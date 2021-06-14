@@ -15,9 +15,9 @@ def get_subtree_options   = modules['subtree']
 def nextclade_options     = modules['nextclade']
 
 include { PANGOLIN_LINEAGES       } from '../modules/nf-core/software/pangolin/main'   addParams( options: pangolin_options        )
-include { NEXTALIGN_MSA           } from '../modules/nf-core/software/nextalign/main'  addParams( options: msa_mafft_options       )
+include { NEXTALIGN_MSA           } from '../modules/nf-core/software/nextalign/main'  addParams( options: msa_nextalign_options   )
 include { CAT_SEQUENCES           } from '../modules/nf-core/software/cat/main'
-include { FILTERS_GISAID          } from '../modules/local/filters_gisaid'             addParams( options: filter_gisaid_options   )
+include { FILTERS_GISAID          } from '../modules/local/filter_gisaid'             addParams( options: filter_gisaid_options   )
 include { FILTERS_MSA             } from '../modules/local/filter_msa'                 addParams( options: filter_msa_options      )
 include { IQTREE_PHYLOGENETICTREE } from '../modules/nf-core/software/iqtree/main'     addParams( options: iqtree_options          )
 include { SHIPTV_VISUALIZATION    } from '../modules/nf-core/software/shiptv/main'     addParams( options: shiptv_tree_options     )
@@ -45,7 +45,7 @@ workflow PHYLOGENETIC_GISAID {
     FILTERS_SHIPTV_METADATA   (PRUNE_DOWN_TREE.out.metadata)
     SHIPTV_VISUALIZATION      (IQTREE_PHYLOGENETICTREE.out.treefile, PRUNE_DOWN_TREE.out.leaflist, FILTERS_SHIPTV_METADATA.out.metadata)
     if (!params.skip_nextclade){
-        SEQUENCES_NEXTCLADE       (SHIPTV_VISUALIZATION.out.metadata_tsv, CAT_SEQUENCES.out.merged_sequences)
+        SEQUENCES_NEXTCLADE       (PRUNE_DOWN_TREE.out.metadata, CAT_SEQUENCES.out.merged_sequences)
         NEXTCLADE                 (SEQUENCES_NEXTCLADE.out.fasta, 'csv')
         AA_SUBSTITUTION           (NEXTCLADE.out.csv)
     }

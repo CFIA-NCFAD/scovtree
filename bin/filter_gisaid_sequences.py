@@ -124,11 +124,17 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
     # Drop rows have duplicate strain names
     # df_subset.drop_duplicates(subset = ['strain'], inplace = True)
     strains_of_interest = set(df_subset['Virus_name'])
+
+    strains_of_interest_dict = {}
+    for vname in strains_of_interest:
+        if not strains_of_interest_dict.get(vname):
+            strains_of_interest_dict[vname] = vname
+
     len_strains_of_interest = len(strains_of_interest)
     num_seqs_found = 0
     if len(strains_of_interest) > 0:
 
-        added_strains = []
+        added_strains = {}
         df_filtered = pd.DataFrame(columns = df_gisaid.columns)
 
         with open(fasta_output, 'w') as fout:
@@ -138,11 +144,13 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
                         strains = strains.split('|')[0]
                     if ' ' in strains:
                         strains = strains.replace(' ', '_')
-                    if strains not in strains_of_interest:
+                    #if strains not in strains_of_interest:
+                        #continue
+                    if not strains_of_interest_dict.get(strains):
                         continue
-                    if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (strains not in added_strains):
+                    if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (not added_strains.get(strains)):
                         num_seqs_found = num_seqs_found + 1
-                        added_strains.append(strains)
+                        added_strains[strains] = strains
                         # Get metadata information
                         row_index = df_subset.loc[df_subset['Virus_name'] == strains].index
                         df_filtered = df_filtered.append(df_subset.loc[row_index])
@@ -155,12 +163,13 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
                             strains = strains.split('|')[0]
                         if ' ' in strains:
                             strains = strains.replace(' ', '_')
-                        if strains not in strains_of_interest:
+                        #if strains not in strains_of_interest:
+                            #continue
+                        if not strains_of_interest_dict.get(strains):
                             continue
-                        if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (
-                                strains not in added_strains):
+                        if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (not added_strains.get(strains)):
                             num_seqs_found = num_seqs_found + 1
-                            added_strains.append(strains)
+                            added_strains[strains] = strains
                             # Get metadata information
                             row_index = df_subset.loc[df_subset['Virus_name'] == strains].index
                             df_filtered = df_filtered.append(df_subset.loc[row_index])
