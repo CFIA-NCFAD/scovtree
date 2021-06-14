@@ -31,6 +31,6 @@ process PRUNE_DOWN_TREE {
     leaflist          = "leaflist"
     interest_metadata = "interest_metadata.tsv"
     """
-    prune_down_tree.py -i $newick -M $metadata -r $lineage_report -l $leaflist -m $interest_metadata
+    prune_down_tree.py -i $newick -M $metadata -r $lineage_report -l $leaflist -m $interest_metadata -mt ${params.max_taxa}
     """
 }

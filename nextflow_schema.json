@@ -104,6 +104,12 @@
                     "description": "Remove sequences that have number of ambiguous sequence  > xambig.",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "focus_country": {
+                    "type": "string",
+                    "default": "Canada",
+                    "description": "Keeps sequences that belong to country",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "msa_threshold_filter": {
                     "type": "integer",
                     "default": 10000,
@@ -118,6 +124,13 @@
             "fa_icon": "fas fa-terminal",
             "description": "Define where metadata columns will be kept for visualization",
             "properties": {
+                "max_taxa": {
+                    "type": "integer",
+                    "fa_icon": "fas fa-dna",
+                    "default": 75,
+                    "description": "skip_virus_name",
+                    "help_text": "skip_virus_name"
+                },
                 "skip_virus_name": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",

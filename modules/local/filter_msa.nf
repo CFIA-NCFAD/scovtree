@@ -31,6 +31,6 @@ process FILTERS_MSA {
     filtered_msa_fasta      = "filtered_msa_sequences.fasta"
     filtered_msa_metadata   = "filtered_msa_metadata.tsv"
     """
-    filter_msa_align.py -i $msa -M $metadata -r $lineage_report -t ${params.msa_threshold_filter} -o $filtered_msa_fasta -m $filtered_msa_metadata
+    filter_msa_align.py -i $msa -M $metadata -r $lineage_report -t ${params.msa_threshold_filter} -c ${params.focus_country} -o $filtered_msa_fasta -m $filtered_msa_metadata
     """
 }
