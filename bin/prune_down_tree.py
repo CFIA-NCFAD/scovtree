@@ -38,7 +38,7 @@ def main(newick_tree_input, metadata_input, metadata_output, ref_name, lineage_r
         with open('leaflist', 'w') as fout:
             fout.write(ref_name+'\n')
             for x in clade_neighbors:
-                row_index = df_metadata_input.loc[df_metadata_input['strain'] == x].index
+                row_index = df_metadata_input.loc[df_metadata_input['Virus_name'] == x].index
                 df_metadata_output = df_metadata_output.append(df_metadata_input.loc[row_index])
                 fout.write(f'{x}\n')
 

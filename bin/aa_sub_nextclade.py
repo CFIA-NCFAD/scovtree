@@ -10,11 +10,14 @@ def main(metadata_input, metadata_output):
 
     df_nextclade =pd.read_table(metadata_input, sep=';')
     aasubs = df_nextclade['aaSubstitutions'].str.replace('(^\(|\)$)', '', regex=True).str.split(',')
+
     sample_aas = {}
     for vname, aas in zip(df_nextclade['seqName'], aasubs):
         if not isinstance(aas, list):
             continue
         sample_aas[vname] = set(aas)
+
+    # Get the list samples
     samples = (list(sample_aas))
 
     unique_aas = set()
