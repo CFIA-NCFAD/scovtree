@@ -11,7 +11,7 @@ from Bio import Phylo
 @click.option("-R", "--ref-name", help="Name of reference sequence", required=False, type=str, default='MN908947.3')
 @click.option("-r", "--lineage-report", help="Pangolin report of input sequences", type=click.Path(exists=False),
               required=False, default='')
-@click.option("-max", "--max-taxa", required=False, type=int, default=100)
+@click.option("-mt", "--max-taxa", required=False, type=int, default=100)
 @click.option("-l", "--leaflist", help="Leaves list", type=click.Path(exists=False), required=False)
 def main(newick_tree_input, metadata_input, metadata_output, ref_name, lineage_report, max_taxa, leaflist):
 

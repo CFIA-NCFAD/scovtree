@@ -14,13 +14,14 @@ from collections import Counter
 @click.option("-r", "--lineage-report", help="Pangolin report of input sequences", type=click.Path(exists=False),
               required=False, default='')
 @click.option("-R", "--ref-name", help="Name of reference sequence", required=False, type=str, default='MN908947.3')
+@click.option("-c", "--country", help="Keep the sequences of country that want to focus", required=False, type=str, default='Canada')
 @click.option("-t", "--threshold", help="The threshold to filter down sequences in MSA to managebale number", required=False, type=int,
               default=10000)
 @click.option("-o", "--fasta-output", help="Multiple Sequence Alignment after filtering", type=click.Path(exists=False),
               required=False)
 @click.option("-m", "--metadata-output", help="Metadata file of Multiple Sequence Alignment after filtering ",
               type=click.Path(exists=False), required=False)
-def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fasta_output, metadata_output):
+def main(msa_sequences, metadata_input, lineage_report, ref_name, country, threshold, fasta_output, metadata_output):
 
     # Read Metadata of Multiple Sequence Alignment
     df_metadata_msa = pd.read_table(metadata_input, sep='\t')
@@ -39,7 +40,7 @@ def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fas
         drop = 0
         with open(msa_sequences) as fin:
             for strains, seq in SimpleFastaParser(fin):
-                if strains in input_sequences_strains or 'Canada' in strains:
+                if strains in input_sequences_strains or country in strains:
                     if seq_strain_dict.get(seq):
                         if strains not in seq_strain_dict[seq]:
                             seq_strain_dict[seq].append(strains)
@@ -51,7 +52,7 @@ def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fas
                         if strains not in seq_strain_dict[seq]:
                             value = seq_strain_dict[seq]
                             for values in value:
-                                if ('Canada' in values) or (values in input_sequences_strains):
+                                if (country in values) or (values in input_sequences_strains):
                                     seq_strain_dict[seq].append(strains)
                                     break
                         continue
@@ -65,7 +66,7 @@ def main(msa_sequences, metadata_input, lineage_report, ref_name, threshold, fas
             seq_key = seq_key.upper()
             seq_nt = sum(seq_key.count(x) for x in list('AGCT'))
             skip = False
-            if any('Canada' in values for values in strains_value) or any(item in input_sequences_strains for item in strains_value) :
+            if any(country in values for values in strains_value) or any(item in input_sequences_strains for item in strains_value) :
                 skip = True
             seq_recs.append(dict(strain=strains_value,
                                  seq_n=seq_key.count('N'),
