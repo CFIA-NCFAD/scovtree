@@ -7,6 +7,8 @@ import pandas as pd
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.option("-M", "--metadata-input", type=click.Path(exists=False), required=False, default='')
 @click.option("-m", "--metadata-output", type=click.Path(exists=False), required=False, default='')
+@click.option("-aachange", "--metadata-aa-change", type=click.Path(exists=False), required=False, default='')
+@click.option("-plreport", "--pangolin-report", type=click.Path(exists=False), required=False,default='')
 @click.option("-vn", "--skip-virus-name", type=bool, default=False, required=False)
 @click.option("-t", "--skip-type", type=bool, default=False, required=False)
 @click.option("-a", "--skip-accession-id", type=bool, default=False, required=False)
@@ -29,13 +31,14 @@ import pandas as pd
 @click.option("-il", "--skip-is-low-coverage", type=bool, default=False, required=False)
 @click.option("-n", "--skip-n-content", type=bool, default=False, required=False)
 @click.option("-gc", "--skip-gc-content", type=bool, default=False, required=False)
-def main(metadata_input, metadata_output, skip_virus_name, skip_type, skip_accession_id, skip_collection_date,
+@click.option("-aac", "--skip-aa-substitution-change", type=bool, default=False, required=False)
+def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, skip_virus_name, skip_type, skip_accession_id, skip_collection_date,
          skip_location,
          skip_additional_location_information, skip_sequence_length, skip_host, skip_patient_age, skip_gender,
          skip_clade, skip_pango_lineage, skip_pangolin_version, skip_variant, skip_aa_substitutions,
          skip_submission_date,
          skip_is_reference, skip_is_complete, skip_is_high_coverage, skip_is_low_coverage,
-         skip_n_content, skip_gc_content):
+         skip_n_content, skip_gc_content, skip_aa_substitution_change):
     '''
     ['Virus_name', 'Type', 'Accession_ID', 'Collection_date', 'Location',
        'Additional_location_information', 'Sequence_length', 'Host',
@@ -91,7 +94,23 @@ def main(metadata_input, metadata_output, skip_virus_name, skip_type, skip_acces
     if skip_gc_content:
         df_shiptv_metadata = df_shiptv_metadata.drop(columns=["GC-Content"])
 
-    df_shiptv_metadata.to_csv(metadata_output, sep='\t', index=False)
+    df_aa_change = pd.read_table(metadata_aa_change)
+    df_aa_change.rename(columns={"Unnamed: 0": "Virus_name"}, inplace=True)
+
+    df_pangolin_report = pd.read_table(pangolin_report, sep=',')
+
+    for i, vname in enumerate(df_pangolin_report.iloc[:,0].tolist()):
+        df_row = pd.DataFrame(columns=df_shiptv_metadata.columns, index=[0])
+        df_row['Virus_name'] = vname
+        df_row['Pango_lineage'] = df_pangolin_report.loc[i]['lineage']
+        df_row['Pangolin_version'] = df_pangolin_report.loc[i]['pangoLEARN_version']
+        df_shiptv_metadata = df_shiptv_metadata.append(df_row)
+
+    if skip_aa_substitution_change:
+        df_shiptv_metadata.to_csv(metadata_output, sep='\t', index=False)
+    else:
+        df_shiptv_metadata_output = pd.merge(df_shiptv_metadata, df_aa_change, on=['Virus_name'])
+        df_shiptv_metadata_output.to_csv(metadata_output, sep='\t', index=False)
 
 
 if __name__ == '__main__':

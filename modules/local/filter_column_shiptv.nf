@@ -20,6 +20,8 @@ process FILTERS_SHIPTV_METADATA {
 
     input:
     path (metadata)
+    path (aachange)
+    path (pangolin_report)
 
     output:
     path "*.tsv"         , emit: metadata
@@ -27,7 +29,7 @@ process FILTERS_SHIPTV_METADATA {
     script:  // This script is bundled with the pipeline, in /bin folder
     filtered_shiptv_metadata   = "shiptv_filtered_metadata.tsv"
     """
-    filter_column_shiptv.py -M $metadata -m $filtered_shiptv_metadata \\
+    filter_column_shiptv.py -M $metadata -m $filtered_shiptv_metadata -aachange $aachange -plreport $pangolin_report \\
                             --skip-virus-name=${params.skip_virus_name}\\
                             --skip-type=${params.skip_type} \\
                             --skip-accession-id=${params.skip_virus_name} \\
@@ -49,6 +51,7 @@ process FILTERS_SHIPTV_METADATA {
                             --skip-is-high-coverage=${params.skip_is_high_coverage} \\
                             --skip-is-low-coverage=${params.skip_is_low_coverage} \\
                             --skip-n-content=${params.skip_n_content} \\
-                            --skip-gc-content=${params.skip_gc_content}
+                            --skip-gc-content=${params.skip_gc_content} \\
+                            --skip-aa-substitution-change=${params.skip_aa_substitution_change}
     """
 }

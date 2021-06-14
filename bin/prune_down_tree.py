@@ -17,7 +17,7 @@ def main(newick_tree_input, metadata_input, metadata_output, ref_name, lineage_r
 
     # read metadata
     df_metadata_input = pd.read_table(metadata_input, sep='\t')
-    if len(df_metadata_input) > 250:
+    if len(df_metadata_input) > 100:
         # read the tree
         tree = Phylo.read(newick_tree_input, 'newick')
         df_metadata_output = pd.DataFrame(columns=df_metadata_input.columns)

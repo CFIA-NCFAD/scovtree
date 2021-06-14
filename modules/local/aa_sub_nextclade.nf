@@ -25,8 +25,8 @@ process AA_SUBSTITUTION {
     path "*.tsv", optional:true, emit: tsv
 
     script:  // This script is bundled with the pipeline, in /bin folder
-    aa_sub_sequences = "aa_sub_sequences.tsv"
+    aa_substitution_change = "aa_substitution_change.tsv"
     """
-    aa_sub_nextclade.py -m $metadata -o $aa_sub_sequences
+    aa_sub_nextclade.py -m $metadata -o $aa_substitution_change
     """
 }
