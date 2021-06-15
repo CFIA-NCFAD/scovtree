@@ -14,8 +14,8 @@
                 "input": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "description": "Input FastQ files.",
-                    "help_text": "The directory path to consensus sequenes /path/to/consensus_sequences/*.fasta"
+                    "description": "Input Fasta files of consensus sequences.",
+                    "help_text": "The directory path to consensus sequences /path/to/consensus_sequences/*.fasta"
                 },
                 "reference_name": {
                     "type": "string",
@@ -39,6 +39,7 @@
                 "substitution_model": {
                     "type": "string",
                     "description": "Substitution model for building phylogenetic tree",
+                    "help_text": "Substitution model for building phylogenetic tree in IQTree",
                     "default": "GTR",
                     "fa_icon": "fas fa-folder-open"
                 }
@@ -55,66 +56,75 @@
                     "fa_icon": "fas fa-dna",
                     "default": true,
                     "description": "Enable/disable Filter sequences against GISAID workflow.",
-                    "help_text": "Enable/disable Filter sequences against GISAID workflow"
+                    "help_text": "Enable/disable Filter sequences against GISAID workflow, it is set true for phylogenetic analysis with filtered GISAID sequences"
                 },
                 "gisaid_sequences": {
                     "type": "string",
                     "description": "Directory path to gisaid sequences.",
                     "fa_icon": "fas fa-align-center",
-                    "help_text": "Directory path to gisaid sequences"
+                    "help_text": "Directory path to gisaid sequences /path/to/consensus_sequences/sequences_fasta_2021_06_14.tar.xz"
                 },
                 "gisaid_metadata": {
                     "type": "string",
                     "description": "Directory path to gisaid metadata.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "Directory path to gisaid metadata /path/to/consensus_sequences/metadata_tsv_2021_06_14.tar.xz"
                 },
                 "country": {
                     "type": "string",
-                    "default": "Canada",
-                    "description": "Country to filter.",
-                    "fa_icon": "fas fa-folder-open"
+                    "default": "''",
+                    "description": "Filter sequences in GISAID from Country.",
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "Select sequences in GISAID from Country."
                 },
                 "region": {
                     "type": "string",
-                    "default": "North Ameria",
-                    "description": "Region to filter.",
-                    "fa_icon": "fas fa-folder-open"
+                    "default": "''",
+                    "description": "Filter sequences in GISAID from Region.",
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "Filter sequences in GISAID from Region."
                 },
                 "sample_lineage": {
                     "type": "string",
                     "default": "B.1.2",
-                    "description": "Sample Lineage to filter.",
-                    "fa_icon": "fas fa-folder-open"
+                    "description": "Filter sequences belong to lineage.",
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "Filter sequences belong to lineage."
                 },
                 "lmin": {
                     "type": "integer",
                     "default": 20000,
                     "description": "Remove sequences that length < lmin.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "Remove sequences that length < lmin."
                 },
                 "lmax": {
                     "type": "integer",
                     "default": 32000,
                     "description": "Remove sequences that length > lmax.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "Remove sequences that length > lmax."
                 },
                 "xambig": {
                     "type": "integer",
                     "default": 3000,
-                    "description": "Remove sequences that have number of ambiguous sequence  > xambig.",
-                    "fa_icon": "fas fa-folder-open"
+                    "description": "Remove sequences that have number of ambiguous sides  > xambig.",
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "Remove sequences that have number of ambiguous sides  > xambig."
                 },
                 "focus_country": {
                     "type": "string",
                     "default": "Canada",
-                    "description": "Keeps sequences that belong to country",
-                    "fa_icon": "fas fa-folder-open"
+                    "description": "Filter sequences that belong to country",
+                    "fa_icon": "fas fa-folder-open",
+                    "help": "Filter sequences that belong to country"
                 },
                 "msa_threshold_filter": {
                     "type": "integer",
                     "default": 10000,
                     "description": "The threshold filter sequences in MSA result to manageable number",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "help_text": "The threshold filter sequences in MSA result to manageable number"
                 }
             }
         },
@@ -128,169 +138,169 @@
                     "type": "integer",
                     "fa_icon": "fas fa-dna",
                     "default": 75,
-                    "description": "skip_virus_name",
-                    "help_text": "skip_virus_name"
+                    "description": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization",
+                    "help_text": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization"
                 },
                 "skip_virus_name": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_virus_name",
-                    "help_text": "skip_virus_name"
+                    "description": "Drop/keep Virus Name column in Shiptv metadata",
+                    "help_text": "Drop/keep Virus Name column in Shiptv metadata"
                 },
                 "skip_type": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_type",
-                    "help_text": "skip_type"
+                    "description": "Drop/keep Virus Type column in Shiptv metadata",
+                    "help_text": "Drop/keep Virus Type column in Shiptv metadata"
                 },
                 "skip_accession_id": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_accession_id",
-                    "help_text": "skip_accession_id"
+                    "description": "Drop/keep Accessesion ID column in Shiptv metadata",
+                    "help_text": "Drop/keep accessesion ID column in Shiptv metadata"
                 },
                 "skip_collection_date": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_collection_date",
-                    "help_text": "skip_collection_date"
+                    "description": "Drop/keep Collection Date column in Shiptv metadata",
+                    "help_text": "Drop/keep Collection Date column in Shiptv metadata"
                 },
                 "skip_location": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_location",
-                    "help_text": "skip_location"
+                    "description": "Drop/keep Location column in Shiptv metadata",
+                    "help_text": "Drop/keep Location column in Shiptv metadata"
                 },
                 "skip_additional_location_information": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_additional_location_information",
-                    "help_text": "skip_additional_location_information"
+                    "description": "Drop/keep Additional Location Information column in Shiptv metadata",
+                    "help_text": "Drop/keep Additional Location Information column in Shiptv metadata"
                 },
                 "skip_sequence_length": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_sequence_length",
-                    "help_text": "skip_sequence_length"
+                    "description": "Drop/keep Sequence Length column in Shiptv metadata",
+                    "help_text": "Drop/keep Sequence Length column in Shiptv metadata"
                 },
                 "skip_host": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_sequence_length",
-                    "help_text": "skip_sequence_length"
+                    "description": "Drop/keep Host column in Shiptv metadata",
+                    "help_text": "Drop/keep Host column in Shiptv metadata"
                 },
                 "skip_patient_age": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_patient_age",
-                    "help_text": "skip_patient_age"
+                    "description": "Drop/keep Patient Age column in Shiptv metadata",
+                    "help_text": "Drop/keep Patient Age column in Shiptv metadata"
                 },
                 "skip_gender": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_gender",
-                    "help_text": "skip_gender"
+                    "description": "Drop/keep Gender column in Shiptv metadata",
+                    "help_text": "Drop/keep Gender column in Shiptv metadata"
                 },
                 "skip_clade": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_clade",
-                    "help_text": "skip_clade"
+                    "description": "Drop/keep Clade column in Shiptv metadata",
+                    "help_text": "Drop/keep Clade column in Shiptv metadata"
                 },
                 "skip_pango_lineage": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_pango_lineage",
-                    "help_text": "skip_pango_lineage"
+                    "description": "Drop/keep Pangolin Lineage column in Shiptv metadata",
+                    "help_text": "Drop/keep Pangolin Lineage in Shiptv metadata"
                 },
                 "skip_pangolin_version": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_pangolin_version",
-                    "help_text": "skip_pangolin_version"
+                    "description": "Drop/keep Pangolin Version column in Shiptv metadata",
+                    "help_text": "Drop/keep Pangolin Version column in Shiptv metadata"
                 },
                 "skip_variant": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_variant",
-                    "help_text": "skip_variant"
+                    "description": "Drop/keep Variant column in Shiptv metadata",
+                    "help_text": "Drop/keep Variant column in Shiptv metadata"
                 },
                 "skip_aa_substitutions": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_aa_substitutions",
-                    "help_text": "skip_aa_substitutions"
+                    "description": "Drop/keep AA Substitutions column in Shiptv metadata",
+                    "help_text": "Drop/keep AA Substitutions column in Shiptv metadata"
                 },
                 "skip_submission_date": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_submission_date",
-                    "help_text": "skip_submission_date"
+                    "description": "Drop/keep Submission Date column in Shiptv metadata",
+                    "help_text": "Drop/keep Submission Date column in Shiptv metadata"
                 },
                 "skip_is_reference": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_is_reference",
-                    "help_text": "skip_is_reference"
+                    "description": "Drop/keep Is_reference column in Shiptv metadata",
+                    "help_text": "Drop/keep Is_reference column in Shiptv metadata"
                 },
                 "skip_is_complete": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_is_complete",
-                    "help_text": "skip_is_complete"
+                    "description": "Drop/keep Is_complete column in Shiptv metadata",
+                    "help_text": "Drop/keep Is_complete column in Shiptv metadata"
                 },
                 "skip_is_high_coverage": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_is_high_coverage",
-                    "help_text": "skip_is_high_coverage"
+                    "description": "Drop/keep Is_high_coverage column in Shiptv metadata",
+                    "help_text": "Drop/keep Is_high_coverage column in Shiptv metadata"
                 },
                 "skip_is_low_coverage": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_is_low_coverage",
-                    "help_text": "skip_is_low_coverage"
+                    "description": "Drop/keep Is_low_coverage column in Shiptv metadata",
+                    "help_text": "Drop/keep Is_low_coverage column in Shiptv metadata"
                 },
                 "skip_n_content": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_n_content",
-                    "help_text": "skip_n_content"
+                    "description": "Drop/keep N Content column in Shiptv metadata",
+                    "help_text": "Drop/keep N Content column in Shiptv metadata"
                 },
                 "skip_gc_content": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_gc_content",
-                    "help_text": "skip_gc_content"
+                    "description": "Drop/keep GC Content column in Shiptv metadata",
+                    "help_text": "Drop/keep GC Content column in Shiptv metadata"
                 },
                 "skip_aa_substitution_change": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": false,
-                    "description": "skip_aa_substitution_change",
-                    "help_text": "skip_aa_substitution_change"
+                    "description": "Drop/keep AA substitution changes in Shiptv metadata",
+                    "help_text": "Drop/keep AA substitution changes in Shiptv metadata"
                 }
             }
         },
