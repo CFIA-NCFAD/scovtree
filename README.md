@@ -50,33 +50,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --input '/path/to/consensus/consensus_sequences.fasta' \
             --reference_name 'MN908947.3' \
             --reference_fasta '/path/to/nCoV-2019.reference.fasta' 
+            --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
         
         SHIPTV Visualization Options: change below parameters to adjust tree and drop columns in SHIPTV metadata
       
-        --max_taxa (default: 75): maximum taxa of the phylogenetic tree in SHIPTV Visualization                            
-        --skip_virus_name (default: false)                       
-        --skip_type (default: false)                                
-        --skip_accession_id (default: false)                     
-        --skip_collection_date (default: false)                   
-        --skip_location (default: false)                           
-        --skip_additional_location_information (default: false)    
-        --skip_sequence_length (default: false)                    
-        --skip_host (default: false)                              
-        --skip_patient_age (default: false)                     
-        --skip_gender (default: false)                           
-        --skip_clade (default: false)                        
-        --skip_pango_lineage (default: false)               
-        --skip_pangolin_version (default: false)                 
-        --skip_variant (default: false)                        
-        --skip_aa_substitutions  (default: false)            
-        --skip_submission_date (default: false)              
-        --skip_is_reference (default: false)                    
-        --skip_is_complete (default: false)                  
-        --skip_is_high_coverage (default: false)              
-        --skip_is_low_coverage (default: false)             
-        --skip_n_content (default: false)                
-        --skip_gc_content (default: false)                     
-        --skip_aa_substitution_change (default: false)      
+        --max_taxa (default: 75): maximum taxa of the phylogenetic tree in SHIPTV Visualization                                               
+        --skip_aa_substitution_change (default: false)  
+      
+        There are  22 columns in GISAID metadata, please use columns as below:
+      
+        [Virus_name, Type, Accession_ID, Collection_date, Location,
+        Additional_location_information, Sequence_length, Host,
+        Patient_age, Gender, Clade, Pango_lineage, Pangolin_version,
+        Variant, AA_Substitutions, Submission_date, Is_reference?,
+        Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
+        GC-Content]
+         
+        Please note that DO NOT DROP 'Virus_name' columns otherwise columns will be empty in Shiptv Visualization and NO SPACE in parameters of --drop_gisaid_columns option
         ```
 
 ## Credits

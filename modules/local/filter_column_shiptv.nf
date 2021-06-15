@@ -19,8 +19,8 @@ process FILTERS_SHIPTV_METADATA {
     }
 
     input:
-    path (metadata)
-    path (aachange)
+    path (gisiad_metadata)
+    path (aachange_metadata)
     path (pangolin_report)
 
     output:
@@ -29,29 +29,8 @@ process FILTERS_SHIPTV_METADATA {
     script:  // This script is bundled with the pipeline, in /bin folder
     filtered_shiptv_metadata   = "shiptv_filtered_metadata.tsv"
     """
-    filter_column_shiptv.py -M $metadata -m $filtered_shiptv_metadata -aachange $aachange -plreport $pangolin_report \\
-                            --skip-virus-name=${params.skip_virus_name}\\
-                            --skip-type=${params.skip_type} \\
-                            --skip-accession-id=${params.skip_virus_name} \\
-                            --skip-collection-date=${params.skip_accession_id} \\
-                            --skip-location=${params.skip_location} \\
-                            --skip-additional-location-information=${params.skip_additional_location_information} \\
-                            --skip-sequence-length=${params.skip_sequence_length} \\
-                            --skip-host=${params.skip_host} \\
-                            --skip-patient-age=${params.skip_patient_age} \\
-                            --skip-gender=${params.skip_gender} \\
-                            --skip-clade=${params.skip_clade} \\
-                            --skip-pango-lineage=${params.skip_pango_lineage} \\
-                            --skip-pangolin-version=${params.skip_pangolin_version} \\
-                            --skip-variant=${params.skip_variant} \\
-                            --skip-aa-substitutions=${params.skip_aa_substitutions} \\
-                            --skip-submission-date=${params.skip_submission_date} \\
-                            --skip-is-reference=${params.skip_is_reference} \\
-                            --skip-is-complete=${params.skip_is_complete} \\
-                            --skip-is-high-coverage=${params.skip_is_high_coverage} \\
-                            --skip-is-low-coverage=${params.skip_is_low_coverage} \\
-                            --skip-n-content=${params.skip_n_content} \\
-                            --skip-gc-content=${params.skip_gc_content} \\
+    filter_column_shiptv.py -M $gisiad_metadata -m $filtered_shiptv_metadata -ma $aachange_metadata -p $pangolin_report \\
+                            -d ${params.drop_gisaid_columns} \\
                             --skip-aa-substitution-change=${params.skip_aa_substitution_change}
     """
 }
