@@ -72,14 +72,14 @@
                 },
                 "country": {
                     "type": "string",
-                    "default": "",
+                    "default": "''",
                     "description": "Filter sequences in GISAID from Country.",
                     "fa_icon": "fas fa-folder-open",
                     "help_text": "Select sequences in GISAID from Country."
                 },
                 "region": {
                     "type": "string",
-                    "default": "",
+                    "default": "''",
                     "description": "Filter sequences in GISAID from Region.",
                     "fa_icon": "fas fa-folder-open",
                     "help_text": "Filter sequences in GISAID from Region."
