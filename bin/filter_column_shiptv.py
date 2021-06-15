@@ -23,10 +23,6 @@ def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, d
     '''
 
     df_shiptv_metadata = pd.read_table(metadata_input, sep='\t')
-    if (drop_gisiad_columns !=''):
-        drop_columns = drop_gisiad_columns.split(',')
-        for col in drop_columns:
-            df_shiptv_metadata = df_shiptv_metadata.drop(columns=[col.strip()])
 
     df_aa_change = pd.read_table(metadata_aa_change)
     df_aa_change.rename(columns={"Unnamed: 0": "Virus_name"}, inplace=True)
@@ -39,6 +35,11 @@ def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, d
         df_row['Pango_lineage'] = df_pangolin_report.loc[i]['lineage']
         df_row['Pangolin_version'] = df_pangolin_report.loc[i]['pangoLEARN_version']
         df_shiptv_metadata = df_shiptv_metadata.append(df_row)
+    # Drop columns
+    if (drop_gisiad_columns !=''):
+        drop_columns = drop_gisiad_columns.split(',')
+        for col in drop_columns:
+            df_shiptv_metadata = df_shiptv_metadata.drop(columns=[col.strip()])
 
     if skip_aa_substitution_change:
         df_shiptv_metadata.to_csv(metadata_output, sep='\t', index=False)
