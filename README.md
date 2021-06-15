@@ -49,34 +49,35 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --gisaid_metadata /path/to/metadata.tsv \
             --input '/path/to/consensus/consensus_sequences.fasta' \
             --reference_name 'MN908947.3' \
-            --reference_fasta '/path/to/nCoV-2019.reference.fasta'        
-        ```
-    *   SHIPTV Visualization Options: change below parameters to adjust tree and drop columns in SHIPTV metadata
+            --reference_fasta '/path/to/nCoV-2019.reference.fasta' 
+        
+        SHIPTV Visualization Options: change below parameters to adjust tree and drop columns in SHIPTV metadata
       
         --max_taxa (default: 75): maximum taxa of the phylogenetic tree in SHIPTV Visualization                            
         --skip_virus_name (default: false)                       
         --skip_type (default: false)                                
-        --skip_accession_id  (default: false)                     
+        --skip_accession_id (default: false)                     
         --skip_collection_date (default: false)                   
         --skip_location (default: false)                           
-        --skip_additional_location_information  (default: false)    
-        --skip_sequence_length  (default: false)                    
-        --skip_host  (default: false)                              
+        --skip_additional_location_information (default: false)    
+        --skip_sequence_length (default: false)                    
+        --skip_host (default: false)                              
         --skip_patient_age (default: false)                     
         --skip_gender (default: false)                           
-        --skip_clade  (default: false)                        
+        --skip_clade (default: false)                        
         --skip_pango_lineage (default: false)               
         --skip_pangolin_version (default: false)                 
         --skip_variant (default: false)                        
-        --skip_aa_substitutions   (default: false)            
-        --skip_submission_date  (default: false)              
+        --skip_aa_substitutions  (default: false)            
+        --skip_submission_date (default: false)              
         --skip_is_reference (default: false)                    
         --skip_is_complete (default: false)                  
-        --skip_is_high_coverage  (default: false)              
-        --skip_is_low_coverage  (default: false)             
-        --skip_n_content  (default: false)                
-        --skip_gc_content  (default: false)                     
-        --skip_aa_substitution_change (default: false)   
+        --skip_is_high_coverage (default: false)              
+        --skip_is_low_coverage (default: false)             
+        --skip_n_content (default: false)                
+        --skip_gc_content (default: false)                     
+        --skip_aa_substitution_change (default: false)      
+        ```
 
 ## Credits
 
