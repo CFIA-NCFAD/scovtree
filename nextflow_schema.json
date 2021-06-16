@@ -147,13 +147,6 @@
                     "default": "''",
                     "description": "Options to drop gisiad columns",
                     "help_text": "Options to drop gisiad columns, by defaul '' means no columns dropped"
-                },
-                "drop_aa_substitution_change": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep AA substitution changes in Shiptv metadata",
-                    "help_text": "Drop/keep AA substitution changes in Shiptv metadata"
                 }
             }
         },

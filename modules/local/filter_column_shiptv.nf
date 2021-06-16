@@ -30,7 +30,6 @@ process FILTERS_SHIPTV_METADATA {
     filtered_shiptv_metadata   = "shiptv_filtered_metadata.tsv"
     """
     filter_column_shiptv.py -M $gisiad_metadata -m $filtered_shiptv_metadata -ma $aachange_metadata -p $pangolin_report \\
-                            -d ${params.drop_gisaid_columns} \\
-                            --drop-aa-substitution-change=${params.drop_aa_substitution_change}
+                            -d ${params.drop_gisaid_columns}
     """
 }

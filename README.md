@@ -51,11 +51,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --reference_name 'MN908947.3' \
             --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
             --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
-        
-        SHIPTV Visualization Options: change below parameters to adjust tree and drop columns in SHIPTV metadata
       
-        --max_taxa (default: 75): maximum taxa of the phylogenetic tree in SHIPTV Visualization                                          
-        --drop_aa_substitution_change (default: false)  
+        --max_taxa (default: 75): adjust the maximum of taxa of the phylogenetic tree in SHIPTV Visualization
       
         There are  22 columns in GISAID metadata, please use columns as below:
       
@@ -65,6 +62,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
         Variant, AA_Substitutions, Submission_date, Is_reference?,
         Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
         GC-Content]
+        
+        Add 'aa_substitution_change' into --drop_gisaid_columns option if user does not want to visualize AA Substitution change
          
         Please note that DO NOT DROP 'Virus_name' columns otherwise columns will be empty in Shiptv Visualization and NO SPACE in parameters of --drop_gisaid_columns option
         ```
