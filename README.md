@@ -49,13 +49,13 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --gisaid_metadata /path/to/metadata.tsv \
             --input '/path/to/consensus/consensus_sequences.fasta' \
             --reference_name 'MN908947.3' \
-            --reference_fasta '/path/to/nCoV-2019.reference.fasta' 
+            --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
             --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
         
         SHIPTV Visualization Options: change below parameters to adjust tree and drop columns in SHIPTV metadata
       
-        --max_taxa (default: 75): maximum taxa of the phylogenetic tree in SHIPTV Visualization                                               
-        --skip_aa_substitution_change (default: false)  
+        --max_taxa (default: 75): maximum taxa of the phylogenetic tree in SHIPTV Visualization                                          
+        --drop_aa_substitution_change (default: false)  
       
         There are  22 columns in GISAID metadata, please use columns as below:
       

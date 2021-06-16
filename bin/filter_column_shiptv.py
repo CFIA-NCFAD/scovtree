@@ -10,8 +10,8 @@ import pandas as pd
 @click.option("-ma", "--metadata-aa-change", type=click.Path(exists=False), required=False, default='')
 @click.option("-p", "--pangolin-report", type=click.Path(exists=False), required=False,default='')
 @click.option("-d", "--drop-gisiad-columns", help="Drop GISIAD Columns", required=False, type=str, default='')
-@click.option("-aac", "--skip-aa-substitution-change", type=bool, default=False, required=False)
-def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, drop_gisiad_columns, skip_aa_substitution_change):
+@click.option("-aac", "--drop-aa-substitution-change", type=bool, default=False, required=False)
+def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, drop_gisiad_columns, drop_aa_substitution_change):
 
     '''
     ['Virus_name', 'Type', 'Accession_ID', 'Collection_date', 'Location',
@@ -41,7 +41,7 @@ def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, d
         for col in drop_columns:
             df_shiptv_metadata = df_shiptv_metadata.drop(columns=[col.strip()])
 
-    if skip_aa_substitution_change:
+    if drop_aa_substitution_change:
         df_shiptv_metadata.to_csv(metadata_output, sep='\t', index=False)
     else:
         df_shiptv_metadata_output = pd.merge(df_shiptv_metadata, df_aa_change, on=['Virus_name'])
