@@ -11,7 +11,7 @@
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/scovtree** is a bioinformatics pipeline for sars-cov2 phylogenetic analysis, given a consensus sequences the workflow will output phylogenetic tree and SNP information. The pipeline also allows to filter and find the most related sequences in GISAID. The GISAID filters workflow will output filtered sequences and metadata in old format (GISAID changed format of metadata recently) so the output then can be used with [Nextstrain](https://github.com/nextstrain/ncov) locally.
+**nhhaidee/scovtree** is a bioinformatics pipeline for sars-cov2 phylogenetic analysis, given a consensus sequences the workflow will output phylogenetic tree and SNP information. The pipeline also allows to filter and find the most related sequences in GISAID. The GISAID filters workflow will output filtered sequences and metadata in old format (GISAID changed format of metadata recently) so the output then can be used with [Nextstrain](https://github.com/nextstrain/ncov) locally.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -24,7 +24,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```bash
-    nextflow run nhhaidee/scovtree -profile test_gisaid,<docker/singularity/conda>
+    nextflow run nhhaidee/scovtree -profile test_gisaid_full,<docker/singularity/conda>
+    nextflow run nhhaidee/scovtree -profile test_gisaid_drop_columns,<docker/singularity/conda>
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
 
@@ -35,8 +36,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
             --filter_gisaid false \
-            --reference_name 'MN908947.3' \
-            --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
             --input '/path/to/consensus/consensus_sequences.fasta'
         ```
 
@@ -47,25 +46,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --filter_gisaid true \
             --gisaid_sequences /path/to/sequences.fasta \
             --gisaid_metadata /path/to/metadata.tsv \
-            --input '/path/to/consensus/consensus_sequences.fasta' \
-            --reference_name 'MN908947.3' \
-            --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
-            --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
-      
-        --max_taxa (default: 75): adjust the maximum of taxa of the phylogenetic tree in SHIPTV Visualization
-      
-        There are  22 columns in GISAID metadata, please use columns as below:
-      
-        [Virus_name, Type, Accession_ID, Collection_date, Location,
-        Additional_location_information, Sequence_length, Host,
-        Patient_age, Gender, Clade, Pango_lineage, Pangolin_version,
-        Variant, AA_Substitutions, Submission_date, Is_reference?,
-        Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
-        GC-Content]
+            --input '/path/to/consensus/consensus_sequences.fasta'
         
-        Add 'aa_substitution_change' into --drop_gisaid_columns option if user does not want to visualize AA Substitution change
+        Other options:
+            --max_taxa (default: 75): adjust the maximum of taxa of the phylogenetic tree in SHIPTV Visualization
+            --drop-gisiad-columns (default: no columns in GISIAD Metadata dropped). For example --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
          
-        Please note that DO NOT DROP 'Virus_name' columns otherwise columns will be empty in Shiptv Visualization and NO SPACE in parameters of --drop_gisaid_columns option
+            Currently, there are 22 columns in GISAID metadata, please use columns as below:
+         
+            Virus_name, Type, Accession_ID, Collection_date, Location,
+            Additional_location_information, Sequence_length, Host,
+            Patient_age, Gender, Clade, Pango_lineage, Pangolin_version,
+            Variant, AA_Substitutions, Submission_date, Is_reference?,
+            Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
+            GC-Content
+           
+            Add 'aa_substitution_change' into --drop_gisaid_columns option if user does not want to visualize AA Substitution change
+            Please note that NO SPACE in parameters of --drop_gisaid_columns option
         ```
 
 ## Credits

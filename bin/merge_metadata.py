@@ -36,7 +36,6 @@ def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, d
         df_row['Pangolin_version'] = df_pangolin_report.loc[i]['pangoLEARN_version']
         df_shiptv_metadata = df_shiptv_metadata.append(df_row)
 
-
     if (drop_gisiad_columns !=''):
         drop_columns = drop_gisiad_columns.split(',')
         if 'aa_substitution_change' not in drop_columns: # merge aa_change into shiptv_metadata
@@ -44,12 +43,15 @@ def main(metadata_input, metadata_output, metadata_aa_change, pangolin_report, d
         else: # otherwise keep it unchanged,
             df_shiptv_metadata_output = df_shiptv_metadata
         for col in drop_columns:
+            if col == 'Virus_name': # always keep this first column for shiptv
+                continue
             if col != 'aa_substitution_change':
                 df_shiptv_metadata_output = df_shiptv_metadata_output.drop(columns=[col.strip()])
         df_shiptv_metadata_output.to_csv(metadata_output, sep='\t', index=False)
     else:
         df_shiptv_metadata_output = pd.merge(df_shiptv_metadata, df_aa_change, on=['Virus_name'])
         df_shiptv_metadata_output.to_csv(metadata_output, sep='\t', index=False)
+
 
 if __name__ == '__main__':
     main()

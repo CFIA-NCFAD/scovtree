@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process FILTERS_SHIPTV_METADATA {
+process MERGE_METADATA{
 
     label 'process_medium'
     publishDir "${params.outdir}",
@@ -18,6 +18,7 @@ process FILTERS_SHIPTV_METADATA {
         container "quay.io/biocontainers/mulled-v2-c31f862d526d0a07196020b22083c45f8ddb4f0d:5d34a7705065087f5129c939eea53217c22e38df-0"
     }
 
+
     input:
     path (gisiad_metadata)
     path (aachange_metadata)
@@ -27,9 +28,11 @@ process FILTERS_SHIPTV_METADATA {
     path "*.tsv"         , emit: metadata
 
     script:  // This script is bundled with the pipeline, in /bin folder
-    filtered_shiptv_metadata   = "shiptv_filtered_metadata.tsv"
+    merge_metadata   = "merge_metadata.tsv"
     """
-    filter_column_shiptv.py -M $gisiad_metadata -m $filtered_shiptv_metadata -ma $aachange_metadata -p $pangolin_report \\
+    merge_metadata.py -M $gisiad_metadata -m $merge_metadata -ma $aachange_metadata -p $pangolin_report \\
                             -d ${params.drop_gisaid_columns}
     """
+
+
 }

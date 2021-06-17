@@ -9,7 +9,7 @@ on:
     types: [published]
 
 jobs:
-  test_gisaid_keep_all_columns:
+  test_gisaid_full:
     name: Keep all Columns in Shiptv Visualization
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nhhaidee/scovtree') }}
@@ -37,7 +37,7 @@ jobs:
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_gisaid_keep_all_columns,docker
+          nextflow run ${GITHUB_WORKSPACE} -profile test_gisaid_full,docker
 
   test_gisaid_drop_columns:
     name: Drop some Columns in Shiptv Visualization

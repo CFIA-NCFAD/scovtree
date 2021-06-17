@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process AA_SUBSTITUTION {
+process AA_SUBSTITUTION_CHANGE {
 
     label 'process_medium'
     publishDir "${params.outdir}",
