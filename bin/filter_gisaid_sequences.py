@@ -79,9 +79,9 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
     if lineage_report != '':
         df_lineage_report = pd.read_table(lineage_report, sep=',')
         df_lineage_report.drop_duplicates(subset=['lineage'], inplace=True)
-        lineage = df_lineage_report['lineage'][0]
+        lineage = df_lineage_report['lineage']
     else:
-        lineage = sample_lineage
+        lineage = [sample_lineage]
 
     # Parse gisaid metadata into dataframe
     if tarfile.is_tarfile(gisaid_metadata):
@@ -107,18 +107,13 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
     # df_gisaid_metadata.drop_duplicates(subset=['strain'], inplace=True)
 
     # Filter sequences
-    if country != '' and region != '':
-        df_subset = df_gisaid_metadata.loc[((df_gisaid_metadata['Pango_lineage'] == lineage) &
-                                            df_gisaid_metadata['Location'].str.contains(region) & df_gisaid_metadata[
-                                                'Location'].str.contains(country)), :]
-    elif country == '' and region != '':
-        df_subset = df_gisaid_metadata.loc[((df_gisaid_metadata['Pango_lineage'] == lineage) &
-                                            df_gisaid_metadata['Location'].str.contains(region)), :]
-    elif country != '' and region == '':
-        df_subset = df_gisaid_metadata.loc[((df_gisaid_metadata['Pango_lineage'] == lineage) &
-                                            df_gisaid_metadata['Location'].str.contains(country)), :]
-    elif country == '' and region == '':
-        df_subset = df_gisaid_metadata.loc[(df_gisaid_metadata['Pango_lineage'] == lineage), :]
+    # lineages is a set of lineage strings
+    mask = df_gisaid_metadata['Pango_lineage'].isin(lineage)
+    if country:
+        mask = mask & df_gisaid_metadata['Location'].str.contains(country)
+    if region:
+        mask = mask & df_gisaid_metadata['Location'].str.contains(region)
+    df_subset = df_gisaid_metadata.loc[mask, :]
 
     num_lineage_found = df_subset.shape[0]
     # Drop rows have duplicate strain names
