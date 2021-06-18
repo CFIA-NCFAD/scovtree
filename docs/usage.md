@@ -27,8 +27,10 @@ The pipeline has 2 workflows:
     
     Other options for SHIPTV Visualization:
     --max_taxa (default: 75): adjust the maximum of taxa of the phylogenetic tree in SHIPTV Visualization
-    --drop-gisiad-columns (default: no columns in GISIAD Metadata dropped). For example --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
- 
+    --visualize_aa_change true/false (default tru: aa subsitution change is visualized with gisaid metatdata)
+    --visualize_gisaid_metadata (default: all columns of GISIAD Metadata visualized). For example --visualize_gisaid_metadata 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
+    Please note that NO SPACE in parameters of --drop_gisaid_columns option
+    
     Currently, there are 22 columns in GISAID metadata (the workflow will be updated whenever metadata format changed), please use columns as below:
  
     Virus_name, Type, Accession_ID, Collection_date, Location,
@@ -38,7 +40,7 @@ The pipeline has 2 workflows:
     Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
     GC-Content
    
-    Add 'aa_substitution_change' into --drop_gisaid_columns option if user does not want to visualize AA Substitution change
+
     Please note that NO SPACE in parameters of --drop_gisaid_columns option
 ```
 

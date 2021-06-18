@@ -141,12 +141,19 @@
                     "description": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization",
                     "help_text": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization"
                 },
-                "drop_gisaid_columns": {
+                "visualize_gisaid_metadata": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
                     "default": "''",
-                    "description": "Options to drop gisiad columns",
-                    "help_text": "Options to drop gisiad columns, by default '' means no columns dropped. An Example: --drop_gisaid_columns 'Virus_name,Type,Additional_location_information,Clade,Variant,AA_Substitutions,Submission_date,Is_reference?,Is_complete?'"
+                    "description": "Specify columns of GISAID metadata for shiptv visualization",
+                    "help_text": "Specify columns of GISAID metadata for shiptv visualization, by default all columns are visualized. An Example: --visualize_gisaid_metadata 'Virus_name,Type,Additional_location_information,Clade,Variant,AA_Substitutions,Submission_date,Is_reference?,Is_complete?'"
+                },
+                "visualize_aa_change": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": true,
+                    "description": "Specify wheter aa subsitution change is visualizaed with Shiptv or not",
+                    "help_text": "Specify wheter aa subsitution change is visualizaed with Shiptv or not (default: True)"
                 }
             }
         },

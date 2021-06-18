@@ -31,7 +31,7 @@ process MERGE_METADATA{
     merge_metadata   = "merge_metadata.tsv"
     """
     merge_metadata.py -M $gisiad_metadata -m $merge_metadata -ma $aachange_metadata -p $pangolin_report \\
-                            -d ${params.drop_gisaid_columns}
+                          -vg ${params.visualize_gisaid_metadata } -va ${params.visualize_aa_change}
     """
 
 
