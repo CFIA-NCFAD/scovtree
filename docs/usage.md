@@ -7,7 +7,7 @@
 ## Running the pipeline
 
 The pipeline has 2 workflows:
-1.  Perform phylogenetic analysis without filtering sequence against GISIAD database
+* Perform phylogenetic analysis without filtering sequence against GISIAD database
 
 ```bash
     nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
@@ -15,7 +15,8 @@ The pipeline has 2 workflows:
         --input '/path/to/consensus/consensus_sequences.fasta'
 ````
 
-2. Phylogenetic Analysis WITH filtering sequences against GISAID  
+* Phylogenetic Analysis WITH filtering sequences against GISAID
+
 ```bash
     nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
         --filter_gisaid true \

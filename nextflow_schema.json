@@ -30,13 +30,6 @@
                     "fa_icon": "fas fa-align-center",
                     "help_text": "Name of reference SARS-COV2 MN908947.3"
                 },
-                "filter_gisaid": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": true,
-                    "description": "Enable/disable filtering sequences against GISAID workflow.",
-                    "help_text": "Set to False for this analysis"
-                },
                 "reference_fasta": {
                     "type": "string",
                     "description": "Input Fasta file of reference sequences.",
@@ -64,18 +57,6 @@
                     "default": true,
                     "description": "Enable/disable filtering sequences against GISAID workflow.",
                     "help_text": "Set to True for this analysis"
-                },
-                "input": {
-                    "type": "string",
-                    "fa_icon": "fas fa-dna",
-                    "description": "Fasta file of consensus sequences.",
-                    "help_text": "The directory path to consensus sequences /path/to/consensus_sequences/*.fasta"
-                },
-                "outdir": {
-                    "type": "string",
-                    "description": "The output directory where the results will be saved.",
-                    "default": "./results",
-                    "fa_icon": "fas fa-folder-open"
                 },
                 "gisaid_sequences": {
                     "type": "string",
