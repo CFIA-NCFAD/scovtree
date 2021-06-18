@@ -6,7 +6,7 @@
     "type": "object",
     "definitions": {
         "phylogenetic_analysis_options": {
-            "title": "Phylogenetic analysis options",
+            "title": "Phylogenetic analysis without filtering sequences against GISAID",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
@@ -14,8 +14,14 @@
                 "input": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "description": "Input Fasta files of consensus sequences.",
+                    "description": "Fasta file of consensus sequences.",
                     "help_text": "The directory path to consensus sequences /path/to/consensus_sequences/*.fasta"
+                },
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open"
                 },
                 "reference_name": {
                     "type": "string",
@@ -24,16 +30,17 @@
                     "fa_icon": "fas fa-align-center",
                     "help_text": "Name of reference SARS-COV2 MN908947.3"
                 },
-                "outdir": {
-                    "type": "string",
-                    "description": "The output directory where the results will be saved.",
-                    "default": "./results",
-                    "fa_icon": "fas fa-folder-open"
+                "filter_gisaid": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-dna",
+                    "default": true,
+                    "description": "Enable/disable filtering sequences against GISAID workflow.",
+                    "help_text": "Set to False for this analysis"
                 },
                 "reference_fasta": {
                     "type": "string",
                     "description": "Input Fasta file of reference sequences.",
-                    "default": "s3://scovtree/nCoV-2019.reference.fasta",
+                    "default": "https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "substitution_model": {
@@ -46,7 +53,7 @@
             }
         },
         "filter_gisaid_options": {
-            "title": "Filter sequences against GISAID options",
+            "title": "Phylogenetic Analysis with filtering sequences against GISAID",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
@@ -55,8 +62,20 @@
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": true,
-                    "description": "Enable/disable Filter sequences against GISAID workflow.",
-                    "help_text": "Enable/disable Filter sequences against GISAID workflow, it is set true for phylogenetic analysis with filtered GISAID sequences"
+                    "description": "Enable/disable filtering sequences against GISAID workflow.",
+                    "help_text": "Set to True for this analysis"
+                },
+                "input": {
+                    "type": "string",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Fasta file of consensus sequences.",
+                    "help_text": "The directory path to consensus sequences /path/to/consensus_sequences/*.fasta"
+                },
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open"
                 },
                 "gisaid_sequences": {
                     "type": "string",
@@ -146,7 +165,7 @@
                     "fa_icon": "fas fa-dna",
                     "default": "''",
                     "description": "Options to drop gisiad columns",
-                    "help_text": "Options to drop gisiad columns, by defaul '' means no columns dropped"
+                    "help_text": "Options to drop gisiad columns, by default '' means no columns dropped. An Example: --drop_gisaid_columns 'Virus_name,Type,Additional_location_information,Clade,Variant,AA_Substitutions,Submission_date,Is_reference?,Is_complete?'"
                 }
             }
         },

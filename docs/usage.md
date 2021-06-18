@@ -1,8 +1,4 @@
-# nf-core/scovtree: Usage
-
-## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/scovtree/usage](https://nf-co.re/scovtree/usage)
-
-> _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
+# nhhaidee/scovtree: Usage
 
 ## Introduction
 
@@ -10,10 +6,38 @@
 
 ## Running the pipeline
 
-The typical command for running the pipeline is as follows:
+The pipeline has 2 workflows:
+1.  Perform phylogenetic analysis without filtering sequence against GISIAD database
 
 ```bash
-nextflow run nf-core/scovtree --input '*_R{1,2}.fastq.gz' -profile docker
+    nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
+        --filter_gisaid false \
+        --input '/path/to/consensus/consensus_sequences.fasta'
+````
+
+2. Phylogenetic Analysis WITH filtering sequences against GISAID  
+```bash
+    nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
+        --filter_gisaid true \
+        --gisaid_sequences /path/to/sequences.fasta \
+        --gisaid_metadata /path/to/metadata.tsv \
+        --input '/path/to/consensus/consensus_sequences.fasta'
+    
+    Other options for SHIPTV Visualization:
+    --max_taxa (default: 75): adjust the maximum of taxa of the phylogenetic tree in SHIPTV Visualization
+    --drop-gisiad-columns (default: no columns in GISIAD Metadata dropped). For example --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
+ 
+    Currently, there are 22 columns in GISAID metadata (the workflow will be updated whenever metadata format changed), please use columns as below:
+ 
+    Virus_name, Type, Accession_ID, Collection_date, Location,
+    Additional_location_information, Sequence_length, Host,
+    Patient_age, Gender, Clade, Pango_lineage, Pangolin_version,
+    Variant, AA_Substitutions, Submission_date, Is_reference?,
+    Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
+    GC-Content
+   
+    Add 'aa_substitution_change' into --drop_gisaid_columns option if user does not want to visualize AA Substitution change
+    Please note that NO SPACE in parameters of --drop_gisaid_columns option
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -32,14 +56,14 @@ results         # Finished results (configurable, see below)
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
-nextflow pull nf-core/scovtree
+nextflow pull nhhaidee/scovtree
 ```
 
 ### Reproducibility
 
 It's a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/scovtree releases page](https://github.com/nf-core/scovtree/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
+First, go to the [nhhaidee/scovtree releases page](https://github.com/nhhaidee/scovtree/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 

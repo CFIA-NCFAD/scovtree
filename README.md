@@ -47,22 +47,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --gisaid_sequences /path/to/sequences.fasta \
             --gisaid_metadata /path/to/metadata.tsv \
             --input '/path/to/consensus/consensus_sequences.fasta'
-        
-        Other options:
-            --max_taxa (default: 75): adjust the maximum of taxa of the phylogenetic tree in SHIPTV Visualization
-            --drop-gisiad-columns (default: no columns in GISIAD Metadata dropped). For example --drop_gisaid_columns 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
-         
-            Currently, there are 22 columns in GISAID metadata, please use columns as below:
-         
-            Virus_name, Type, Accession_ID, Collection_date, Location,
-            Additional_location_information, Sequence_length, Host,
-            Patient_age, Gender, Clade, Pango_lineage, Pangolin_version,
-            Variant, AA_Substitutions, Submission_date, Is_reference?,
-            Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
-            GC-Content
-           
-            Add 'aa_substitution_change' into --drop_gisaid_columns option if user does not want to visualize AA Substitution change
-            Please note that NO SPACE in parameters of --drop_gisaid_columns option
         ```
 
 ## Credits
