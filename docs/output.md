@@ -1,4 +1,4 @@
-# nf-core/scovtree: Output
+# nhhaidee/scovtree: Output
 
 ## Introduction
 
@@ -13,10 +13,12 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:
 
-* [FastQC](#fastqc) - Read quality control
-* [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline
+<!--* [FastQC](#fastqc) - Read quality control-->
+<!--* [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline-->
+* [Pholgenetic analysis](#phylogenetic-analysis) - Result of an analysis
 * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
+<!--
 ## FastQC
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences.
@@ -45,7 +47,23 @@ For more information about how to use MultiQC reports, see [https://multiqc.info
 * `multiqc/`
   * `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
   * `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
-  * `multiqc_plots/`: directory containing static images from the report in various formats.
+  * `multiqc_plots/`: directory containing static images from the report in various formats.-->
+
+## Phylogenetic Analysis
+
+**Output files:**
+
+* `phylogenetic_analysis/`
+  * `filter_gisaid`: directory containing filtered sequences, metadata and statistics of filtering step.
+  * `filter_msa`: directory containing results of filtering multiple sequence alignment to manageable number of sequences (typically  < 10,000 sequences).
+  * `iqtree`: directory containing results of building phylogenetic tree using IQTree tool.
+  * `nextalign`: directory containing results of Multiple Sequence Alignment using nextalign tool.
+  * `mafft`: directory containing results of Multiple Sequence Alignment using mafft tool.  
+  * `pangolin`: directory containing pangolin lineage report for input consensus sequences.
+  * `subtree`: directory containing results of pruning tree to number of taxa  < max_taxa so that it can be view easily with Shiptv
+  * `shiptv_visualization`: directory containing visualization of phylogenetic tree using Shiptv tool.
+  * `merge_metadata`: directory containing tsv file in which merging gisaid metatdata and aa substitution change, this result is used for visualization with shiptv.
+  * `nextclade`: directory containing results of running nextclade for sequences and containing aa substitution change.
 
 ## Pipeline information
 

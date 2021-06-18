@@ -9,8 +9,8 @@ on:
     types: [published]
 
 jobs:
-  test_gisaid:
-    name: Run workflow tests
+  test_gisaid_full:
+    name: Test GISIAD Full
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nhhaidee/scovtree') }}
     runs-on: ubuntu-latest
@@ -37,10 +37,10 @@ jobs:
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_gisaid,docker
+          nextflow run ${GITHUB_WORKSPACE} -profile test_gisaid_full,docker
 
-  test:
-    name: Run workflow tests
+  test_gisaid_drop_columns:
+    name: Test GISAID with dropping some columns
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nhhaidee/scovtree') }}
     runs-on: ubuntu-latest
@@ -67,4 +67,4 @@ jobs:
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker
+          nextflow run ${GITHUB_WORKSPACE} -profile test_gisaid_drop_columns,docker

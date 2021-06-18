@@ -6,7 +6,7 @@
     "type": "object",
     "definitions": {
         "phylogenetic_analysis_options": {
-            "title": "Phylogenetic analysis options",
+            "title": "Phylogenetic analysis without filtering sequences against GISAID",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
@@ -14,8 +14,14 @@
                 "input": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "description": "Input Fasta files of consensus sequences.",
+                    "description": "Fasta file of consensus sequences.",
                     "help_text": "The directory path to consensus sequences /path/to/consensus_sequences/*.fasta"
+                },
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open"
                 },
                 "reference_name": {
                     "type": "string",
@@ -24,16 +30,10 @@
                     "fa_icon": "fas fa-align-center",
                     "help_text": "Name of reference SARS-COV2 MN908947.3"
                 },
-                "outdir": {
-                    "type": "string",
-                    "description": "The output directory where the results will be saved.",
-                    "default": "./results",
-                    "fa_icon": "fas fa-folder-open"
-                },
                 "reference_fasta": {
                     "type": "string",
                     "description": "Input Fasta file of reference sequences.",
-                    "default": "s3://scovtree/nCoV-2019.reference.fasta",
+                    "default": "https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "substitution_model": {
@@ -46,7 +46,7 @@
             }
         },
         "filter_gisaid_options": {
-            "title": "Filter sequences against GISAID options",
+            "title": "Phylogenetic Analysis with filtering sequences against GISAID",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
@@ -55,8 +55,8 @@
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": true,
-                    "description": "Enable/disable Filter sequences against GISAID workflow.",
-                    "help_text": "Enable/disable Filter sequences against GISAID workflow, it is set true for phylogenetic analysis with filtered GISAID sequences"
+                    "description": "Enable/disable filtering sequences against GISAID workflow.",
+                    "help_text": "Set to True for this analysis"
                 },
                 "gisaid_sequences": {
                     "type": "string",
@@ -141,166 +141,19 @@
                     "description": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization",
                     "help_text": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization"
                 },
-                "skip_virus_name": {
-                    "type": "boolean",
+                "visualize_gisaid_metadata": {
+                    "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Virus Name column in Shiptv metadata",
-                    "help_text": "Drop/keep Virus Name column in Shiptv metadata"
+                    "default": "''",
+                    "description": "Specify columns of GISAID metadata for shiptv visualization",
+                    "help_text": "Specify columns of GISAID metadata for shiptv visualization, by default all columns are visualized. An Example: --visualize_gisaid_metadata 'Virus_name,Type,Additional_location_information,Clade,Variant,AA_Substitutions,Submission_date,Is_reference?,Is_complete?'"
                 },
-                "skip_type": {
+                "visualize_aa_change": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Virus Type column in Shiptv metadata",
-                    "help_text": "Drop/keep Virus Type column in Shiptv metadata"
-                },
-                "skip_accession_id": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Accessesion ID column in Shiptv metadata",
-                    "help_text": "Drop/keep accessesion ID column in Shiptv metadata"
-                },
-                "skip_collection_date": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Collection Date column in Shiptv metadata",
-                    "help_text": "Drop/keep Collection Date column in Shiptv metadata"
-                },
-                "skip_location": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Location column in Shiptv metadata",
-                    "help_text": "Drop/keep Location column in Shiptv metadata"
-                },
-                "skip_additional_location_information": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Additional Location Information column in Shiptv metadata",
-                    "help_text": "Drop/keep Additional Location Information column in Shiptv metadata"
-                },
-                "skip_sequence_length": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Sequence Length column in Shiptv metadata",
-                    "help_text": "Drop/keep Sequence Length column in Shiptv metadata"
-                },
-                "skip_host": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Host column in Shiptv metadata",
-                    "help_text": "Drop/keep Host column in Shiptv metadata"
-                },
-                "skip_patient_age": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Patient Age column in Shiptv metadata",
-                    "help_text": "Drop/keep Patient Age column in Shiptv metadata"
-                },
-                "skip_gender": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Gender column in Shiptv metadata",
-                    "help_text": "Drop/keep Gender column in Shiptv metadata"
-                },
-                "skip_clade": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Clade column in Shiptv metadata",
-                    "help_text": "Drop/keep Clade column in Shiptv metadata"
-                },
-                "skip_pango_lineage": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Pangolin Lineage column in Shiptv metadata",
-                    "help_text": "Drop/keep Pangolin Lineage in Shiptv metadata"
-                },
-                "skip_pangolin_version": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Pangolin Version column in Shiptv metadata",
-                    "help_text": "Drop/keep Pangolin Version column in Shiptv metadata"
-                },
-                "skip_variant": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Variant column in Shiptv metadata",
-                    "help_text": "Drop/keep Variant column in Shiptv metadata"
-                },
-                "skip_aa_substitutions": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep AA Substitutions column in Shiptv metadata",
-                    "help_text": "Drop/keep AA Substitutions column in Shiptv metadata"
-                },
-                "skip_submission_date": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Submission Date column in Shiptv metadata",
-                    "help_text": "Drop/keep Submission Date column in Shiptv metadata"
-                },
-                "skip_is_reference": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Is_reference column in Shiptv metadata",
-                    "help_text": "Drop/keep Is_reference column in Shiptv metadata"
-                },
-                "skip_is_complete": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Is_complete column in Shiptv metadata",
-                    "help_text": "Drop/keep Is_complete column in Shiptv metadata"
-                },
-                "skip_is_high_coverage": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Is_high_coverage column in Shiptv metadata",
-                    "help_text": "Drop/keep Is_high_coverage column in Shiptv metadata"
-                },
-                "skip_is_low_coverage": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep Is_low_coverage column in Shiptv metadata",
-                    "help_text": "Drop/keep Is_low_coverage column in Shiptv metadata"
-                },
-                "skip_n_content": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep N Content column in Shiptv metadata",
-                    "help_text": "Drop/keep N Content column in Shiptv metadata"
-                },
-                "skip_gc_content": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep GC Content column in Shiptv metadata",
-                    "help_text": "Drop/keep GC Content column in Shiptv metadata"
-                },
-                "skip_aa_substitution_change": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": false,
-                    "description": "Drop/keep AA substitution changes in Shiptv metadata",
-                    "help_text": "Drop/keep AA substitution changes in Shiptv metadata"
+                    "default": true,
+                    "description": "Specify wheter aa subsitution change is visualizaed with Shiptv or not",
+                    "help_text": "Specify wheter aa subsitution change is visualizaed with Shiptv or not (default: True)"
                 }
             }
         },

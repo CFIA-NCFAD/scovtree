@@ -11,7 +11,7 @@
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/scovtree** is a bioinformatics pipeline for sars-cov2 phylogenetic analysis, given a consensus sequences the workflow will output phylogenetic tree and SNP information. The pipeline also allows to filter and find the most related sequences in GISAID. The GISAID filters workflow will output filtered sequences and metadata in old format (GISAID changed format of metadata recently) so the output then can be used with [Nextstrain](https://github.com/nextstrain/ncov) locally.
+**nhhaidee/scovtree** is a bioinformatics pipeline for sars-cov2 phylogenetic analysis, given a consensus sequences the workflow will output phylogenetic tree and SNP information. The pipeline also allows to filter and find the most related sequences in GISAID. The GISAID filters workflow will output filtered sequences and metadata in old format (GISAID changed format of metadata recently) so the output then can be used with [Nextstrain](https://github.com/nextstrain/ncov) locally.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -24,7 +24,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```bash
-    nextflow run nhhaidee/scovtree -profile test_gisaid,<docker/singularity/conda>
+    nextflow run nhhaidee/scovtree -profile test_gisaid_full,<docker/singularity/conda>
+    nextflow run nhhaidee/scovtree -profile test_gisaid_drop_columns,<docker/singularity/conda>
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
 
@@ -35,8 +36,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
             --filter_gisaid false \
-            --reference_name 'MN908947.3' \
-            --reference_fasta '/path/to/nCoV-2019.reference.fasta' \
             --input '/path/to/consensus/consensus_sequences.fasta'
         ```
 
@@ -47,36 +46,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
             --filter_gisaid true \
             --gisaid_sequences /path/to/sequences.fasta \
             --gisaid_metadata /path/to/metadata.tsv \
-            --input '/path/to/consensus/consensus_sequences.fasta' \
-            --reference_name 'MN908947.3' \
-            --reference_fasta '/path/to/nCoV-2019.reference.fasta' 
-        
-        SHIPTV Visualization Options: change below parameters to adjust tree and drop columns in SHIPTV metadata
-      
-        --max_taxa (default: 75): maximum taxa of the phylogenetic tree in SHIPTV Visualization                            
-        --skip_virus_name (default: false)                       
-        --skip_type (default: false)                                
-        --skip_accession_id (default: false)                     
-        --skip_collection_date (default: false)                   
-        --skip_location (default: false)                           
-        --skip_additional_location_information (default: false)    
-        --skip_sequence_length (default: false)                    
-        --skip_host (default: false)                              
-        --skip_patient_age (default: false)                     
-        --skip_gender (default: false)                           
-        --skip_clade (default: false)                        
-        --skip_pango_lineage (default: false)               
-        --skip_pangolin_version (default: false)                 
-        --skip_variant (default: false)                        
-        --skip_aa_substitutions  (default: false)            
-        --skip_submission_date (default: false)              
-        --skip_is_reference (default: false)                    
-        --skip_is_complete (default: false)                  
-        --skip_is_high_coverage (default: false)              
-        --skip_is_low_coverage (default: false)             
-        --skip_n_content (default: false)                
-        --skip_gc_content (default: false)                     
-        --skip_aa_substitution_change (default: false)      
+            --input '/path/to/consensus/consensus_sequences.fasta'
         ```
 
 ## Credits
