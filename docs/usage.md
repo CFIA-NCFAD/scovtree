@@ -7,6 +7,7 @@
 ## Running the pipeline
 
 The pipeline has 2 workflows:
+
 * Perform phylogenetic analysis without filtering sequence against GISIAD database
 
 ```bash
