@@ -10,7 +10,7 @@ on:
 
 jobs:
   test_gisaid_full:
-    name: Keep all Columns in Shiptv Visualization
+    name: Test GISIAD Full
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nhhaidee/scovtree') }}
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -profile test_gisaid_full,docker
 
   test_gisaid_drop_columns:
-    name: Drop some Columns in Shiptv Visualization
+    name: Test GISAID with dropping some columns
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nhhaidee/scovtree') }}
     runs-on: ubuntu-latest
