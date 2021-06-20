@@ -104,8 +104,6 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
     # add extracted location info to output DF
     df_gisaid_metadata = pd.concat([df_gisaid, df_locations], axis=1)
 
-    # df_gisaid_metadata.drop_duplicates(subset=['strain'], inplace=True)
-
     # Filter sequences
     # lineages is a set of lineage strings
     mask = df_gisaid_metadata['Pango_lineage'].isin(lineage)
@@ -119,11 +117,6 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
     # Drop rows have duplicate strain names
     # df_subset.drop_duplicates(subset = ['strain'], inplace = True)
     strains_of_interest = set(df_subset['Virus_name'])
-
-    strains_of_interest_dict = {}
-    for vname in strains_of_interest:
-        if not strains_of_interest_dict.get(vname):
-            strains_of_interest_dict[vname] = vname
 
     len_strains_of_interest = len(strains_of_interest)
     num_seqs_found = 0
@@ -139,9 +132,7 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
                         strains = strains.split('|')[0]
                     if ' ' in strains:
                         strains = strains.replace(' ', '_')
-                    #if strains not in strains_of_interest:
-                        #continue
-                    if not strains_of_interest_dict.get(strains):
+                    if strains not in strains_of_interest:
                         continue
                     if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (not added_strains.get(strains)):
                         num_seqs_found = num_seqs_found + 1
@@ -158,9 +149,7 @@ def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, 
                             strains = strains.split('|')[0]
                         if ' ' in strains:
                             strains = strains.replace(' ', '_')
-                        #if strains not in strains_of_interest:
-                            #continue
-                        if not strains_of_interest_dict.get(strains):
+                        if strains not in strains_of_interest:
                             continue
                         if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (not added_strains.get(strains)):
                             num_seqs_found = num_seqs_found + 1
