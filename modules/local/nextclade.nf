@@ -5,11 +5,10 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process NEXTCLADE {
-    //tag "$meta.id"
     label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
     conda (params.enable_conda ? "bioconda::nextclade_js=0.14.2" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -32,7 +31,6 @@ process NEXTCLADE {
 
     script:
     def software = getSoftwareName(task.process)
-    //prefix       = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     def format   = output_format
     if (!(format in ['json', 'csv', 'tsv', 'tree', 'tsv-clades-only'])) {
         format = 'json'

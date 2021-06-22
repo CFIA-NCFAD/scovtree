@@ -4,12 +4,11 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process IQTREE_PHYLOGENETICTREE {
-
+process IQTREE {
     label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
     conda (params.enable_conda ? 'bioconda::iqtree=2.1.2' : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -19,7 +18,7 @@ process IQTREE_PHYLOGENETICTREE {
     }
 
     input:
-    path (msa_mafft)
+    path (msa)
 
     output:
     path "*.iqtree"                , emit: report
@@ -32,7 +31,7 @@ process IQTREE_PHYLOGENETICTREE {
     def software = getSoftwareName(task.process)
     """
     iqtree \\
-        -s ${msa_mafft} \\
+        -s ${msa} \\
         -redo \\
         -o ${params.reference_name} \\
         -T ${task.cpus} \\
@@ -43,7 +42,7 @@ process IQTREE_PHYLOGENETICTREE {
         -t NJ-R \\
         --no-opt-gamma-inv \\
         -m ${params.substitution_model}\\
-        --prefix iqtree-MN908947.3-GTR
-    iqtree --version | sed "s/iqtree //g" > ${software}.version.txt
+        --prefix iqtree-${params.reference_name}-${params.substitution_model}
+    (iqtree --version 2>&1) | head -n1 | sed -E 's/^IQ-TREE multicore version (\\S+) .*/\\1/' > ${software}.version.txt
     """
 }

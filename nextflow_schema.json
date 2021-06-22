@@ -51,13 +51,6 @@
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
             "properties": {
-                "filter_gisaid": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": true,
-                    "description": "Enable/disable filtering sequences against GISAID workflow.",
-                    "help_text": "Set to True for this analysis"
-                },
                 "gisaid_sequences": {
                     "type": "string",
                     "description": "Directory path to gisaid sequences.",
@@ -84,23 +77,16 @@
                     "fa_icon": "fas fa-folder-open",
                     "help_text": "Filter sequences in GISAID from Region."
                 },
-                "sample_lineage": {
-                    "type": "string",
-                    "default": "B.1.2",
-                    "description": "Filter sequences belong to lineage.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Filter sequences belong to lineage."
-                },
                 "lmin": {
                     "type": "integer",
-                    "default": 20000,
+                    "default": 28000,
                     "description": "Remove sequences that length < lmin.",
                     "fa_icon": "fas fa-folder-open",
                     "help_text": "Remove sequences that length < lmin."
                 },
                 "lmax": {
                     "type": "integer",
-                    "default": 32000,
+                    "default": 31000,
                     "description": "Remove sequences that length > lmax.",
                     "fa_icon": "fas fa-folder-open",
                     "help_text": "Remove sequences that length > lmax."

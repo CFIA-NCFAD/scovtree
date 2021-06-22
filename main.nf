@@ -15,7 +15,7 @@ log.info Headers.nf_core(workflow, params.monochrome_logs)
 
 def json_schema = "$projectDir/nextflow_schema.json"
 if (params.help) {
-    def command = "nextflow run nf-core/scovtree  -profile test,docker"
+    def command = "nextflow run nhhaidee/scovtree -profile test,docker"
     log.info NfcoreSchema.params_help(workflow, params, json_schema, command)
     exit 0
 }
@@ -29,9 +29,9 @@ if (params.validate_params) {
 ////////////////////////////////////////////////////
 log.info NfcoreSchema.params_summary_log(workflow, params, json_schema)
 
-workflow SCOV2_TREE {
+workflow {
 
-    if (params.filter_gisaid){
+    if (params.gisaid_sequences && params.gisaid_metadata){
 
         include { PHYLOGENETIC_GISAID } from './workflows/phylogenetic_gisaid'
 
@@ -43,8 +43,4 @@ workflow SCOV2_TREE {
 
         PHYLOGENETIC_ANALYSIS ()
     }
-}
-
-workflow {
-    SCOV2_TREE()
 }

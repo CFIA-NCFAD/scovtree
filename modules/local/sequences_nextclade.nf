@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process SHIPTV_METADATA {
+process SEQUENCES_NEXTCLADE {
   publishDir "${params.outdir}",
       mode: params.publish_dir_mode,
       saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
@@ -17,21 +17,20 @@ process SHIPTV_METADATA {
   }
 
   input:
-  path(newick)
-  path(aa_mutation_matrix)
-  path(lineage_report)
+  path(metadata)
+  path(sequences)
+  path(pangolin_report)
 
   output:
-  path "leaflist"           , emit: leaflist
-  path "metadata.merged.tsv", emit: metadata
+  path "sequences.nextclade.fasta"
 
   script:  // This script is bundled with the pipeline, in /bin folder
   """
-  shiptv_metadata.py \\
-    $newick \\
-    $lineage_report \\
-    $aa_mutation_matrix \\
-    leaflist \\
-    metadata.merged.tsv
+  sequences_nextclade.py \\
+    $sequences \\
+    $metadata \\
+    $pangolin_report \\
+    --output-sequences sequences.nextclade.fasta \\
+    --ref-name ${params.reference_name}
   """
 }
