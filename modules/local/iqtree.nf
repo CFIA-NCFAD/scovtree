@@ -32,7 +32,7 @@ process IQTREE {
     """
     iqtree \\
         -s ${msa} \\
-        -redo \\
+        --keep-ident \\
         -o ${params.reference_name} \\
         -T ${task.cpus} \\
         -ninit 2 \\
