@@ -5,7 +5,7 @@ labels: bug
 ---
 
 <!--
-# nf-core/scovtree bug report
+# nhhaidee/scovtree bug report
 
 Hi there!
 
@@ -17,8 +17,8 @@ Please delete this text and anything that's not relevant from the template below
 
 I have checked the following places for your error:
 
-- [ ] [nf-core website: troubleshooting](https://nf-co.re/usage/troubleshooting)
-- [ ] [nf-core/scovtree pipeline documentation](https://nf-co.re/nf-core/scovtree/usage)
+- [ ] [nhhaidee/scovtree pipeline issues page](https://github.com/nhhaidee/scovtree/issues?q=is%3Aissue)
+- [ ] [nhhaidee/scovtree pipeline documentation](https://github.com/nhhaidee/scovtree/blob/master/docs/usage.md)
 
 ## Description of the bug
 

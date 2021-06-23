@@ -2,47 +2,28 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
-
 ## Running the pipeline
 
 The pipeline has 2 workflows:
 
-* Perform phylogenetic analysis without filtering sequence against GISIAD database
+* Phylogenetic analysis with input SARS-CoV-2 sequences
 
-```bash
-    nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
-        --filter_gisaid false \
-        --input '/path/to/consensus/consensus_sequences.fasta'
-````
+  ```bash
+  nextflow run nhhaidee/scovtree \
+    -profile docker \
+    --input your-sars-cov-2-sequences.fasta
+  ```
 
-* Phylogenetic Analysis WITH filtering sequences against GISAID
+* Phylogenetic analysis with input SARS-CoV-2 sequences and related GISAID sequences
 
-```bash
-    nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
-        --filter_gisaid true \
-        --gisaid_sequences /path/to/sequences.fasta \
-        --gisaid_metadata /path/to/metadata.tsv \
-        --input '/path/to/consensus/consensus_sequences.fasta'
-    
-    Other options for SHIPTV Visualization:
-    --max_taxa (default: 75): adjust the maximum of taxa of the phylogenetic tree in SHIPTV Visualization
-    --visualize_aa_change true/false (default tru: aa subsitution change is visualized with gisaid metatdata)
-    --visualize_gisaid_metadata (default: all columns of GISIAD Metadata visualized). For example --visualize_gisaid_metadata 'Is_reference?,Is_complete?,Is_high_coverage?,Is_low_coverage?,N-Content,GC-Content'
-    Please note that NO SPACE in parameters of --drop_gisaid_columns option
-    
-    Currently, there are 22 columns in GISAID metadata (the workflow will be updated whenever metadata format changed), please use columns as below:
- 
-    Virus_name, Type, Accession_ID, Collection_date, Location,
-    Additional_location_information, Sequence_length, Host,
-    Patient_age, Gender, Clade, Pango_lineage, Pangolin_version,
-    Variant, AA_Substitutions, Submission_date, Is_reference?,
-    Is_complete?, Is_high_coverage?, Is_low_coverage?, N-Content,
-    GC-Content
-   
-
-    Please note that NO SPACE in parameters of --drop_gisaid_columns option
-```
+  ```bash
+  nextflow run nhhaidee/scovtree \
+    -profile docker \
+    --input your-sars-cov-2-sequences.fasta \
+    --gisaid_sequences sequences_fasta_2021_06_14.tar.xz \
+    --gisaid_metadata metadata_tsv_2021_06_14.tar.xz
+  ```
+  > Both `--gisaid_sequences` and `--gisaid_metadata` need to be specified to produce a phylogenetic tree of your sequences and closely related GISAID sequences. 
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
@@ -54,6 +35,374 @@ results         # Finished results (configurable, see below)
 .nextflow_log   # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
+
+### Input/Output options
+
+Define where the pipeline should find input data and save output data.
+
+#### `--input`
+
+- Optional
+- Type: string
+
+Path to FASTA file with SARS-CoV-2 sequences.
+
+#### `--outdir`
+
+- Optional
+- Type: string
+- Default: `./results`
+
+The output directory where the results will be saved.
+
+#### `--reference_name`
+
+- Optional
+- Type: string
+- Default: `MN908947.3`
+
+Name of reference sequence.
+
+#### `--reference_fasta`
+
+- Optional
+- Type: string
+- Default: `https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta`
+
+Reference SARS-CoV-2 genome sequence FASTA file.
+
+#### `--gisaid_sequences`
+
+- Optional
+- Type: string
+
+Path to GISAID SARS-CoV-2 sequences (e.g. `sequences_fasta_2021_06_14.tar.xz`)
+
+#### `--gisaid_metadata`
+
+- Optional
+- Type: string
+
+Path to GISAID SARS-CoV-2 metadata (e.g. `metadata_tsv_2021_06_14.tar.xz`)
+
+### GISAID Sequence Filtering Options
+
+Options for filtering GISAID sequences based on sequence quality and metadata.
+
+#### `--country`
+
+- Optional
+- Type: string
+- Default: `''`
+
+Select sequences from a particular country.
+
+#### `--region`
+
+- Optional
+- Type: string
+- Default: `''`
+
+Select sequences from a particular geographical region.
+
+#### `--lmin`
+
+- Optional
+- Type: integer
+- Default: `28000`
+
+Remove sequences shorter than this value.
+
+#### `--lmax`
+
+- Optional
+- Type: integer
+- Default: `31000`
+
+Remove sequences longer than this value.
+
+#### `--xambig`
+
+- Optional
+- Type: integer
+- Default: `3000`
+
+Remove sequences with more than this number of ambiguous sites (non 'A', 'C', 'G' or 'T' sites).
+
+#### `--focus_country`
+
+- Optional
+- Type: string
+- Default: `Canada`
+
+Ensure that sequences from this country and belonging to the same Pangolin lineage as your input sequences are represented in the tree.
+
+### IQ-TREE Options
+
+IQ-TREE phylogenetic tree creation options
+
+#### `--substitution_model`
+
+- Optional
+- Type: string
+- Default: `GTR`
+
+Substitution model
+
+#### `--msa_threshold_filter`
+
+- Optional
+- Type: integer
+- Default: `10000`
+
+Max number of sequences for phylogenetic analysis
+
+### Shiptv visualization Options
+
+Define where metadata columns will be kept for visualization
+
+#### `--max_taxa`
+
+- Optional
+- Type: integer
+- Default: `75`
+
+Maximum taxa to show in shiptv tree including your input sequences so that the relationships between your sequences and closely related public sequences are easier to see and focus on.
+
+#### `--visualize_gisaid_metadata`
+
+- Optional
+- Type: string
+- Default: `''`
+
+Specify which GISAID metadata fields to show in shiptv tree. Only these fields will be shown. If not specified, all fields will be shown.
+
+> **NOTE:** e.g. `--visualize_gisaid_metadata 'Virus_name,Type,Location,Clade,Variant,AA_Substitutions,Submission_date,Is_complete?'`
+
+#### `--visualize_aa_change`
+
+- Optional
+- Type: boolean
+- Default: `True`
+
+Show amino acid mutations in shiptv tree.
+
+### Generic options
+
+Less common options for the pipeline, typically set in a config file.
+
+#### `--help`
+
+- Optional
+- Type: boolean
+
+Display help text.
+
+#### `--publish_dir_mode`
+
+- Optional
+- Type: string
+- Default: `copy`
+
+Method used to save pipeline results to output directory.
+
+> **NOTE:** The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.
+
+#### `--validate_params`
+
+- Optional
+- Type: boolean
+- Default: `True`
+
+Boolean whether to validate parameters against the schema at runtime
+
+#### `--email_on_fail`
+
+- Optional
+- Type: string
+
+Email address for completion summary, only when pipeline fails.
+
+> **NOTE:** This works exactly as with `--email`, except emails are only sent if the workflow is not successful.
+
+#### `--plaintext_email`
+
+- Optional
+- Type: boolean
+
+Send plain-text email instead of HTML.
+
+> **NOTE:** Set to receive plain-text e-mails instead of HTML formatted.
+
+#### `--max_multiqc_email_size`
+
+- Optional
+- Type: string
+- Default: `25.MB`
+
+File size limit when attaching MultiQC reports to summary emails.
+
+> **NOTE:** If file generated by pipeline exceeds the threshold, it will not be attached.
+
+#### `--monochrome_logs`
+
+- Optional
+- Type: boolean
+
+Do not use coloured log outputs.
+
+> **NOTE:** Set to disable colourful command line output and live life in monochrome.
+
+#### `--multiqc_config`
+
+- Optional
+- Type: string
+
+Custom config file to supply to MultiQC.
+
+#### `--tracedir`
+
+- Optional
+- Type: string
+- Default: `${params.outdir}/pipeline_info`
+
+Directory to keep pipeline Nextflow logs and reports.
+
+#### `--enable_conda`
+
+- Optional
+- Type: boolean
+
+Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.
+
+#### `--singularity_pull_docker_container`
+
+- Optional
+- Type: boolean
+
+Instead of directly downloading Singularity images for use with Singularity, force the workflow to pull and convert Docker containers instead.
+
+> **NOTE:** This may be useful for example if you are unable to directly pull Singularity containers to run the pipeline due to http/https proxy issues.
+
+#### `--show_hidden_params`
+
+- Optional
+- Type: boolean
+
+Show all params when using `--help`
+
+> **NOTE:** By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters.
+
+### Max job request options
+
+Set the top limit for requested resources for any single job.
+
+#### `--max_cpus`
+
+- Optional
+- Type: integer
+- Default: `16`
+
+Maximum number of CPUs that can be requested    for any single job.
+
+> **NOTE:** Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`
+
+#### `--max_memory`
+
+- Optional
+- Type: string
+- Default: `128.GB`
+
+Maximum amount of memory that can be requested for any single job.
+
+> **NOTE:** Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`
+
+#### `--max_time`
+
+- Optional
+- Type: string
+- Default: `240.h`
+
+Maximum amount of time that can be requested for any single job.
+
+> **NOTE:** Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`
+
+### Institutional config options
+
+Parameters used to describe centralised config profiles. These should not be edited.
+
+#### `--custom_config_version`
+
+- Optional
+- Type: string
+- Default: `master`
+
+Git commit id for Institutional configs.
+
+> **NOTE:** Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default: `master`.
+
+```bash
+## Download and use config file with following git commit id
+--custom_config_version d52db660777c4bf36546ddb188ec530c3ada1b96
+```
+
+#### `--custom_config_base`
+
+- Optional
+- Type: string
+- Default: `https://raw.githubusercontent.com/nf-core/configs/master`
+
+Base directory for Institutional configs.
+
+> **NOTE:** If you're running offline, nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell nextflow where to find them with the `custom_config_base` option. For example:
+
+```bash
+## Download and unzip the config files
+cd /path/to/my/configs
+wget https://github.com/nf-core/configs/archive/master.zip
+unzip master.zip
+
+## Run the pipeline
+cd /path/to/my/data
+nextflow run /path/to/pipeline/ --custom_config_base /path/to/my/configs/configs-master/
+```
+
+> Note that the nf-core/tools helper package has a `download` command to download all required pipeline files + singularity containers + institutional configs in one go for you, to make this process easier.
+
+#### `--hostnames`
+
+- Optional
+- Type: string
+
+Institutional configs hostname.
+
+#### `--config_profile_name`
+
+- Optional
+- Type: string
+
+Institutional config name.
+
+#### `--config_profile_description`
+
+- Optional
+- Type: string
+
+Institutional config description.
+
+#### `--config_profile_contact`
+
+- Optional
+- Type: string
+
+Institutional config contact information.
+
+#### `--config_profile_url`
+
+- Optional
+- Type: string
+
+Institutional config URL link.
 
 ### Updating the pipeline
 

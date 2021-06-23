@@ -3,16 +3,16 @@ def modules = params.modules.clone()
 
 
 include { PANGOLIN } from '../modules/local/pangolin'
-include { FILTER_GISAID } from '../modules/local/filter_gisaid'
-include { CONCAT_FASTAS } from '../modules/local/util'
-include { NEXTALIGN } from '../modules/local/nextalign'
-include { FILTER_MSA } from '../modules/local/filter_msa'
+include { FILTER_GISAID } from '../modules/local/filter_gisaid' addParams( options: modules['filter_gisaid'] )
+include { CONCAT_FASTAS } from '../modules/local/util' addParams( options: modules['concat_fastas'] )
+include { NEXTALIGN } from '../modules/local/nextalign' addParams( options: modules['nextalign'] )
+include { FILTER_MSA } from '../modules/local/filter_msa' addParams( options: modules['filter_msa'] )
 include { IQTREE } from '../modules/local/iqtree' addParams( options: modules['iqtree'] )
-include { PRUNE_TREE } from '../modules/local/prune_tree'
-include { SEQUENCES_NEXTCLADE } from '../modules/local/sequences_nextclade'
+include { PRUNE_TREE } from '../modules/local/prune_tree' addParams( options: modules['prune_tree'] )
+include { SEQUENCES_NEXTCLADE } from '../modules/local/sequences_nextclade' addParams( options: modules['sequences_nextclade'] )
 include { NEXTCLADE } from '../modules/local/nextclade'
-include { AA_MUTATION_MATRIX } from '../modules/local/aa_mutation_matrix'
-include { MERGE_METADATA } from '../modules/local/merge_metadata'
+include { AA_MUTATION_MATRIX } from '../modules/local/aa_mutation_matrix' addParams( options: modules['aa_mutation_matrix'] )
+include { MERGE_METADATA } from '../modules/local/merge_metadata' addParams( options: modules['merge_metadata'] )
 include { SHIPTV } from '../modules/local/shiptv'
 
 workflow PHYLOGENETIC_GISAID {
