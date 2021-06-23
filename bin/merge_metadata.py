@@ -19,7 +19,7 @@ def main(
 ):
     """Merge a metadata table, Pangolin results table and AA mutation matrix into one table."""
     from rich.traceback import install
-    install(show_locals=True)
+    install(show_locals=True, width=120, word_wrap=True)
     logging.basicConfig(
         format="%(message)s",
         datefmt="[%Y-%m-%d %X]",
@@ -40,6 +40,8 @@ def main(
         dfs.append(pd.read_table(aa_mutation_matrix, index_col=0))
     logging.info(f'Merging {len(dfs)} dataframes on index')
     df_merged = pd.concat(dfs, axis=1)
+    df_merged['Pango_lineage'] = df_merged['Pango_lineage'].combine_first(df_pangolin['lineage'])
+    df_merged['Pangolin_version'] = df_merged['Pangolin_version'].combine_first(df_pangolin['pangoLEARN_version'])
     logging.info(f'Writing merged dataframe with shape {df_merged.shape} to "{metadata_output}".')
     df_merged.to_csv(metadata_output, sep='\t', index=True)
     logging.info(f'Wrote merged dataframe with shape {df_merged.shape} to "{metadata_output}".')
@@ -56,9 +58,7 @@ def select_fields(df_metadata: pd.DataFrame, select_metadata_fields: str) -> pd.
 
 
 def read_pangolin_report(pangolin_report: Path) -> pd.DataFrame:
-    df_pangolin = pd.read_csv(pangolin_report, index_col=0)
-    df_pangolin.rename(columns=dict(lineage='Pango_lineage'))
-    return df_pangolin
+    return pd.read_csv(pangolin_report, index_col=0)
 
 
 if __name__ == '__main__':

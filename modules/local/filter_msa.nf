@@ -19,13 +19,13 @@ process FILTER_MSA {
   }
 
   input:
-  path (msa)
-  path (lineage_report)
-  path (metadata)
+  path(msa)
+  path(lineage_report)
+  path(metadata)
 
   output:
-  path "msa.filtered.fasta"   , emit: fasta
-  path "metadata.msa.tsv", emit: metadata
+  path "msa.filtered.fasta", emit: fasta
+  path "metadata.msa.tsv"  , emit: metadata
 
   script:  // This script is bundled with the pipeline, in /bin folder
   """

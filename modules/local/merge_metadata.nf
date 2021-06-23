@@ -26,7 +26,7 @@ process MERGE_METADATA{
 
   script:  // This script is bundled with the pipeline, in /bin folder
   def aa_mutation_matrix_opt = (aa_mutation_matrix) ? "--aa-mutation-matrix $aa_mutation_matrix" : ""
-  def select_metadata_fields = (params.visualize_gisaid_metadata) ? "--select-metadata-fields \"${params.visualize_gisaid_metadata}\"" : ""
+  def select_metadata_fields = (params.select_gisaid_metadata) ? "--select-metadata-fields \"${params.select_gisaid_metadata}\"" : ""
   """
   merge_metadata.py \\
     $gisaid_metadata \\

@@ -187,6 +187,24 @@ Specify which GISAID metadata fields to show in shiptv tree. Only these fields w
 
 Show amino acid mutations in shiptv tree.
 
+### Process skipping options
+
+Options to skip certain non-essential processes.
+
+#### `--skip_nextclade`
+
+- Optional
+- Type: boolean
+
+Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata.
+
+#### `--skip_snp_tree`
+
+- Optional
+- Type: boolean
+
+Skip generating R ggtree phylogenetic tree PDF with SNPs visualized beside the tree.
+
 ### Generic options
 
 Less common options for the pipeline, typically set in a config file.

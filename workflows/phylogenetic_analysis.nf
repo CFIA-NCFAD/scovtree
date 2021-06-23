@@ -12,29 +12,35 @@ include { SHIPTV_METADATA } from '../modules/local/shiptv_metadata' addParams( o
 include { SHIPTV } from '../modules/local/shiptv'
 
 workflow PHYLOGENETIC_ANALYSIS {
-  ch_consensus_seqs   = Channel.fromPath(params.input)
-  ch_ref_sequence     = Channel.fromPath(params.reference_fasta)
+  ch_software_versions = Channel.empty()
 
+  ch_input             = Channel.fromPath(params.input)
+  ch_ref_sequence      = Channel.fromPath(params.reference_fasta)
+
+  PANGOLIN(ch_input)
+  ch_software_versions = ch_software_versions.mix(PANGOLIN.out.version.ifEmpty(null))
+  
   MAFFT(
-      ch_consensus_seqs,
+      ch_input,
       ch_ref_sequence
   )
+  ch_software_versions = ch_software_versions.mix(MAFFT.out.version.ifEmpty(null))
+  
   IQTREE(MAFFT.out.fasta)
-  ALIGN2ALLELES(MAFFT.out.fasta)
-  PANGOLIN(ch_consensus_seqs)
-  PHYLOGENETICTREE_SNPS(
-      IQTREE.out.treefile,
-      ALIGN2ALLELES.out,
-      PANGOLIN.out.report
-  )
-  NEXTCLADE(
-      ch_consensus_seqs,
-      'csv'
-  )
-  AA_MUTATION_MATRIX(NEXTCLADE.out.csv)
+  ch_software_versions = ch_software_versions.mix(IQTREE.out.version.ifEmpty(null))
+
+  if (!params.skip_nextclade) {
+    NEXTCLADE(
+        ch_input,
+        'csv'
+    )
+    AA_MUTATION_MATRIX(NEXTCLADE.out.csv).set { ch_aa_mutation_matrix }
+  } else {
+    ch_aa_mutation_matrix = Channel.empty()
+  }
   SHIPTV_METADATA(
       IQTREE.out.treefile,
-      AA_MUTATION_MATRIX.out,
+      ch_aa_mutation_matrix.ifEmpty([]),
       PANGOLIN.out.report
   )
   SHIPTV(
@@ -42,4 +48,14 @@ workflow PHYLOGENETIC_ANALYSIS {
       SHIPTV_METADATA.out.leaflist,
       SHIPTV_METADATA.out.metadata
   )
+  ch_software_versions = ch_software_versions.mix(SHIPTV.out.version.ifEmpty(null))
+  if (!params.skip_snp_tree) {
+    ALIGN2ALLELES(MAFFT.out.fasta)
+    PHYLOGENETICTREE_SNPS(
+        IQTREE.out.treefile,
+        ALIGN2ALLELES.out,
+        PANGOLIN.out.report
+    )
+  }
+  ch_software_versions | view
 }

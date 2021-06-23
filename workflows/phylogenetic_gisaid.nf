@@ -4,7 +4,6 @@ def modules = params.modules.clone()
 
 include { PANGOLIN } from '../modules/local/pangolin'
 include { FILTER_GISAID } from '../modules/local/filter_gisaid' addParams( options: modules['filter_gisaid'] )
-include { CONCAT_FASTAS } from '../modules/local/util' addParams( options: modules['concat_fastas'] )
 include { NEXTALIGN } from '../modules/local/nextalign' addParams( options: modules['nextalign'] )
 include { FILTER_MSA } from '../modules/local/filter_msa' addParams( options: modules['filter_msa'] )
 include { IQTREE } from '../modules/local/iqtree' addParams( options: modules['iqtree'] )
@@ -16,6 +15,7 @@ include { MERGE_METADATA } from '../modules/local/merge_metadata' addParams( opt
 include { SHIPTV } from '../modules/local/shiptv'
 
 workflow PHYLOGENETIC_GISAID {
+  ch_software_versions = Channel.empty()
 
   ch_gisaid_sequences = Channel.fromPath(params.gisaid_sequences)
   ch_gisaid_metadata  = Channel.fromPath(params.gisaid_metadata)
@@ -23,39 +23,51 @@ workflow PHYLOGENETIC_GISAID {
   ch_input            = Channel.fromPath(params.input)
 
   PANGOLIN(ch_input)
+  ch_software_versions = ch_software_versions.mix(PANGOLIN.out.version.ifEmpty(null))
+  
   FILTER_GISAID(
+    ch_input,
     ch_gisaid_sequences,
     ch_gisaid_metadata,
     PANGOLIN.out.report
   )
-  CONCAT_FASTAS(
-    FILTER_GISAID.out.fasta.mix(ch_input, ch_reference_fasta).collect()
-  )
+  
   NEXTALIGN(
-    CONCAT_FASTAS.out,
+    FILTER_GISAID.out.fasta,
     ch_reference_fasta
   )
+  ch_software_versions = ch_software_versions.mix(NEXTALIGN.out.version.ifEmpty(null))
+  
   FILTER_MSA(
     NEXTALIGN.out.fasta,
     PANGOLIN.out.report,
     FILTER_GISAID.out.metadata
   )
+  
   IQTREE(FILTER_MSA.out.fasta)
+  ch_software_versions = ch_software_versions.mix(IQTREE.out.version.ifEmpty(null))
+
   PRUNE_TREE(
     IQTREE.out.treefile,
     PANGOLIN.out.report,
     FILTER_MSA.out.metadata
   )
-  SEQUENCES_NEXTCLADE(
-    PRUNE_TREE.out.metadata,
-    CONCAT_FASTAS.out,
-    PANGOLIN.out.report
-  )
-  NEXTCLADE(SEQUENCES_NEXTCLADE.out, 'csv')
-  AA_MUTATION_MATRIX(NEXTCLADE.out.csv)
+
+  ch_aa_mutation_matrix = Channel.empty()
+  if (!params.skip_nextclade) {
+    SEQUENCES_NEXTCLADE(
+      PRUNE_TREE.out.metadata,
+      FILTER_GISAID.out.fasta,
+      PANGOLIN.out.report
+    )
+    NEXTCLADE(SEQUENCES_NEXTCLADE.out, 'csv')
+    ch_software_versions = ch_software_versions.mix(NEXTCLADE.out.version.ifEmpty(null))
+    AA_MUTATION_MATRIX(NEXTCLADE.out.csv)
+    AA_MUTATION_MATRIX.out.set { ch_aa_mutation_matrix }
+  }
   MERGE_METADATA(
     PRUNE_TREE.out.metadata,
-    AA_MUTATION_MATRIX.out,
+    ch_aa_mutation_matrix.ifEmpty([]),
     PANGOLIN.out.report
   )
   SHIPTV(
@@ -63,4 +75,6 @@ workflow PHYLOGENETIC_GISAID {
     PRUNE_TREE.out.leaflist,
     MERGE_METADATA.out
   )
+  ch_software_versions = ch_software_versions.mix(SHIPTV.out.version.ifEmpty(null))
+  // TODO: output software versions to TSV
 }

@@ -22,7 +22,7 @@ def main(
 ):
     """Prune phylo tree to taxa neighboring user taxa"""
     from rich.traceback import install
-    install(show_locals=True)
+    install(show_locals=True, width=120, word_wrap=True)
     logging.basicConfig(
         format="%(message)s",
         datefmt="[%Y-%m-%d %X]",
@@ -50,7 +50,7 @@ def main(
     clade_neighbors |= user_taxa
     clade_neighbors = get_neighbors(tree, user_taxa, clade_neighbors, max_taxa)
     write_leaflist(clade_neighbors, leaflist)
-    df.loc[list(clade_neighbors), :].to_csv(metadata_output, sep="\t")
+    df.loc[list(clade_neighbors & set(df.index)), :].to_csv(metadata_output, sep="\t")
 
 
 def get_neighbors(tree: Tree, user_taxa: Set[str], clade_neighbors: Set[str], max_taxa: int) -> Set[str]:

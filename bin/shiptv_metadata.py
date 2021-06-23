@@ -16,7 +16,7 @@ def main(
         metadata_output: Path,
 ):
     from rich.traceback import install
-    install(show_locals=True)
+    install(show_locals=True, width=120, word_wrap=True)
     logging.basicConfig(
         format="%(message)s",
         datefmt="[%Y-%m-%d %X]",

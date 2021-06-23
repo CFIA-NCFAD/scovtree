@@ -1,22 +1,232 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import logging
-import click
-import pandas as pd
-from Bio.SeqIO.FastaIO import SimpleFastaParser
-from collections import Counter
-from typing import Iterator, Tuple
+import sys
 import tarfile
+from pathlib import Path
+from typing import Iterator, Tuple, Optional, IO, Set
+
+import pandas as pd
+import numpy as np
+import typer
+from Bio.SeqIO.FastaIO import SimpleFastaParser
+from rich.logging import RichHandler
+
+
+def main(
+        sequences: Path,
+        gisaid_sequences: Path,
+        gisaid_metadata: Path,
+        lineage_report: Path,
+        min_length: int = typer.Option(28000, help='Minimum length for GISAID sequences'),
+        max_length: int = typer.Option(31000, help='Maximum length for GISAID sequences'),
+        max_ambig: int = typer.Option(3000, help='Max number of ambiguous base sites in GISAID sequences allowed'),
+        max_gisaid_seqs: int = typer.Option(100000, help='Max number of filtered GISAID sequences. '
+                                                         'If greater than this number, sequences '
+                                                         'will be randomly sampled'),
+        country: str = typer.Option(None, help='If specified, filter for GISAID sequences '
+                                               'belonging to this country.'),
+        region: str = typer.Option(None, help='If specified, filter for GISAID sequences '
+                                              'belonging to this geographical region.'),
+        fasta_output: Path = typer.Option(Path('gisaid_sequences.filtered.fasta'),
+                                          help='Filtered GISAID sequences.'),
+        filtered_metadata: Path = typer.Option(Path('gisaid_metadata.filtered.tsv'),
+                                               help='Filtered GISAID metadata table.'),
+        nextstrain_metadata: Path = typer.Option(Path('gisaid_metadata.nextstrain.tsv'),
+                                                 help='Filtered GISAID metadata table for Nextstrain analysis.'),
+        statistics_output: Path = typer.Option(Path('gisaid_stats.json'),
+                                               help='GISAID filtering stats.')
+):
+    from rich.traceback import install
+    install(show_locals=True, width=200, word_wrap=True)
+    logging.basicConfig(
+        format="%(message)s",
+        datefmt="[%Y-%m-%d %X]",
+        level=logging.INFO,
+        handlers=[RichHandler(rich_tracebacks=True, tracebacks_show_locals=True, locals_max_string=200)],
+    )
+    df_lineage_report = pd.read_csv(lineage_report, index_col=0)
+    sample_lineages = set(df_lineage_report['lineage'])
+    logging.info(f'{len(sample_lineages)} unique Pangolin lineages for user sequences: {sample_lineages}')
+    df_gisaid = read_gisaid_metadata(gisaid_metadata)
+    logging.info(
+        f'Read GISAID metadata table from "{gisaid_metadata}"; {df_gisaid.shape[0]} rows and {df_gisaid.shape[1]} columns')
+
+    gisaid_pango_lineage = df_gisaid['Pango_lineage']
+    mask: pd.Series = gisaid_pango_lineage.isin(sample_lineages)
+    n_gisaid_matching_lineage = mask.sum()
+    logging.info(f'Found {n_gisaid_matching_lineage} GISAID sequences matching lineages {sample_lineages}.')
+    if country:
+        mask = mask & df_gisaid['country'].str.contains(country)
+        logging.info(f'{mask.sum()} GISAID sequences after filtering for country "{country}"')
+    if region:
+        mask = mask & df_gisaid['region'].str.contains(region)
+        logging.info(f'{mask.sum()} GISAID sequences after filtering for region "{region}"')
+    df_subset: pd.DataFrame = df_gisaid.loc[mask, :]
+    if df_subset.index.size > max_gisaid_seqs:
+        logging.warning(f'There are {df_subset.index.size} GISAID sequences selected by metadata. '
+                        f'Downsampling to {max_gisaid_seqs}')
+        try:
+            weights = 1.0 - df_subset['N_Content'].values
+            weights[np.isnan(weights)] = 0.0
+            weights = np.clip(weights, 0.0, 1.0)
+            logging.info(f'Using GISAID provided N content for down-sampling weights. Mean N content: {df_subset["N_Content"].mean()}')
+        except KeyError:
+            logging.info(f'Could not find "N_Content" GISAID metadata field. '
+                         f'Using equal probability weights for down-sampling')
+            weights = None
+        sampled_gisaid = df_subset.index.to_series()
+        sampled_gisaid = sampled_gisaid.sample(n=max_gisaid_seqs, weights=weights)
+        df_subset = df_subset.loc[sampled_gisaid, :]
+        if weights is not None:
+            logging.info(f'After down-sampling, mean N content: {df_subset["N_Content"].mean()}')
+    metadata_filtered_sequences = set(df_subset.index)
+    if not metadata_filtered_sequences:
+        logging.error(f'No GISAID sequences found matching filters!')
+        sys.exit(1)
+
+    with open(fasta_output, 'w') as fout:
+        write_user_sequences(fasta_output, fout, sequences)
+        if tarfile.is_tarfile(gisaid_sequences):
+            logging.info(f'GISAID sequences provided as TAR file "{gisaid_sequences}"')
+            iterator = read_fasta_tarxz(gisaid_sequences)
+            keep_samples = write_good_seqs(
+                iterator,
+                metadata_filtered_sequences,
+                fout,
+                min_length,
+                max_length,
+                max_ambig
+            )
+        else:
+            with open(gisaid_sequences) as fin:
+                iterator = SimpleFastaParser(fin)
+                keep_samples = write_good_seqs(
+                    iterator,
+                    metadata_filtered_sequences,
+                    fout,
+                    min_length,
+                    max_length,
+                    max_ambig
+                )
+
+    df_filtered = df_subset.loc[keep_samples, :]
+    df_filtered.to_csv(filtered_metadata, sep='\t', index=True)
+
+    write_nextstrain_metadata(df_filtered, nextstrain_metadata)
+
+    if statistics_output:
+        import json
+        gisaid_matching_lineage_counts = gisaid_pango_lineage[gisaid_pango_lineage.isin(sample_lineages)] \
+            .value_counts().to_dict()
+        gisaid_matching_lineage_counts = {k: int(v) for k, v in gisaid_matching_lineage_counts.items()}
+        stats = dict(
+            sample_lineages=list(sample_lineages),
+            n_total_gisaid_sequences=int(df_gisaid.shape[0]),
+            n_total_gisaid_lineages=int(gisaid_pango_lineage.unique().size),
+            n_gisaid_matching_lineage=int(n_gisaid_matching_lineage),
+            gisaid_matching_lineage_counts=gisaid_matching_lineage_counts,
+            n_metadata_filtered_sequences=int(df_subset.shape[0]),
+            n_total_filtered_sequences=int(df_filtered.shape[0])
+        )
+        with open(statistics_output, 'w') as fh:
+            json.dump(stats, fh)
+
+
+def write_user_sequences(fasta_output: Path, fout: IO[str], sequences: Path) -> None:
+    count = 0
+    with open(sequences) as fh:
+        for name, seq in SimpleFastaParser(fh):
+            fout.write(f'>{name}\n{seq}\n')
+            count += 1
+    logging.info(f'Wrote {count} user sequences to "{fasta_output}"')
+
+
+def write_nextstrain_metadata(df_filtered: pd.DataFrame, nextstrain_metadata: Path) -> None:
+    """Save to metadata for nextstrain analysis, drop unnecessary columns"""
+    drop_columns = ["Location",
+                    "Additional_location_information",
+                    "Sequence_length",
+                    "Host",
+                    "Patient_age",
+                    "Gender",
+                    "Clade",
+                    "Pango_lineage",
+                    "Pangolin_version",
+                    "Variant",
+                    "AA_Substitutions",
+                    "Submission_date",
+                    "Is_reference",
+                    "Is_complete",
+                    "Is_high_coverage",
+                    "Is_low_coverage",
+                    "N_Content",
+                    "GC_Content"]
+    df_subset_filtered = df_filtered.drop(columns=list(set(drop_columns) & set(df_filtered.columns)))
+    # Need to specify exposure location as we specify country
+    # The information missed in metadata so set them as the same as location information
+    df_subset_filtered['region_exposure'] = df_subset_filtered['region']
+    df_subset_filtered['country_exposure'] = df_subset_filtered['country']
+    df_subset_filtered['division_exposure'] = df_subset_filtered['division']
+    df_subset_filtered.to_csv(nextstrain_metadata, sep='\t', index=True)
+
+
+def write_good_seqs(
+        header_seq_iterator: Iterator[Tuple[str, str]],
+        metadata_filtered_sequences: Set[str],
+        fasta_output_handle: IO[str],
+        min_length: int = 28000,
+        max_length: int = 31000,
+        xambig: int = 3000
+) -> Set[str]:
+    keep_samples = set()
+    for strains, seq in header_seq_iterator:
+        if '|' in strains:
+            strains = strains.split('|')[0]
+        if ' ' in strains:
+            strains = strains.replace(' ', '_')
+        if strains not in metadata_filtered_sequences:
+            continue
+        if (
+                min_length < len(seq) <= max_length
+                and count_ambig_nt(seq) < xambig
+                and strains not in keep_samples
+        ):
+            keep_samples.add(strains)
+            # Write sequence
+            fasta_output_handle.write(f'>{strains}\n{seq}\n')
+    return keep_samples
+
+
+def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
+    if tarfile.is_tarfile(gisaid_metadata):
+        with tarfile.open(gisaid_metadata, "r:*") as tar:
+            df = pd.read_table(get_metadata_file_from_tar(tar), index_col=0)
+    else:
+        df = pd.read_table(gisaid_metadata, index_col=0)
+    # Replace non-word characters in column names with '_'
+    df.columns = df.columns.str.replace(r'[^\w]+', '_').str.replace(r'_+$', '')
+    # Strip whitespace from strain name
+    df.index = df.index.str.replace(r'\s+', '_', regex=True)
+    # Extract details of location into separate column
+    df_locations = df['Location'].str.split(r'\s*/\s*', n=3, expand=True)
+    df_locations.columns = ['region', 'country', 'division', 'city']
+    return pd.concat([df, df_locations], axis=1)
+
+
+def get_metadata_file_from_tar(tar: tarfile.TarFile) -> Optional[IO[bytes]]:
+    csv_path = [n for n in tar.getnames() if n.endswith('.tsv')][0]
+    return tar.extractfile(csv_path)
 
 
 def count_ambig_nt(seq: str) -> int:
-    counter = Counter(seq.lower())
-    return sum(v for k, v in counter.items() if k not in {'a', 'g', 'c', 't', '-'})
+    return sum(1 for x in seq.lower() if x not in {'a', 'g', 'c', 't', '-'})
 
 
 def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
+    """Read first fasta file in a tar file"""
     # Skip any text before the first record (e.g. blank lines, comments)
     with tarfile.open(tarxz_path) as tar:
-        fasta_path = list(n for n in tar.getnames() if n.endswith('.fasta'))[0]
+        fasta_path = [n for n in tar.getnames() if n.endswith('.fasta')][0]
         handle = tar.extractfile(fasta_path)
         for line in handle:
             line = line.decode()
@@ -38,167 +248,5 @@ def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
         yield title, "".join(lines).replace(" ", "").replace("\r", "")
 
 
-def format_date(sampling_date: str) -> str:
-    if '-' not in sampling_date:  # contain year only
-        return sampling_date + '-XX-XX'  # 2020-XX-XX
-    else:
-        sampling_date_list = sampling_date.split('-')
-        if len(sampling_date_list) == 2:
-            return sampling_date + '-XX'  # 2020-02-XX
-        elif len(sampling_date_list) == 3:
-            return sampling_date  # 2020-02-01
-
-
-def format_strain_name(strain: str) -> str:
-    if ' ' in strain:
-        strain = strain.replace(' ', '_')
-        return strain
-    else:
-        return strain
-
-
-@click.command(context_settings=dict(help_option_names=['-h', '--help']))
-@click.option("-lmin", "--lmin", help="ignore sequences w/length < lmin", required=False, type=int, default=20000)
-@click.option("-lmax", "--lmax", help="ignore sequences w/length >= lmax", required=False, type=int, default=32000)
-@click.option("-x", "--xambig", help="ignore sequences with >=  xambig ambiguous residues", required=False, type=int,
-              default=3000)
-@click.option("-i", "--gisaid-sequences", type=click.Path(exists=True), required=True)
-@click.option("-m", "--gisaid-metadata", type=click.Path(exists=True), required=True)
-@click.option("-R", "--lineage-report", type=click.Path(exists=True), required=False, default='')
-@click.option("-s", "--sample_lineage", type=str, required=True, default='')
-@click.option("-c", "--country", help="Country", required=False, type=str, default='')
-@click.option("-r", "--region", help="Region", required=False, type=str, default='')
-@click.option("-of", "--fasta-output", type=click.Path(exists=False), required=True)
-@click.option("-fm", "--filtered-metadata", help="Filtered metadata", type=click.Path(exists=False), required=True)
-@click.option("-nm", "--nextstrain-metadata", help="Metadata for nextstrain analysis", type=click.Path(exists=False), required=True)
-@click.option("-ot", "--statistics-output", help="Statistics output", type=click.Path(exists=False), required=True)
-def main(lmin, lmax, xambig, gisaid_sequences, gisaid_metadata, lineage_report, sample_lineage, country, region,
-         fasta_output, filtered_metadata, nextstrain_metadata, statistics_output):
-
-    lineage = ''
-    if lineage_report != '':
-        df_lineage_report = pd.read_table(lineage_report, sep=',')
-        df_lineage_report.drop_duplicates(subset=['lineage'], inplace=True)
-        lineage = df_lineage_report['lineage']
-    else:
-        lineage = [sample_lineage]
-
-    # Parse gisaid metadata into dataframe
-    if tarfile.is_tarfile(gisaid_metadata):
-        with tarfile.open(gisaid_metadata, "r:*") as tar:
-            csv_path = list(n for n in tar.getnames() if n.endswith('.tsv'))[0]
-            df_gisaid = pd.read_table(tar.extractfile(csv_path))
-    else:
-        df_gisaid = pd.read_table(gisaid_metadata)
-
-    #Replace space in columns name by _
-    df_gisaid.columns = df_gisaid.columns.str.replace(' ', '_')
-
-    # Reformat strain name
-    df_gisaid['Virus_name'] = df_gisaid['Virus_name'].apply(format_strain_name)
-
-    # Extract details of location into separate column
-    df_locations = df_gisaid['Location'].str.split(r'\s*/\s*', n=3, expand=True)
-    df_locations.columns = ['region', 'country', 'division', 'city']
-    df_locations = df_locations.astype('category')
-    # add extracted location info to output DF
-    df_gisaid_metadata = pd.concat([df_gisaid, df_locations], axis=1)
-
-    # Filter sequences
-    # lineages is a set of lineage strings
-    mask = df_gisaid_metadata['Pango_lineage'].isin(lineage)
-    if country:
-        mask = mask & df_gisaid_metadata['Location'].str.contains(country)
-    if region:
-        mask = mask & df_gisaid_metadata['Location'].str.contains(region)
-    df_subset = df_gisaid_metadata.loc[mask, :]
-
-    num_lineage_found = df_subset.shape[0]
-    # Drop rows have duplicate strain names
-    # df_subset.drop_duplicates(subset = ['strain'], inplace = True)
-    strains_of_interest = set(df_subset['Virus_name'])
-
-    len_strains_of_interest = len(strains_of_interest)
-    num_seqs_found = 0
-    if len(strains_of_interest) > 0:
-
-        added_strains = {}
-        df_filtered = pd.DataFrame(columns = df_gisaid.columns)
-
-        with open(fasta_output, 'w') as fout:
-            if tarfile.is_tarfile(gisaid_sequences):
-                for strains, seq in read_fasta_tarxz(gisaid_sequences):
-                    if '|' in strains:
-                        strains = strains.split('|')[0]
-                    if ' ' in strains:
-                        strains = strains.replace(' ', '_')
-                    if strains not in strains_of_interest:
-                        continue
-                    if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (not added_strains.get(strains)):
-                        num_seqs_found = num_seqs_found + 1
-                        added_strains[strains] = strains
-                        # Get metadata information
-                        row_index = df_subset.loc[df_subset['Virus_name'] == strains].index
-                        df_filtered = df_filtered.append(df_subset.loc[row_index])
-                        # Write sequences
-                        fout.write(f'>{strains}\n{seq}\n')
-            else:
-                with open(gisaid_sequences) as fin:
-                    for strains, seq in SimpleFastaParser(fin):
-                        if '|' in strains:
-                            strains = strains.split('|')[0]
-                        if ' ' in strains:
-                            strains = strains.replace(' ', '_')
-                        if strains not in strains_of_interest:
-                            continue
-                        if (lmin < len(seq) <= lmax) and (count_ambig_nt(seq) < xambig) and (not added_strains.get(strains)):
-                            num_seqs_found = num_seqs_found + 1
-                            added_strains[strains] = strains
-                            # Get metadata information
-                            row_index = df_subset.loc[df_subset['Virus_name'] == strains].index
-                            df_filtered = df_filtered.append(df_subset.loc[row_index])
-                            # Write sequences
-                            fout.write(f'>{strains}\n{seq}\n')
-
-        # Keep the current format of metadata
-        df_filtered.to_csv(filtered_metadata, sep='\t', index=False)
-
-        # Save to metadata for nextstrain analysis, drop unnecessary columns
-        df_subset_filtered = df_filtered.drop(columns=["Location",
-                                                       "Additional_location_information",
-                                                       "Sequence_length",
-                                                       "Host",
-                                                       "Patient_age",
-                                                       "Gender",
-                                                       "Clade",
-                                                       "Pango_lineage",
-                                                       "Pangolin_version",
-                                                       "Variant",
-                                                       "AA_Substitutions",
-                                                       "Submission_date",
-                                                       "Is_reference?",
-                                                       "Is_complete?",
-                                                       "Is_high_coverage?",
-                                                       "Is_low_coverage?",
-                                                       "N-Content",
-                                                       "GC-Content"])
-        # Need to specify exposure location as we specify country
-        # The information missed in metadata so set them as the same as location information
-        df_subset_filtered['region_exposure'] = df_subset_filtered['region']
-        df_subset_filtered['country_exposure'] = df_subset_filtered['country']
-        df_subset_filtered['division_exposure'] = df_subset_filtered['division']
-        df_subset_filtered.to_csv(nextstrain_metadata, sep='\t', index=False)
-    else:
-        logging.basicConfig(format='%(message)s',
-                            datefmt='[%Y-%m-%d %X]',
-                            level=logging.WARNING)
-        log = logging.getLogger("rich")
-        log.warning("No Interest Strains Found!")
-
-    with open(statistics_output, 'w') as stat:
-        stat.write(f'No_Strains_Interest\tNo_Strains_Found(After Filtering)\tNo_Strains_Duplicated\n')
-        stat.write(f'{num_lineage_found}\t{num_seqs_found}\t{num_lineage_found - len_strains_of_interest}\n')
-
-
 if __name__ == '__main__':
-    main()
+    typer.run(main)

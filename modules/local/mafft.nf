@@ -33,7 +33,7 @@ process MAFFT {
         $options.args \\
         --thread ${task.cpus} \\
         --addfragments ${consensus_sequences}\\
-        $reference_fasta > sequences_alignment.fasta
+        $reference_fasta > sequences.mafft.fasta
     (mafft --version 2>&1) | sed -E 's/^v(\\S+).*/\\1/' > ${software}.version.txt
     """
 }

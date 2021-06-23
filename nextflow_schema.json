@@ -122,18 +122,38 @@
                     "default": 75,
                     "description": "Maximum taxa to show in shiptv tree including your input sequences so that the relationships between your sequences and closely related public sequences are easier to see and focus on."
                 },
-                "visualize_gisaid_metadata": {
+                "select_gisaid_metadata": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "default": "''",
+                    "default": "",
                     "description": "Specify which GISAID metadata fields to show in shiptv tree. Only these fields will be shown. If not specified, all fields will be shown.",
-                    "help_text": "e.g. `--visualize_gisaid_metadata 'Virus_name,Type,Location,Clade,Variant,AA_Substitutions,Submission_date,Is_complete?'`"
+                    "help_text": "e.g. `--select_gisaid_metadata 'Type,Location,Clade,Variant,AA_Substitutions,Collection_date'`"
                 },
                 "visualize_aa_change": {
                     "type": "boolean",
                     "fa_icon": "fas fa-dna",
                     "default": true,
                     "description": "Show amino acid mutations in shiptv tree."
+                }
+            }
+        },
+        "skipping_options": {
+            "title": "Process skipping options",
+            "type": "object",
+            "fa_icon": "fas fa-forward",
+            "description": "Options to skip certain non-essential processes.",
+            "properties": {
+                "skip_nextclade": {
+                    "type": "boolean",
+                    "description": "Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata.",
+                    "default": false,
+                    "fa_icon": "fas fa-chess-board"
+                },
+                "skip_snp_tree": {
+                    "type": "boolean",
+                    "description": "Skip generating R ggtree phylogenetic tree PDF with SNPs visualized beside the tree.",
+                    "default": false,
+                    "fa_icon": "fas fa-tree"
                 }
             }
         },

@@ -21,7 +21,7 @@ def main(input_fasta: Path = typer.Option(..., help='FASTA with sequences to fil
          output_metadata: Path = typer.Option(Path('metadata.filtered.tsv'), help='Output filtered metadata table')):
     """Filter MSA FASTA for user specified and higher quality public sequences up to `max_seqs`"""
     from rich.traceback import install
-    install(show_locals=True)
+    install(show_locals=True, width=120, word_wrap=True)
     logging.basicConfig(
         format="%(message)s",
         datefmt="[%Y-%m-%d %X]",
@@ -61,7 +61,7 @@ def main(input_fasta: Path = typer.Option(..., help='FASTA with sequences to fil
         keep_samples |= set(df_less_n_gaps['sample'].sample(n=n_to_sample))
     logging.info(f'Writing {len(keep_samples)} of {len(seq_samples)} sequences to "{output_fasta}".')
     write_fasta(output_fasta, keep_samples, sample_seq)
-    df.loc[keep_samples, :].to_csv(output_metadata, sep='\t', index=True)
+    df.loc[keep_samples & set(df.index), :].to_csv(output_metadata, sep='\t', index=True)
     logging.info(f'Done!')
 
 

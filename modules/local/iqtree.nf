@@ -18,14 +18,14 @@ process IQTREE {
     }
 
     input:
-    path (msa)
+    path(msa)
 
     output:
-    path "*.iqtree"                , emit: report
-    path "*.treefile"              , emit: treefile
-    path "*.mldist"                , emit: distance
-    path "*.log"                   , emit: log
-    path "*.version.txt"           , emit: version
+    path 'iqtree-*.iqtree'  , emit: report
+    path 'iqtree-*.treefile', emit: treefile
+    path 'iqtree-*.mldist'  , emit: distance
+    path 'iqtree-*.log'     , emit: log
+    path '*.version.txt'    , emit: version
 
     script:
     def software = getSoftwareName(task.process)
@@ -35,8 +35,9 @@ process IQTREE {
         -s ${msa} \\
         -o ${params.reference_name} \\
         -T ${task.cpus} \\
-        -m ${params.substitution_model}\\
+        -m ${params.substitution_model} \\
         --prefix iqtree-${params.reference_name}-${params.substitution_model}
+
     (iqtree --version 2>&1) | head -n1 | sed -E 's/^IQ-TREE multicore version (\\S+) .*/\\1/' > ${software}.version.txt
     """
 }

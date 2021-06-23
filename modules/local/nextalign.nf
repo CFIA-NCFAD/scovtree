@@ -22,9 +22,9 @@ process NEXTALIGN {
   path(reference)
 
   output:
-  path "nextalign.*.fasta", emit: fasta
-  path "*.version.txt"    , emit: version
-  path "nextalign.log"    , emit: log
+  path "sequences.nextalign.fasta" , emit: fasta
+  path "nextalign.insertions.csv", emit: insertions
+  path "*.version.txt"           , emit: version
 
   script:
   def software = getSoftwareName(task.process)
@@ -32,8 +32,10 @@ process NEXTALIGN {
   nextalign \\
     --sequences=${sequences} \\
     --reference=${reference} \\
-    --output-basename=nextalign \\
-    2>&1 | tee -a nextalign.log
+    --jobs ${task.cpus} \\
+    --output-fasta=sequences.nextalign.fasta \\
+    --include-reference \\
+    --output-insertions nextalign.insertions.csv
 
   nextalign --version > ${software}.version.txt
   """
