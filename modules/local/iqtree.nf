@@ -31,16 +31,10 @@ process IQTREE {
     def software = getSoftwareName(task.process)
     """
     iqtree \\
+        $options.args \\
         -s ${msa} \\
-        --keep-ident \\
         -o ${params.reference_name} \\
         -T ${task.cpus} \\
-        -ninit 2 \\
-        -n 5 \\
-        -me 1.0 \\
-        -experimental \\
-        -t NJ-R \\
-        --no-opt-gamma-inv \\
         -m ${params.substitution_model}\\
         --prefix iqtree-${params.reference_name}-${params.substitution_model}
     (iqtree --version 2>&1) | head -n1 | sed -E 's/^IQ-TREE multicore version (\\S+) .*/\\1/' > ${software}.version.txt
