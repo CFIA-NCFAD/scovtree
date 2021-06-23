@@ -7,7 +7,7 @@ include { FILTER_GISAID } from '../modules/local/filter_gisaid'
 include { CONCAT_FASTAS } from '../modules/local/util'
 include { NEXTALIGN } from '../modules/local/nextalign'
 include { FILTER_MSA } from '../modules/local/filter_msa'
-include { IQTREE } from '../modules/local/iqtree'
+include { IQTREE } from '../modules/local/iqtree' addParams( options: modules['iqtree'] )
 include { PRUNE_TREE } from '../modules/local/prune_tree'
 include { SEQUENCES_NEXTCLADE } from '../modules/local/sequences_nextclade'
 include { NEXTCLADE } from '../modules/local/nextclade'
