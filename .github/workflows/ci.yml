@@ -36,3 +36,15 @@ jobs:
       - name: Run pipeline with test data
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile ${{ matrix.profile }},docker
+      - name: Upload .nextflow.log
+        if: failure()
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: nextflow.log
+          path: .nextflow.log
+      - name: Upload shiptv HTML
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: shiptv-html-${{ matrix.profile }}-${{ matrix.nxf_ver }}
+          path: results/shiptv/shiptv.html
+          retention-days: 5
