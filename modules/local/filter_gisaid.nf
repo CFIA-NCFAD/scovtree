@@ -30,17 +30,18 @@ process FILTER_GISAID {
   path 'gisaid_filtering_stats.json'    , emit: stats
 
   script:  // This script is bundled with the pipeline, in /bin folder
-  def region_args = (params.region) ? "--region ${params.region}" : ""
-  def country_args = (params.country) ? "--country ${params.country}" : ""
+  def region_args = (params.gisaid_region) ? "--region ${params.gisaid_region}" : ""
+  def country_args = (params.gisaid_country) ? "--country ${params.gisaid_country}" : ""
   """
   filter_gisaid.py \\
     $sequences \\
     $gisaid_sequences \\
     $gisaid_metadata \\
     $lineage_report \\
-    --min-length ${params.lmin} \\
-    --max-length ${params.lmax} \\
-    --max-ambig ${params.xambig} \\
+    --min-length ${params.gisaid_min_length} \\
+    --max-length ${params.gisaid_max_length} \\
+    --max-ambig ${params.gisaid_max_ambig} \\
+    --max-gisaid-seqs ${params.max_gisaid_filtered_seqs} \\
     $region_args $country_args \\
     --fasta-output gisaid_sequences.filtered.fasta \\
     --filtered-metadata gisaid_metadata.filtered.tsv \\

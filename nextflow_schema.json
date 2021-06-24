@@ -52,41 +52,47 @@
             "fa_icon": "fas fa-filter",
             "description": "Options for filtering GISAID sequences based on sequence quality and metadata.",
             "properties": {
-                "country": {
+                "gisaid_country": {
                     "type": "string",
-                    "default": "''",
-                    "description": "Select sequences from a particular country.",
+                    "default": "",
+                    "description": "Select GISAID sequences from a particular country.",
                     "fa_icon": "fas fa-globe"
                 },
-                "region": {
+                "gisaid_region": {
                     "type": "string",
-                    "default": "''",
-                    "description": "Select sequences from a particular geographical region.",
+                    "default": "",
+                    "description": "Select GISAID sequences from a particular geographical region.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "lmin": {
+                "gisaid_min_length": {
                     "type": "integer",
                     "default": 28000,
-                    "description": "Remove sequences shorter than this value.",
+                    "description": "Remove GISAID sequences shorter than this value.",
                     "fa_icon": "fas fa-compress-alt"
                 },
-                "lmax": {
+                "gisaid_max_length": {
                     "type": "integer",
                     "default": 31000,
-                    "description": "Remove sequences longer than this value.",
+                    "description": "Remove GISAID sequences longer than this value.",
                     "fa_icon": "fas fa-expand-alt"
                 },
-                "xambig": {
+                "gisaid_max_ambig": {
                     "type": "integer",
                     "default": 3000,
-                    "description": "Remove sequences with more than this number of ambiguous sites (non 'A', 'C', 'G' or 'T' sites).",
+                    "description": "Remove GISAID sequences with more than this number of ambiguous sites (non 'A', 'C', 'G' or 'T' sites).",
                     "fa_icon": "fas fa-trash-alt"
                 },
-                "focus_country": {
+                "gisaid_focus_country": {
                     "type": "string",
                     "default": "Canada",
-                    "description": "Ensure that sequences from this country and belonging to the same Pangolin lineage as your input sequences are represented in the tree.",
+                    "description": "Ensure that GISAID sequences from this country and belonging to the same Pangolin lineage as your input sequences are represented in the tree.",
                     "fa_icon": "fas fa-search"
+                },
+                "max_gisaid_filtered_seqs": {
+                    "type": "integer",
+                    "default": 100000,
+                    "description": "Max number of GISAID sequences to filter initially. Set lower to reduce computational burden especially for large lineages (e.g. B.1.1.7).",
+                    "fa_icon": "fas fa-filter"
                 }
             }
         },
@@ -102,10 +108,10 @@
                     "default": "GTR",
                     "fa_icon": "fas fa-hourglass-half"
                 },
-                "msa_threshold_filter": {
+                "max_msa_seqs": {
                     "type": "integer",
                     "default": 10000,
-                    "description": "Max number of sequences for phylogenetic analysis",
+                    "description": "Max number of multiple sequence alignment (MSA) sequences for phylogenetic analysis",
                     "fa_icon": "fas fa-compress-arrows-alt"
                 }
             }
@@ -128,12 +134,6 @@
                     "default": "",
                     "description": "Specify which GISAID metadata fields to show in shiptv tree. Only these fields will be shown. If not specified, all fields will be shown.",
                     "help_text": "e.g. `--select_gisaid_metadata 'Type,Location,Clade,Variant,AA_Substitutions,Collection_date'`"
-                },
-                "visualize_aa_change": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": true,
-                    "description": "Show amino acid mutations in shiptv tree."
                 }
             }
         },
@@ -145,7 +145,7 @@
             "properties": {
                 "skip_nextclade": {
                     "type": "boolean",
-                    "description": "Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata.",
+                    "description": "Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata and shown in the shiptv tree.",
                     "default": false,
                     "fa_icon": "fas fa-chess-board"
                 },
@@ -361,6 +361,9 @@
         },
         {
             "$ref": "#/definitions/shiptv_visualization_options"
+        },
+        {
+            "$ref": "#/definitions/skipping_options"
         },
         {
             "$ref": "#/definitions/generic_options"

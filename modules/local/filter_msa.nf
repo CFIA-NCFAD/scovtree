@@ -34,8 +34,8 @@ process FILTER_MSA {
     --input-metadata $metadata \\
     --lineage-report $lineage_report \\
     --ref-name ${params.reference_name} \\
-    --country ${params.focus_country} \\
-    --max-seqs ${params.msa_threshold_filter} \\
+    --country ${params.gisaid_focus_country} \\
+    --max-seqs ${params.max_msa_seqs} \\
     --output-fasta msa.filtered.fasta \\
     --output-metadata metadata.msa.tsv
   """

@@ -19,12 +19,12 @@ process MAFFT {
     }
 
     input:
-    path (consensus_sequences)
-    path (reference_fasta)
+    path(sequences)
+    path(reference_fasta)
 
     output:
-    path  "*.fasta"               , emit: fasta
-    path  "*.version.txt"         , emit: version
+    path "sequences.mafft.fasta", emit: fasta
+    path "*.version.txt"        , emit: version
 
     script:
     def software = getSoftwareName(task.process)
@@ -32,7 +32,7 @@ process MAFFT {
     mafft \\
         $options.args \\
         --thread ${task.cpus} \\
-        --addfragments ${consensus_sequences}\\
+        --addfragments ${sequences}\\
         $reference_fasta > sequences.mafft.fasta
     (mafft --version 2>&1) | sed -E 's/^v(\\S+).*/\\1/' > ${software}.version.txt
     """
