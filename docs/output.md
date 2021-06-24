@@ -1,4 +1,4 @@
-<!-- TODO: better document workflow output (e.g. https://github.com/nf-core/viralrecon/blob/master/docs/output.md) --> 
+<!-- TODO: better document workflow output (e.g. https://github.com/nf-core/viralrecon/blob/master/docs/output.md) -->
 # nhhaidee/scovtree: Output
 
 ## Introduction
@@ -17,20 +17,19 @@ and processes data using the following steps:
 <!-- TODO: Add pipeline steps -->
 
 1. [Pangolin](#pangolin) lineage assignment
-2. [Filtering GISAID sequences](#filtering-gisaid-sequences) (if specified) 
+2. [Filtering GISAID sequences](#filtering-gisaid-sequences) (if specified)
 3. [Multiple sequence alignment](#multiple-sequence-alignment)
-
 
 ### Pangolin
 
 <details markdown="1">
 <summary>Output files</summary>
 
-* `pangolin/pangolin.csv`: [Pangolin] lineage assignment results. 
+* `pangolin/pangolin.csv`: [Pangolin] lineage assignment results.
 
 </details>
 
-Assign input sequences to [Pangolin] SARS-CoV-2 global lineages. This lineage info is used for filtering GISAID sequences and also shown in the [shiptv] tree. 
+Assign input sequences to [Pangolin] SARS-CoV-2 global lineages. This lineage info is used for filtering GISAID sequences and also shown in the [shiptv] tree.
 
 ### Filtering GISAID sequences
 

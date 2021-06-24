@@ -8,9 +8,9 @@
 ## Introduction
 
 **nhhaidee/scovtree** is a bioinformatics pipeline for SARS-CoV-2 phylogenetic analysis.
-Given an input FASTA file with SARS-CoV-2 sequences, this workflow will generate a maximum-likelihood phylogenetic tree and interactive HTML tree visualization. 
+Given an input FASTA file with SARS-CoV-2 sequences, this workflow will generate a maximum-likelihood phylogenetic tree and interactive HTML tree visualization.
 
-This pipeline also allows you to visualize your sequences along with the most closely SARS-CoV-2 sequences from GISAID (if both the GISAID sequences and metadata `.tar.xz` files are provided). 
+This pipeline also allows you to visualize your sequences along with the most closely SARS-CoV-2 sequences from GISAID (if both the GISAID sequences and metadata `.tar.xz` files are provided).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 

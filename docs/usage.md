@@ -23,7 +23,8 @@ The pipeline has 2 workflows:
     --gisaid_sequences sequences_fasta_2021_06_14.tar.xz \
     --gisaid_metadata metadata_tsv_2021_06_14.tar.xz
   ```
-  > Both `--gisaid_sequences` and `--gisaid_metadata` need to be specified to produce a phylogenetic tree of your sequences and closely related GISAID sequences. 
+
+  > Both `--gisaid_sequences` and `--gisaid_metadata` need to be specified to produce a phylogenetic tree of your sequences and closely related GISAID sequences.
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
@@ -42,46 +43,46 @@ Define where the pipeline should find input data and save output data.
 
 #### `--input`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Path to FASTA file with SARS-CoV-2 sequences.
 
 #### `--outdir`
 
-- Optional
-- Type: string
-- Default: `./results`
+* Optional
+* Type: string
+* Default: `./results`
 
 The output directory where the results will be saved.
 
 #### `--reference_name`
 
-- Optional
-- Type: string
-- Default: `MN908947.3`
+* Optional
+* Type: string
+* Default: `MN908947.3`
 
 Name of reference sequence.
 
 #### `--reference_fasta`
 
-- Optional
-- Type: string
-- Default: `https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta`
+* Optional
+* Type: string
+* Default: `https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta`
 
 Reference SARS-CoV-2 genome sequence FASTA file.
 
 #### `--gisaid_sequences`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Path to GISAID SARS-CoV-2 sequences (e.g. `sequences_fasta_2021_06_14.tar.xz`)
 
 #### `--gisaid_metadata`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Path to GISAID SARS-CoV-2 metadata (e.g. `metadata_tsv_2021_06_14.tar.xz`)
 
@@ -91,49 +92,49 @@ Options for filtering GISAID sequences based on sequence quality and metadata.
 
 #### `--country`
 
-- Optional
-- Type: string
-- Default: `''`
+* Optional
+* Type: string
+* Default: `''`
 
 Select sequences from a particular country.
 
 #### `--region`
 
-- Optional
-- Type: string
-- Default: `''`
+* Optional
+* Type: string
+* Default: `''`
 
 Select sequences from a particular geographical region.
 
 #### `--lmin`
 
-- Optional
-- Type: integer
-- Default: `28000`
+* Optional
+* Type: integer
+* Default: `28000`
 
 Remove sequences shorter than this value.
 
 #### `--lmax`
 
-- Optional
-- Type: integer
-- Default: `31000`
+* Optional
+* Type: integer
+* Default: `31000`
 
 Remove sequences longer than this value.
 
 #### `--xambig`
 
-- Optional
-- Type: integer
-- Default: `3000`
+* Optional
+* Type: integer
+* Default: `3000`
 
 Remove sequences with more than this number of ambiguous sites (non 'A', 'C', 'G' or 'T' sites).
 
 #### `--focus_country`
 
-- Optional
-- Type: string
-- Default: `Canada`
+* Optional
+* Type: string
+* Default: `Canada`
 
 Ensure that sequences from this country and belonging to the same Pangolin lineage as your input sequences are represented in the tree.
 
@@ -143,17 +144,17 @@ IQ-TREE phylogenetic tree creation options
 
 #### `--substitution_model`
 
-- Optional
-- Type: string
-- Default: `GTR`
+* Optional
+* Type: string
+* Default: `GTR`
 
 Substitution model
 
 #### `--msa_threshold_filter`
 
-- Optional
-- Type: integer
-- Default: `10000`
+* Optional
+* Type: integer
+* Default: `10000`
 
 Max number of sequences for phylogenetic analysis
 
@@ -163,17 +164,17 @@ Define where metadata columns will be kept for visualization
 
 #### `--max_taxa`
 
-- Optional
-- Type: integer
-- Default: `75`
+* Optional
+* Type: integer
+* Default: `75`
 
 Maximum taxa to show in shiptv tree including your input sequences so that the relationships between your sequences and closely related public sequences are easier to see and focus on.
 
 #### `--visualize_gisaid_metadata`
 
-- Optional
-- Type: string
-- Default: `''`
+* Optional
+* Type: string
+* Default: `''`
 
 Specify which GISAID metadata fields to show in shiptv tree. Only these fields will be shown. If not specified, all fields will be shown.
 
@@ -181,9 +182,9 @@ Specify which GISAID metadata fields to show in shiptv tree. Only these fields w
 
 #### `--visualize_aa_change`
 
-- Optional
-- Type: boolean
-- Default: `True`
+* Optional
+* Type: boolean
+* Default: `True`
 
 Show amino acid mutations in shiptv tree.
 
@@ -193,15 +194,15 @@ Options to skip certain non-essential processes.
 
 #### `--skip_nextclade`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata.
 
 #### `--skip_snp_tree`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Skip generating R ggtree phylogenetic tree PDF with SNPs visualized beside the tree.
 
@@ -211,16 +212,16 @@ Less common options for the pipeline, typically set in a config file.
 
 #### `--help`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Display help text.
 
 #### `--publish_dir_mode`
 
-- Optional
-- Type: string
-- Default: `copy`
+* Optional
+* Type: string
+* Default: `copy`
 
 Method used to save pipeline results to output directory.
 
@@ -228,16 +229,16 @@ Method used to save pipeline results to output directory.
 
 #### `--validate_params`
 
-- Optional
-- Type: boolean
-- Default: `True`
+* Optional
+* Type: boolean
+* Default: `True`
 
 Boolean whether to validate parameters against the schema at runtime
 
 #### `--email_on_fail`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Email address for completion summary, only when pipeline fails.
 
@@ -245,8 +246,8 @@ Email address for completion summary, only when pipeline fails.
 
 #### `--plaintext_email`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Send plain-text email instead of HTML.
 
@@ -254,9 +255,9 @@ Send plain-text email instead of HTML.
 
 #### `--max_multiqc_email_size`
 
-- Optional
-- Type: string
-- Default: `25.MB`
+* Optional
+* Type: string
+* Default: `25.MB`
 
 File size limit when attaching MultiQC reports to summary emails.
 
@@ -264,8 +265,8 @@ File size limit when attaching MultiQC reports to summary emails.
 
 #### `--monochrome_logs`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Do not use coloured log outputs.
 
@@ -273,30 +274,30 @@ Do not use coloured log outputs.
 
 #### `--multiqc_config`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Custom config file to supply to MultiQC.
 
 #### `--tracedir`
 
-- Optional
-- Type: string
-- Default: `${params.outdir}/pipeline_info`
+* Optional
+* Type: string
+* Default: `${params.outdir}/pipeline_info`
 
 Directory to keep pipeline Nextflow logs and reports.
 
 #### `--enable_conda`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.
 
 #### `--singularity_pull_docker_container`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Instead of directly downloading Singularity images for use with Singularity, force the workflow to pull and convert Docker containers instead.
 
@@ -304,8 +305,8 @@ Instead of directly downloading Singularity images for use with Singularity, for
 
 #### `--show_hidden_params`
 
-- Optional
-- Type: boolean
+* Optional
+* Type: boolean
 
 Show all params when using `--help`
 
@@ -317,9 +318,9 @@ Set the top limit for requested resources for any single job.
 
 #### `--max_cpus`
 
-- Optional
-- Type: integer
-- Default: `16`
+* Optional
+* Type: integer
+* Default: `16`
 
 Maximum number of CPUs that can be requested    for any single job.
 
@@ -327,9 +328,9 @@ Maximum number of CPUs that can be requested    for any single job.
 
 #### `--max_memory`
 
-- Optional
-- Type: string
-- Default: `128.GB`
+* Optional
+* Type: string
+* Default: `128.GB`
 
 Maximum amount of memory that can be requested for any single job.
 
@@ -337,9 +338,9 @@ Maximum amount of memory that can be requested for any single job.
 
 #### `--max_time`
 
-- Optional
-- Type: string
-- Default: `240.h`
+* Optional
+* Type: string
+* Default: `240.h`
 
 Maximum amount of time that can be requested for any single job.
 
@@ -351,9 +352,9 @@ Parameters used to describe centralised config profiles. These should not be edi
 
 #### `--custom_config_version`
 
-- Optional
-- Type: string
-- Default: `master`
+* Optional
+* Type: string
+* Default: `master`
 
 Git commit id for Institutional configs.
 
@@ -366,9 +367,9 @@ Git commit id for Institutional configs.
 
 #### `--custom_config_base`
 
-- Optional
-- Type: string
-- Default: `https://raw.githubusercontent.com/nf-core/configs/master`
+* Optional
+* Type: string
+* Default: `https://raw.githubusercontent.com/nf-core/configs/master`
 
 Base directory for Institutional configs.
 
@@ -389,36 +390,36 @@ nextflow run /path/to/pipeline/ --custom_config_base /path/to/my/configs/configs
 
 #### `--hostnames`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Institutional configs hostname.
 
 #### `--config_profile_name`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Institutional config name.
 
 #### `--config_profile_description`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Institutional config description.
 
 #### `--config_profile_contact`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Institutional config contact information.
 
 #### `--config_profile_url`
 
-- Optional
-- Type: string
+* Optional
+* Type: string
 
 Institutional config URL link.
 
