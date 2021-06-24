@@ -5,17 +5,18 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process PANGOLIN {
-  label 'process_medium'
+  label 'process_low'
   publishDir "${params.outdir}",
       mode: params.publish_dir_mode,
       saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
-  conda (params.enable_conda ? 'bioconda::pangolin=3.1.3' : null)
+  conda (params.enable_conda ? 'bioconda::pangolin=3.1.4' : null)
   if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-    container 'https://depot.galaxyproject.org/singularity/pangolin:3.1.3--pyhdfd78af_0'
+    container 'https://depot.galaxyproject.org/singularity/pangolin:3.1.4--pyhdfd78af_0'
   } else {
-    container 'quay.io/biocontainers/pangolin:3.1.3--pyhdfd78af_0'
+    container 'quay.io/biocontainers/pangolin:3.1.4--pyhdfd78af_0'
   }
+
 
   input:
   path(fasta)

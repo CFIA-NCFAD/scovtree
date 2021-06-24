@@ -11,12 +11,13 @@ process MAFFT {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
-    conda (params.enable_conda ? 'bioconda::mafft=7.475' : null)
+    conda (params.enable_conda ? 'bioconda::mafft=7.480' : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container 'https://depot.galaxyproject.org/singularity/mafft:7.475--h779adbc_1'
+      container 'https://depot.galaxyproject.org/singularity/mafft:7.480--h779adbc_0'
     } else {
-        container 'quay.io/biocontainers/mafft:7.475--h779adbc_1'
+      container 'quay.io/biocontainers/mafft:7.480--h779adbc_0'
     }
+
 
     input:
     path(sequences)
