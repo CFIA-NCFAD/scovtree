@@ -10,6 +10,7 @@ include { NEXTCLADE } from '../modules/local/nextclade'
 include { PHYLOGENETICTREE_SNPS } from '../modules/local/phylogenetictree_snps' addParams( options: modules['phylogenetictree_snps'] )
 include { SHIPTV_METADATA } from '../modules/local/shiptv_metadata' addParams( options: modules['shiptv_metadata'] )
 include { SHIPTV } from '../modules/local/shiptv'
+include { GET_SOFTWARE_VERSIONS } from '../modules/local/get_software_versions'
 
 workflow PHYLOGENETIC_ANALYSIS {
   ch_software_versions = Channel.empty()
@@ -29,14 +30,13 @@ workflow PHYLOGENETIC_ANALYSIS {
   IQTREE(MAFFT.out.fasta)
   ch_software_versions = ch_software_versions.mix(IQTREE.out.version.ifEmpty(null))
 
+  ch_aa_mutation_matrix = Channel.empty()
   if (!params.skip_nextclade) {
     NEXTCLADE(
         ch_input,
         'csv'
     )
     AA_MUTATION_MATRIX(NEXTCLADE.out.csv).set { ch_aa_mutation_matrix }
-  } else {
-    ch_aa_mutation_matrix = Channel.empty()
   }
   SHIPTV_METADATA(
       IQTREE.out.treefile,
@@ -57,5 +57,5 @@ workflow PHYLOGENETIC_ANALYSIS {
         PANGOLIN.out.report
     )
   }
-  ch_software_versions | view
+  GET_SOFTWARE_VERSIONS(ch_software_versions.collect())
 }

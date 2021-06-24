@@ -13,6 +13,7 @@ include { NEXTCLADE } from '../modules/local/nextclade'
 include { AA_MUTATION_MATRIX } from '../modules/local/aa_mutation_matrix' addParams( options: modules['aa_mutation_matrix'] )
 include { MERGE_METADATA } from '../modules/local/merge_metadata' addParams( options: modules['merge_metadata'] )
 include { SHIPTV } from '../modules/local/shiptv'
+include { GET_SOFTWARE_VERSIONS } from '../modules/local/get_software_versions'
 
 workflow PHYLOGENETIC_GISAID {
   ch_software_versions = Channel.empty()
@@ -76,5 +77,5 @@ workflow PHYLOGENETIC_GISAID {
     MERGE_METADATA.out
   )
   ch_software_versions = ch_software_versions.mix(SHIPTV.out.version.ifEmpty(null))
-  // TODO: output software versions to TSV
+  GET_SOFTWARE_VERSIONS(ch_software_versions.collect())
 }
