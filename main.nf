@@ -41,3 +41,20 @@ workflow {
         PHYLOGENETIC_ANALYSIS()
     }
 }
+
+workflow.onComplete {
+    println """
+    Pipeline execution summary
+    ---------------------------
+    Completed at : ${workflow.complete}
+    Duration     : ${workflow.duration}
+    Success      : ${workflow.success}
+    Results Dir  : ${file(params.outdir)}
+    Work Dir     : ${workflow.workDir}
+    Exit status  : ${workflow.exitStatus}
+    Error report : ${workflow.errorReport ?: '-'}
+    """.stripIndent()
+}
+workflow.onError {
+    println "Oops... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
+}
