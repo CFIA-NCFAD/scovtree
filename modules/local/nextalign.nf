@@ -5,12 +5,12 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process NEXTALIGN {
-  label 'process_high'
+  label 'process_high_cpu_low_mem'
   publishDir "${params.outdir}",
       mode: params.publish_dir_mode,
       saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
-  conda (params.enable_conda ? 'nextalign==0.2.0--h9ee0642_1' : null)
+  conda (params.enable_conda ? 'bioconda::nextalign=0.2.0' : null)
   if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
     container 'https://depot.galaxyproject.org/singularity/nextalign:0.2.0--h9ee0642_1'
   } else {

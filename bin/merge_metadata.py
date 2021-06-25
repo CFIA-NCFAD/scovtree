@@ -40,8 +40,10 @@ def main(
         dfs.append(pd.read_table(aa_mutation_matrix, index_col=0))
     logging.info(f'Merging {len(dfs)} dataframes on index')
     df_merged = pd.concat(dfs, axis=1)
-    df_merged['Pango_lineage'] = df_merged['Pango_lineage'].combine_first(df_pangolin['lineage'])
-    df_merged['Pangolin_version'] = df_merged['Pangolin_version'].combine_first(df_pangolin['pangoLEARN_version'])
+    if 'Pango_lineage' in df_merged.columns:
+        df_merged['Pango_lineage'] = df_merged['Pango_lineage'].combine_first(df_pangolin['lineage'])
+    if 'Pangolin_version' in df_merged.columns:
+        df_merged['Pangolin_version'] = df_merged['Pangolin_version'].combine_first(df_pangolin['pangoLEARN_version'])
     logging.info(f'Writing merged dataframe with shape {df_merged.shape} to "{metadata_output}".')
     df_merged.to_csv(metadata_output, sep='\t', index=True)
     logging.info(f'Wrote merged dataframe with shape {df_merged.shape} to "{metadata_output}".')
