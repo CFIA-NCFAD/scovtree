@@ -90,53 +90,59 @@ Path to GISAID SARS-CoV-2 metadata (e.g. `metadata_tsv_2021_06_14.tar.xz`)
 
 Options for filtering GISAID sequences based on sequence quality and metadata.
 
-#### `--country`
+#### `--gisaid_country`
 
 * Optional
 * Type: string
-* Default: `''`
 
-Select sequences from a particular country.
+Select GISAID sequences from a particular country.
 
-#### `--region`
+#### `--gisaid_region`
 
 * Optional
 * Type: string
-* Default: `''`
 
-Select sequences from a particular geographical region.
+Select GISAID sequences from a particular geographical region.
 
-#### `--lmin`
+#### `--gisaid_min_length`
 
 * Optional
 * Type: integer
 * Default: `28000`
 
-Remove sequences shorter than this value.
+Remove GISAID sequences shorter than this value.
 
-#### `--lmax`
+#### `--gisaid_max_length`
 
 * Optional
 * Type: integer
 * Default: `31000`
 
-Remove sequences longer than this value.
+Remove GISAID sequences longer than this value.
 
-#### `--xambig`
+#### `--gisaid_max_ambig`
 
 * Optional
 * Type: integer
 * Default: `3000`
 
-Remove sequences with more than this number of ambiguous sites (non 'A', 'C', 'G' or 'T' sites).
+Remove GISAID sequences with more than this number of ambiguous sites (non 'A', 'C', 'G' or 'T' sites).
 
-#### `--focus_country`
+#### `--gisaid_focus_country`
 
 * Optional
 * Type: string
 * Default: `Canada`
 
-Ensure that sequences from this country and belonging to the same Pangolin lineage as your input sequences are represented in the tree.
+Ensure that GISAID sequences from this country and belonging to the same Pangolin lineage as your input sequences are represented in the tree.
+
+#### `--max_gisaid_filtered_seqs`
+
+* Optional
+* Type: integer
+* Default: `100000`
+
+Max number of GISAID sequences to filter initially. Set lower to reduce computational burden especially for large lineages (e.g. B.1.1.7).
 
 ### IQ-TREE Options
 
@@ -150,13 +156,13 @@ IQ-TREE phylogenetic tree creation options
 
 Substitution model
 
-#### `--msa_threshold_filter`
+#### `--max_msa_seqs`
 
 * Optional
 * Type: integer
 * Default: `10000`
 
-Max number of sequences for phylogenetic analysis
+Max number of multiple sequence alignment (MSA) sequences for phylogenetic analysis
 
 ### Shiptv visualization Options
 
@@ -170,23 +176,14 @@ Define where metadata columns will be kept for visualization
 
 Maximum taxa to show in shiptv tree including your input sequences so that the relationships between your sequences and closely related public sequences are easier to see and focus on.
 
-#### `--visualize_gisaid_metadata`
+#### `--select_gisaid_metadata`
 
 * Optional
 * Type: string
-* Default: `''`
 
 Specify which GISAID metadata fields to show in shiptv tree. Only these fields will be shown. If not specified, all fields will be shown.
 
-> **NOTE:** e.g. `--visualize_gisaid_metadata 'Virus_name,Type,Location,Clade,Variant,AA_Substitutions,Submission_date,Is_complete?'`
-
-#### `--visualize_aa_change`
-
-* Optional
-* Type: boolean
-* Default: `True`
-
-Show amino acid mutations in shiptv tree.
+> **NOTE:** e.g. `--select_gisaid_metadata 'Type,Location,Clade,Variant,AA_Substitutions,Collection_date'`
 
 ### Process skipping options
 
@@ -197,7 +194,7 @@ Options to skip certain non-essential processes.
 * Optional
 * Type: boolean
 
-Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata.
+Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata and shown in the shiptv tree.
 
 #### `--skip_snp_tree`
 

@@ -5,10 +5,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Set, Tuple, Mapping, Optional
 
-from rich.logging import RichHandler
-import typer
 import pandas as pd
+import typer
 from Bio.SeqIO.FastaIO import SimpleFastaParser
+from rich.logging import RichHandler
 
 
 def main(input_fasta: Path = typer.Option(..., help='FASTA with sequences to filter'),
@@ -40,18 +40,11 @@ def main(input_fasta: Path = typer.Option(..., help='FASTA with sequences to fil
     sample_seq = read_fasta(input_fasta)
     seq_samples = seq_to_samples(sample_seq)
     keep_samples = init_samples_to_keep(lineage_report, ref_name)
-    if country:
-        country_matching_samples = set(df[df.country.str.contains(country, case=False)].index)
-        n_country_keep = len(country_matching_samples | keep_samples)
-        if n_country_keep <= max_seqs:
-            logging.info(f'Keeping {n_country_keep} sequences matching country "{country}".')
-            keep_samples |= country_matching_samples
-        else:
-            logging.info(
-                f'{len(country_matching_samples)} country "{country}" samples '
-                f'and {len(keep_samples)} user sequences greater than '
-                f'{max_seqs} threshold. Randomly sampling all '
-                f'sequences based on quality.')
+    if country and 'country' in df.columns:
+        keep_samples = keep_seqs_from_country(df, country, keep_samples, max_seqs)
+    elif country:
+        logging.warning(f'Country "{country}" to preferentially select sequences from '
+                        f'specified, but no column "country" in metadata dataframe!')
     df_less_n_gaps, keep_samples = quality_filter(keep_samples, seq_samples)
     if (df_less_n_gaps.shape[0] + len(keep_samples)) <= max_seqs:
         keep_samples |= set(df_less_n_gaps['sample'])
@@ -63,6 +56,20 @@ def main(input_fasta: Path = typer.Option(..., help='FASTA with sequences to fil
     write_fasta(output_fasta, keep_samples, sample_seq)
     df.loc[keep_samples & set(df.index), :].to_csv(output_metadata, sep='\t', index=True)
     logging.info(f'Done!')
+
+
+def keep_seqs_from_country(df: pd.DataFrame, country: str, keep_samples: Set[str], max_seqs:int) -> Set[str]:
+    country_matching_samples = set(df[df.country.str.contains(country, case=False)].index)
+    n_country_keep = len(country_matching_samples | keep_samples)
+    if n_country_keep <= max_seqs:
+        logging.info(f'Keeping {n_country_keep} sequences matching country "{country}".')
+        keep_samples |= country_matching_samples
+    else:
+        logging.info(f'{len(country_matching_samples)} country "{country}" samples '
+                     f'and {len(keep_samples)} user sequences greater than '
+                     f'{max_seqs} threshold. Randomly sampling all '
+                     f'sequences based on quality.')
+    return keep_samples
 
 
 def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]]) -> Tuple[pd.DataFrame, Set[str]]:
