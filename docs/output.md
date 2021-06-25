@@ -3,7 +3,7 @@
 
 ## Introduction
 
-This document describes the output produced by the pipeline. 
+This document describes the output produced by the pipeline.
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
@@ -46,7 +46,6 @@ Assign input sequences to [Pangolin] SARS-CoV-2 global lineages. This lineage in
 
 </details>
 
-
 If both [GISAID] sequences (`--gisaid_sequences`) and metadata (`--gisaid_metadata`) are specified, the [GISAID] sequences belonging to the same [Pangolin] lineages as the `--input` sequences will be filtered for. Poor quality sequences will be filtered out (too long; too short; too many ambiguous sites).
 
 ### Multiple sequence alignment
@@ -77,7 +76,6 @@ Maximum-likelihood phylogenetic tree is generated from the MSA of your input seq
   * `iqtree-*.iqtree`: IQ-TREE phylogenetic analysis report
   * `iqtree-*.log`: IQ-TREE log file
   * `iqtree-*.mldist`: IQ-TREE maximum-likelihood distances output file
-
 
 </details>
 
