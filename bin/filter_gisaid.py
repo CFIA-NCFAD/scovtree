@@ -75,7 +75,11 @@ def main(
                          f'Using equal probability weights for down-sampling')
             weights = None
         sampled_gisaid = df_subset.index.to_series()
-        sampled_gisaid = sampled_gisaid.sample(n=max_gisaid_seqs, weights=weights)
+        try:
+            sampled_gisaid = sampled_gisaid.sample(n=max_gisaid_seqs, weights=weights)
+        except ValueError as ex:
+            logging.warning(f'Could not use weights based on "N_Content" GISAID metadata field. Error: "{ex}"')
+            sampled_gisaid = sampled_gisaid.sample(n=max_gisaid_seqs)
         df_subset = df_subset.loc[sampled_gisaid, :]
         if weights is not None:
             logging.info(f'After down-sampling, mean N content: {df_subset["N_Content"].mean()}')
