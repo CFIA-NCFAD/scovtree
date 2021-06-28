@@ -3,7 +3,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 
 params.options = [:]
 options        = initOptions(params.options)
-
+// TODO: use merge_metadata.nf instead of having 2 processes that perform similar tasks (PK, 2021-06-28)
 process SHIPTV_METADATA {
   publishDir "${params.outdir}",
       mode: params.publish_dir_mode,
@@ -26,12 +26,13 @@ process SHIPTV_METADATA {
   path "metadata.merged.tsv", emit: metadata
 
   script:  // This script is bundled with the pipeline, in /bin folder
+  def aa_mutation_matrix_opt = (aa_mutation_matrix) ? "--aa-mutation-matrix $aa_mutation_matrix" : ""
   """
   shiptv_metadata.py \\
     $newick \\
     $lineage_report \\
-    $aa_mutation_matrix \\
-    leaflist \\
-    metadata.merged.tsv
+    $aa_mutation_matrix_opt \\
+    --leaflist leaflist \\
+    --metadata-output metadata.merged.tsv
   """
 }
