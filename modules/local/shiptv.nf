@@ -24,7 +24,6 @@ process SHIPTV {
   output:
   path 'shiptv.html'        , emit: html
   path 'metadata.shiptv.tsv', emit: metadata
-  path 'tree.shiptv.newick' , emit: newick
   path '*.version.txt'      , emit: version
 
   script:
@@ -35,7 +34,6 @@ process SHIPTV {
     --metadata $metadata \\
     --outgroup ${params.reference_name} \\
     --output-html shiptv.html \\
-    --output-newick tree.shiptv.newick \\
     --output-metadata-table metadata.shiptv.tsv
 
   shiptv --version | sed 's/shiptv version //' > shiptv.version.txt
