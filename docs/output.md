@@ -1,8 +1,9 @@
+<!-- TODO: better document workflow output (e.g. https://github.com/nf-core/viralrecon/blob/master/docs/output.md) -->
 # nhhaidee/scovtree: Output
 
 ## Introduction
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
+This document describes the output produced by the pipeline.
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
@@ -13,65 +14,95 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:
 
-<!--* [FastQC](#fastqc) - Read quality control-->
-<!--* [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline-->
-* [Pholgenetic analysis](#phylogenetic-analysis) - Result of an analysis
-* [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+<!-- TODO: Add pipeline steps -->
 
-<!--
-## FastQC
+1. [Pangolin](#pangolin) lineage assignment
+2. [Filtering GISAID sequences](#filtering-gisaid-sequences) (if specified)
+3. [Multiple sequence alignment](#multiple-sequence-alignment)
+4. [Phylogenetic tree inference](#phylogenetic-tree-inference)
+5. [shiptv tree visualization](#shiptv-tree-visualization)
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences.
+### Pangolin
 
-For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+<details markdown="1">
+<summary>Output files</summary>
 
-**Output files:**
+* `pangolin/pangolin.csv`: [Pangolin] lineage assignment results.
 
-* `fastqc/`
-  * `*_fastqc.html`: FastQC report containing quality metrics for your untrimmed raw fastq files.
-* `fastqc/zips/`
-  * `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+</details>
 
-> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+Assign input sequences to [Pangolin] SARS-CoV-2 global lineages. This lineage info is used for filtering GISAID sequences and also shown in the [shiptv] tree.
 
-## MultiQC
+### Filtering GISAID sequences
 
-[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarizing all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
+<details markdown="1">
+<summary>Output files</summary>
 
-The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability.
+* `gisaid/`
+  * `gisaid_sequences.filtered.fasta`: [GISAID] sequences filtered based on metadata, quality and [Pangolin] lineage.
+  * `gisaid_metadata.filtered.tsv`: Metadata for filtered [GISAID] sequences.
+  * `gisaid_metadata.nextstrain.tsv`: Metadata for filtered [GISAID] sequences compatible with [Nextstrain] analysis.
+  * `gisaid_filtering_stats.json`: GISAID filtering stats JSON.
 
-For more information about how to use MultiQC reports, see [https://multiqc.info](https://multiqc.info).
+</details>
 
-**Output files:**
+If both [GISAID] sequences (`--gisaid_sequences`) and metadata (`--gisaid_metadata`) are specified, the [GISAID] sequences belonging to the same [Pangolin] lineages as the `--input` sequences will be filtered for. Poor quality sequences will be filtered out (too long; too short; too many ambiguous sites).
 
-* `multiqc/`
-  * `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
-  * `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
-  * `multiqc_plots/`: directory containing static images from the report in various formats.-->
+### Multiple sequence alignment
 
-## Phylogenetic Analysis
+<details markdown="1">
+<summary>Output files</summary>
 
-**Output files:**
+* `msa/`
+  * `msa.filtered.fasta`: Filtered MSA sequences for phylogenetic analysis.
+  * `metadata.filtered.tsv`: Metadata for filtered MSA sequences.
+  * `nextalign/`:
+    * `sequences.nextalign.fasta`: Nextalign MSA output FASTA file.
+    * `nextalign.insertions.csv`: Nextalign insertions present in input sequences relative to reference sequence.
 
-* `phylogenetic_analysis/`
-  * `filter_gisaid`: directory containing filtered sequences, metadata and statistics of filtering step.
-  * `filter_msa`: directory containing results of filtering multiple sequence alignment to manageable number of sequences (typically  < 10,000 sequences).
-  * `iqtree`: directory containing results of building phylogenetic tree using IQTree tool.
-  * `nextalign`: directory containing results of Multiple Sequence Alignment using nextalign tool.
-  * `mafft`: directory containing results of Multiple Sequence Alignment using mafft tool.  
-  * `pangolin`: directory containing pangolin lineage report for input consensus sequences.
-  * `subtree`: directory containing results of pruning tree to number of taxa  < max_taxa so that it can be view easily with Shiptv
-  * `shiptv_visualization`: directory containing visualization of phylogenetic tree using Shiptv tool.
-  * `merge_metadata`: directory containing tsv file in which merging gisaid metatdata and aa substitution change, this result is used for visualization with shiptv.
-  * `nextclade`: directory containing results of running nextclade for sequences and containing aa substitution change.
+</details>
+
+Multiple sequence alignment (MSA) of user specified sequences and GISAID sequences (if specified) is performed using either [MAFFT] or [Nextalign].
+
+### Phylogenetic tree inference
+
+Maximum-likelihood phylogenetic tree is generated from the MSA of your input sequences and related GISAID sequences (if specified) using [IQ-TREE].
+
+<details markdown="1">
+<summary>Output files</summary>
+
+* `iqtree/`
+  * `iqtree-*.treefile`: Newick format IQ-TREE phylogenetic tree
+  * `iqtree-*.iqtree`: IQ-TREE phylogenetic analysis report
+  * `iqtree-*.log`: IQ-TREE log file
+  * `iqtree-*.mldist`: IQ-TREE maximum-likelihood distances output file
+
+</details>
 
 ## Pipeline information
 
 [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
 
-**Output files:**
+<details markdown="1">
+<summary>Output files</summary>
 
 * `pipeline_info/`
   * Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
-  * Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.csv`.
-  * Documentation for interpretation of results in HTML format: `results_description.html`.
+  * Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.tsv`.
+
+</details>
+
+<!-- TODO: add links to tools used in this pipeline -->
+[ggtree]: https://bioconductor.org/packages/release/bioc/html/ggtree.html
+[GISAID]: https://www.gisaid.org/
+[IQ-TREE]: http://www.iqtree.org/
+[jts/ncov-tools]: https://github.com/jts/ncov-tools
+[MAFFT]: https://mafft.cbrc.jp/alignment/software/
+[Nextalign]: https://github.com/nextstrain/nextclade/tree/master/packages/nextalign_cli
+[Nextclade]: https://github.com/nextstrain/nextclade/tree/master/packages/nextclade_cli
+[Nextflow]: https://www.nextflow.io/
+[Nextstrain]: https://nextstrain.org/
+[nf-core]: https://nf-co.re/
+[Pangolin]: https://github.com/cov-lineages/pangolin/
+[SARS-CoV-2]: https://www.ncbi.nlm.nih.gov/nuccore/MN908947.3/
+[shiptv]: https://github.com/peterk87/shiptv

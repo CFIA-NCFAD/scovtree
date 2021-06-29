@@ -7,3 +7,6 @@ tests/
 testing/
 testing*
 *.pyc
+venv/
+.venv/
+.idea/

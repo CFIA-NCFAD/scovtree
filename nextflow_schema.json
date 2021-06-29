@@ -1,12 +1,12 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/scovtree/master/nextflow_schema.json",
-    "title": "nf-core/scovtree pipeline parameters",
-    "description": "Phylogenetic Analysis for SARS-COV2",
+    "$id": "https://raw.githubusercontent.com/nhhaidee/scovtree/master/nextflow_schema.json",
+    "title": "nhhaidee/scovtree pipeline parameters",
+    "description": "SARS-CoV-2 phylogenetic analysis pipeline",
     "type": "object",
     "definitions": {
-        "phylogenetic_analysis_options": {
-            "title": "Phylogenetic analysis without filtering sequences against GISAID",
+        "input_output_options": {
+            "title": "Input/Output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
@@ -14,8 +14,7 @@
                 "input": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "description": "Fasta file of consensus sequences.",
-                    "help_text": "The directory path to consensus sequences /path/to/consensus_sequences/*.fasta"
+                    "description": "Path to FASTA file with SARS-CoV-2 sequences."
                 },
                 "outdir": {
                     "type": "string",
@@ -27,104 +26,93 @@
                     "type": "string",
                     "description": "Name of reference sequence.",
                     "default": "MN908947.3",
-                    "fa_icon": "fas fa-align-center",
-                    "help_text": "Name of reference SARS-COV2 MN908947.3"
+                    "fa_icon": "fas fa-align-center"
                 },
                 "reference_fasta": {
                     "type": "string",
-                    "description": "Input Fasta file of reference sequences.",
+                    "description": "Reference SARS-CoV-2 genome sequence FASTA file.",
                     "default": "https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-virus"
                 },
-                "substitution_model": {
+                "gisaid_sequences": {
                     "type": "string",
-                    "description": "Substitution model for building phylogenetic tree",
-                    "help_text": "Substitution model for building phylogenetic tree in IQTree",
-                    "default": "GTR",
-                    "fa_icon": "fas fa-folder-open"
+                    "description": "Path to GISAID SARS-CoV-2 sequences (e.g. `sequences_fasta_2021_06_14.tar.xz`)",
+                    "fa_icon": "fas fa-viruses"
+                },
+                "gisaid_metadata": {
+                    "type": "string",
+                    "description": "Path to GISAID SARS-CoV-2 metadata (e.g. `metadata_tsv_2021_06_14.tar.xz`)",
+                    "fa_icon": "fas fa-table"
                 }
             }
         },
         "filter_gisaid_options": {
-            "title": "Phylogenetic Analysis with filtering sequences against GISAID",
+            "title": "GISAID Sequence Filtering Options",
             "type": "object",
-            "fa_icon": "fas fa-terminal",
-            "description": "Define where the pipeline should find input data and save output data.",
+            "fa_icon": "fas fa-filter",
+            "description": "Options for filtering GISAID sequences based on sequence quality and metadata.",
             "properties": {
-                "filter_gisaid": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": true,
-                    "description": "Enable/disable filtering sequences against GISAID workflow.",
-                    "help_text": "Set to True for this analysis"
-                },
-                "gisaid_sequences": {
+                "gisaid_country": {
                     "type": "string",
-                    "description": "Directory path to gisaid sequences.",
-                    "fa_icon": "fas fa-align-center",
-                    "help_text": "Directory path to gisaid sequences /path/to/consensus_sequences/sequences_fasta_2021_06_14.tar.xz"
+                    "default": "",
+                    "description": "Select GISAID sequences from a particular country.",
+                    "fa_icon": "fas fa-globe"
                 },
-                "gisaid_metadata": {
+                "gisaid_region": {
                     "type": "string",
-                    "description": "Directory path to gisaid metadata.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Directory path to gisaid metadata /path/to/consensus_sequences/metadata_tsv_2021_06_14.tar.xz"
+                    "default": "",
+                    "description": "Select GISAID sequences from a particular geographical region.",
+                    "fa_icon": "fas fa-folder-open"
                 },
-                "country": {
-                    "type": "string",
-                    "default": "''",
-                    "description": "Filter sequences in GISAID from Country.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Select sequences in GISAID from Country."
-                },
-                "region": {
-                    "type": "string",
-                    "default": "''",
-                    "description": "Filter sequences in GISAID from Region.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Filter sequences in GISAID from Region."
-                },
-                "sample_lineage": {
-                    "type": "string",
-                    "default": "B.1.2",
-                    "description": "Filter sequences belong to lineage.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Filter sequences belong to lineage."
-                },
-                "lmin": {
+                "gisaid_min_length": {
                     "type": "integer",
-                    "default": 20000,
-                    "description": "Remove sequences that length < lmin.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Remove sequences that length < lmin."
+                    "default": 28000,
+                    "description": "Remove GISAID sequences shorter than this value.",
+                    "fa_icon": "fas fa-compress-alt"
                 },
-                "lmax": {
+                "gisaid_max_length": {
                     "type": "integer",
-                    "default": 32000,
-                    "description": "Remove sequences that length > lmax.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Remove sequences that length > lmax."
+                    "default": 31000,
+                    "description": "Remove GISAID sequences longer than this value.",
+                    "fa_icon": "fas fa-expand-alt"
                 },
-                "xambig": {
+                "gisaid_max_ambig": {
                     "type": "integer",
                     "default": 3000,
-                    "description": "Remove sequences that have number of ambiguous sides  > xambig.",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "Remove sequences that have number of ambiguous sides  > xambig."
+                    "description": "Remove GISAID sequences with more than this number of ambiguous sites (non 'A', 'C', 'G' or 'T' sites).",
+                    "fa_icon": "fas fa-trash-alt"
                 },
-                "focus_country": {
+                "gisaid_focus_country": {
                     "type": "string",
                     "default": "Canada",
-                    "description": "Filter sequences that belong to country",
-                    "fa_icon": "fas fa-folder-open",
-                    "help": "Filter sequences that belong to country"
+                    "description": "Ensure that GISAID sequences from this country and belonging to the same Pangolin lineage as your input sequences are represented in the tree.",
+                    "fa_icon": "fas fa-search"
                 },
-                "msa_threshold_filter": {
+                "max_gisaid_filtered_seqs": {
+                    "type": "integer",
+                    "default": 100000,
+                    "description": "Max number of GISAID sequences to filter initially. Set lower to reduce computational burden especially for large lineages (e.g. B.1.1.7).",
+                    "fa_icon": "fas fa-filter"
+                }
+            }
+        },
+        "iqtree_options": {
+            "title": "IQ-TREE Options",
+            "type": "object",
+            "fa_icon": "fas fa-tree",
+            "description": "IQ-TREE phylogenetic tree creation options",
+            "properties": {
+                "substitution_model": {
+                    "type": "string",
+                    "description": "Substitution model",
+                    "default": "GTR",
+                    "fa_icon": "fas fa-hourglass-half"
+                },
+                "max_msa_seqs": {
                     "type": "integer",
                     "default": 10000,
-                    "description": "The threshold filter sequences in MSA result to manageable number",
-                    "fa_icon": "fas fa-folder-open",
-                    "help_text": "The threshold filter sequences in MSA result to manageable number"
+                    "description": "Max number of multiple sequence alignment (MSA) sequences for phylogenetic analysis",
+                    "fa_icon": "fas fa-compress-arrows-alt"
                 }
             }
         },
@@ -138,22 +126,34 @@
                     "type": "integer",
                     "fa_icon": "fas fa-dna",
                     "default": 75,
-                    "description": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization",
-                    "help_text": "Maximum taxa presented in the phylogenetic tree in Shiptv visualization"
+                    "description": "Maximum taxa to show in shiptv tree including your input sequences so that the relationships between your sequences and closely related public sequences are easier to see and focus on."
                 },
-                "visualize_gisaid_metadata": {
+                "select_gisaid_metadata": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "default": "''",
-                    "description": "Specify columns of GISAID metadata for shiptv visualization",
-                    "help_text": "Specify columns of GISAID metadata for shiptv visualization, by default all columns are visualized. An Example: --visualize_gisaid_metadata 'Virus_name,Type,Additional_location_information,Clade,Variant,AA_Substitutions,Submission_date,Is_reference?,Is_complete?'"
-                },
-                "visualize_aa_change": {
+                    "default": "",
+                    "description": "Specify which GISAID metadata fields to show in shiptv tree. Only these fields will be shown. If not specified, all fields will be shown.",
+                    "help_text": "e.g. `--select_gisaid_metadata 'Type,Location,Clade,Variant,AA_Substitutions,Collection_date'`"
+                }
+            }
+        },
+        "skipping_options": {
+            "title": "Process skipping options",
+            "type": "object",
+            "fa_icon": "fas fa-forward",
+            "description": "Options to skip certain non-essential processes.",
+            "properties": {
+                "skip_nextclade": {
                     "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "default": true,
-                    "description": "Specify wheter aa subsitution change is visualizaed with Shiptv or not",
-                    "help_text": "Specify wheter aa subsitution change is visualizaed with Shiptv or not (default: True)"
+                    "description": "Skip running Nextclade. No amino acid mutation matrix will be produced and merged with other sequence metadata and shown in the shiptv tree.",
+                    "default": false,
+                    "fa_icon": "fas fa-chess-board"
+                },
+                "skip_snp_tree": {
+                    "type": "boolean",
+                    "description": "Skip generating R ggtree phylogenetic tree PDF with SNPs visualized beside the tree.",
+                    "default": false,
+                    "fa_icon": "fas fa-tree"
                 }
             }
         },
@@ -351,13 +351,19 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/phylogenetic_analysis_options"
+            "$ref": "#/definitions/input_output_options"
         },
         {
             "$ref": "#/definitions/filter_gisaid_options"
         },
         {
+            "$ref": "#/definitions/iqtree_options"
+        },
+        {
             "$ref": "#/definitions/shiptv_visualization_options"
+        },
+        {
+            "$ref": "#/definitions/skipping_options"
         },
         {
             "$ref": "#/definitions/generic_options"

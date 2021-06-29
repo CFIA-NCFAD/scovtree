@@ -1,19 +1,18 @@
 # nhhaidee/scovtree
 
-**Phylogenetic Analysis for SARS-COV2**.
+**SARS-CoV-2 phylogenetic analysis pipeline**.
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.04.0-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
-
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](https://bioconda.github.io/)
-[![Docker](https://img.shields.io/docker/automated/nfcore/scovtree.svg)](https://hub.docker.com/r/nfcore/scovtree)
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23scovtree-4A154B?logo=slack)](https://nfcore.slack.com/channels/scovtree)
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nhhaidee/scovtree** is a bioinformatics pipeline for sars-cov2 phylogenetic analysis, given a consensus sequences the workflow will output phylogenetic tree and SNP information. The pipeline also allows to filter and find the most related sequences in GISAID. The GISAID filters workflow will output filtered sequences and metadata in old format (GISAID changed format of metadata recently) so the output then can be used with [Nextstrain](https://github.com/nextstrain/ncov) locally.
+**nhhaidee/scovtree** is a bioinformatics pipeline for [SARS-CoV-2] phylogenetic analysis.
+Given an input FASTA file with SARS-CoV-2 sequences, this workflow will generate a maximum-likelihood phylogenetic tree (using [IQ-TREE] from a [MAFFT] or [Nextalign] multiple sequence alignment) and interactive HTML tree visualization ([shiptv]).
 
-The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
+This pipeline also allows you to visualize your sequences along with the most closely SARS-CoV-2 sequences from [GISAID] (if both the GISAID sequences and metadata `.tar.xz` files are provided). Amino acid mutations can also be determined using [Nextclade] and shown in the tree visualization.
+
+The pipeline is built using [Nextflow], a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
 ## Quick Start
 
@@ -24,36 +23,35 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```bash
-    nextflow run nhhaidee/scovtree -profile test_gisaid_full,<docker/singularity/conda>
-    nextflow run nhhaidee/scovtree -profile test_gisaid_drop_columns,<docker/singularity/conda>
     nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
     ```
 
 4. Start running your own analysis!
 
-    * Typical command for phylogenetic analysis is as follow:
+    * Typical command for phylogenetic analysis:
 
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
-            --filter_gisaid false \
-            --input '/path/to/consensus/consensus_sequences.fasta'
+            --input your-sars-cov-2-sequences.fasta
         ```
 
-    * Typical command for phylogenetic analysis with GISAID Sequences is as follow:
+    * Typical command for phylogenetic analysis with GISAID SARS-CoV-2 data:
 
         ```bash
         nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
-            --filter_gisaid true \
-            --gisaid_sequences /path/to/sequences.fasta \
-            --gisaid_metadata /path/to/metadata.tsv \
-            --input '/path/to/consensus/consensus_sequences.fasta'
+            --input your-sars-cov-2-sequences.fasta \
+            --gisaid_sequences sequences_fasta_2021_06_14.tar.xz \
+            --gisaid_metadata metadata_tsv_2021_06_14.tar.xz
         ```
 
 ## Credits
 
-nhhaidee/scovtree was originally written by Hai Nguyen.
+`nhhaidee/scovtree` was originally written by [Hai Nguyen].
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+Contributors:
+
+* [Peter Kruczkiewicz] for workflow conceptualization and software development.
+* [jts/ncov-tools] for `bin/align2alleles.py` and `bin/phylogenetic_tree_snps.r` to create phylogenetic tree with SNPs highlighted using R [ggtree]
 
 ## Contributions and Support
 
@@ -76,4 +74,26 @@ You can cite the `nf-core` publication as follows:
 
 In addition, references of tools and data used in this pipeline are as follows:
 
+## License
+
+Copyright 2021 Canadian Food Inspection Agency of Canada, Government of Canada.
+
+Distributed under the MIT license.
+
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+
+[Nextflow]: https://www.nextflow.io/
+[nf-core]: https://nf-co.re/
+[jts/ncov-tools]: https://github.com/jts/ncov-tools
+[IQ-TREE]: http://www.iqtree.org/
+[Nextstrain]: https://nextstrain.org/
+[Nextalign]: https://github.com/nextstrain/nextclade/tree/master/packages/nextalign_cli
+[Nextclade]: https://github.com/nextstrain/nextclade/tree/master/packages/nextclade_cli
+[MAFFT]: https://mafft.cbrc.jp/alignment/software/
+[shiptv]: https://github.com/peterk87/shiptv
+[Pangolin]: https://github.com/cov-lineages/pangolin/
+[ggtree]: https://bioconductor.org/packages/release/bioc/html/ggtree.html
+[Peter Kruczkiewicz]: https://github.com/peterk87/
+[Hai Nguyen]: https://github.com/nhhaidee/
+[GISAID]: https://www.gisaid.org/
+[SARS-CoV-2]: https://www.ncbi.nlm.nih.gov/nuccore/MN908947.3/

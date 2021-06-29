@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process MERGE_METADATA{
+process SHIPTV {
   publishDir "${params.outdir}",
       mode: params.publish_dir_mode,
       saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
@@ -17,21 +17,25 @@ process MERGE_METADATA{
   }
 
   input:
-  path(gisaid_metadata)
-  path(aa_mutation_matrix)
-  path(pangolin_report)
+  path(newick_tree)
+  path(leaflist)
+  path(metadata)
 
   output:
-  path "metadata.merged.tsv"
+  path 'shiptv.html'        , emit: html
+  path 'metadata.shiptv.tsv', emit: metadata
+  path '*.version.txt'      , emit: version
 
-  script:  // This script is bundled with the pipeline, in /bin folder
-  def aa_mutation_matrix_opt = (aa_mutation_matrix) ? "--aa-mutation-matrix $aa_mutation_matrix" : ""
-  def select_metadata_fields = (params.select_gisaid_metadata) ? "--select-metadata-fields \"${params.select_gisaid_metadata}\"" : ""
+  script:
   """
-  merge_metadata.py \\
-    $gisaid_metadata \\
-    $pangolin_report \\
-    $aa_mutation_matrix_opt $select_metadata_fields \\
-    --metadata-output metadata.merged.tsv
+  shiptv \\
+    --newick ${newick_tree} \\
+    --leaflist $leaflist \\
+    --metadata $metadata \\
+    --outgroup ${params.reference_name} \\
+    --output-html shiptv.html \\
+    --output-metadata-table metadata.shiptv.tsv
+
+  shiptv --version | sed 's/shiptv version //' > shiptv.version.txt
   """
 }
