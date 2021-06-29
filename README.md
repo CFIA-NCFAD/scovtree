@@ -62,7 +62,7 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi. -->
-<!-- If you use  nf-core/scovtree for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use  nhhaidee/scovtree for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 You can cite the `nf-core` publication as follows:
 
@@ -73,6 +73,20 @@ You can cite the `nf-core` publication as follows:
 > _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
 
 In addition, references of tools and data used in this pipeline are as follows:
+
+* [Nextflow]
+* [nf-core]
+* [jts/ncov-tools]
+* [IQ-TREE]
+* [Nextstrain]
+* [Nextalign]
+* [Nextclade]
+* [MAFFT]
+* [shiptv]
+* [Pangolin]
+* [ggtree]
+* [GISAID]
+* [SARS-CoV-2]
 
 ## License
 
