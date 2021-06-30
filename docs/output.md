@@ -19,7 +19,7 @@ and processes data using the following steps:
 1. [Pangolin](#pangolin) lineage assignment
 2. [Filtering GISAID sequences](#filtering-gisaid-sequences) (if specified)
 3. [Multiple sequence alignment](#multiple-sequence-alignment)
-4. [Nextclade](#nextclade) Mutation Calling   
+4. [Nextclade](#nextclade) Mutation Calling
 5. [Phylogenetic tree inference](#phylogenetic-tree-inference)
 6. [Phylogenetic tree with SNPs](#phylogenetic-tree-with-SNPs)
 7. [shiptv tree visualization](#shiptv-tree-visualization)
