@@ -47,7 +47,7 @@ If both [GISAID] sequences (`--gisaid_sequences`) and metadata (`--gisaid_metada
   * `gisaid_metadata.filtered.tsv`: Metadata for filtered [GISAID] sequences.
   * `gisaid_metadata.nextstrain.tsv`: Metadata for filtered [GISAID] sequences compatible with [Nextstrain] analysis.
   * `gisaid_filtering_stats.json`: GISAID filtering stats JSON.
-  
+
 </details>
 
 ### Multiple sequence alignment
