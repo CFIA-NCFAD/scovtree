@@ -98,6 +98,7 @@ Maximum-likelihood phylogenetic tree is generated from the MSA of your input seq
 ### Phylogenetic tree with SNPs
 
 For phylogenetic workflow (without filtering GISAID), if `skip_snp_tree` is false, a phylogenetic tree with SNPs highlighted using R [ggtree]
+
 <details markdown="1">
 <summary>Output files</summary>
 
