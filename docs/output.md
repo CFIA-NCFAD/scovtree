@@ -77,6 +77,22 @@ Maximum-likelihood phylogenetic tree is generated from the MSA of your input seq
   * `iqtree-*.log`: IQ-TREE log file
   * `iqtree-*.mldist`: IQ-TREE maximum-likelihood distances output file
 
+
+
+## shiptv tree visualization
+
+The phylogenetic tree is visualized by [shiptv] (an interactive HTML tree visualization)
+
+<details markdown="1">
+<summary>Output files</summary>
+
+* `shiptv/`
+  * `leaflist`: The virus strains presented in visualization
+  * `metadata.leaflist.tsv`: The metadata information of virus strains
+  * `metadata.merged.tsv`: `metadata.leaflist.tsv` is merged with pangolin report of input sequences and aa mutation matrix (if `--skip_nextclade` is false)
+  * `metadata.shiptv.tsv`: The metadata genrated by [shiptv]
+  * `shiptv.html`: An interactive HTML tree visualization
+
 </details>
 
 ## Pipeline information
