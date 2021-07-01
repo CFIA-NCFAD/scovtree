@@ -49,9 +49,24 @@ def main(input_fasta: Path = typer.Option(..., help='FASTA with sequences to fil
     if (df_less_n_gaps.shape[0] + len(keep_samples)) <= max_seqs:
         keep_samples |= set(df_less_n_gaps['sample'])
     else:
-        n_to_sample = (max_seqs - len(keep_samples))
-        logging.info(f'Sampling {n_to_sample} samples from top quality sequences.')
-        keep_samples |= set(df_less_n_gaps['sample'].sample(n=n_to_sample))
+        low_abundance_value = 0.01 # Allow user to set this value, need Peter to review it
+        df_lineage_count = df['Pango_lineage'].value_counts(normalize=True, ascending=True).to_frame('proportion')
+        # There is no low abundance lineages, proportion of all lineages are greater than low_abundance_value
+        if df_lineage_count['proportion'].gt(low_abundance_value).all():
+            n_to_sample = (max_seqs - len(keep_samples))
+            logging.info(f'No low abundance lineages (Proportion < {low_abundance_value}).')
+            logging.info(f'Sampling {n_to_sample} samples from top quality sequences.')
+            keep_samples |= set(df_less_n_gaps['sample'].sample(n=n_to_sample))
+        else:
+            low_abundance_lineages = set(df_lineage_count[df_lineage_count['proportion'] < low_abundance_value].index)
+            low_abundance_samples = set(df[df['Pango_lineage'].isin(low_abundance_lineages)].index)
+            logging.info(f'{len(low_abundance_samples)} samples belong to low abundance lineages')
+            keep_samples |= low_abundance_samples
+            n_to_sample = (max_seqs - len(keep_samples))
+            logging.info(f'Sampling {n_to_sample} samples from top quality sequences and high abundance lineages.')
+            df_less_n_gaps.drop(df_less_n_gaps.index[df_less_n_gaps['sample'].isin(low_abundance_samples)],
+                                inplace=True)
+            keep_samples |= set(df_less_n_gaps['sample'].sample(n=n_to_sample))
     logging.info(f'Writing {len(keep_samples)} of {len(seq_samples)} sequences to "{output_fasta}".')
     write_fasta(output_fasta, keep_samples, sample_seq)
     df.loc[keep_samples & set(df.index), :].to_csv(output_metadata, sep='\t', index=True)
