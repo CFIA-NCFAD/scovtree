@@ -45,35 +45,34 @@ def main(input_fasta: Path = typer.Option(..., help='FASTA with sequences to fil
     elif country:
         logging.warning(f'Country "{country}" to preferentially select sequences from '
                         f'specified, but no column "country" in metadata dataframe!')
-    df_less_n_gaps, keep_samples = quality_filter(keep_samples, seq_samples)
+    df_less_n_gaps, keep_samples = quality_filter(keep_samples, seq_samples, df)
     if (df_less_n_gaps.shape[0] + len(keep_samples)) <= max_seqs:
         keep_samples |= set(df_less_n_gaps['sample'])
     else:
-        low_abundance_value = 0.01 # Allow user to set this value, need Peter to review it
-        df_lineage_count = df['Pango_lineage'].value_counts(normalize=True, ascending=True).to_frame('proportion')
-        # There is no low abundance lineages, proportion of all lineages are greater than low_abundance_value
-        if df_lineage_count['proportion'].gt(low_abundance_value).all():
-            n_to_sample = (max_seqs - len(keep_samples))
-            logging.info(f'No low abundance lineages (Proportion < {low_abundance_value}).')
-            logging.info(f'Sampling {n_to_sample} samples from top quality sequences.')
-            keep_samples |= set(df_less_n_gaps['sample'].sample(n=n_to_sample))
-        else:
-            low_abundance_lineages = set(df_lineage_count[df_lineage_count['proportion'] < low_abundance_value].index)
-            low_abundance_samples = set(df[df['Pango_lineage'].isin(low_abundance_lineages)].index)
-            logging.info(f'{len(low_abundance_samples)} samples belong to low abundance lineages')
-            keep_samples |= low_abundance_samples
-            n_to_sample = (max_seqs - len(keep_samples))
-            logging.info(f'Sampling {n_to_sample} samples from top quality sequences and high abundance lineages.')
-            df_less_n_gaps.drop(df_less_n_gaps.index[df_less_n_gaps['sample'].isin(low_abundance_samples)],
-                                inplace=True)
-            keep_samples |= set(df_less_n_gaps['sample'].sample(n=n_to_sample))
+        keep_samples = sampling_lineages(df_less_n_gaps, keep_samples, max_seqs)
+        logging.info(f'Sampled {(len(keep_samples))} samples from top quality sequences.')
     logging.info(f'Writing {len(keep_samples)} of {len(seq_samples)} sequences to "{output_fasta}".')
     write_fasta(output_fasta, keep_samples, sample_seq)
     df.loc[keep_samples & set(df.index), :].to_csv(output_metadata, sep='\t', index=True)
     logging.info(f'Done!')
 
 
-def keep_seqs_from_country(df: pd.DataFrame, country: str, keep_samples: Set[str], max_seqs:int) -> Set[str]:
+def sampling_lineages(df: pd.DataFrame, keep_samples: Set[str], max_seqs: int) -> Set[str]:
+    df_lineages_count = df['lineage'].value_counts(ascending=True).to_frame('count')
+    n_lineages = df_lineages_count.shape[0]
+    seqs_per_lineages = int((max_seqs - len(keep_samples)) / n_lineages)
+    for i, (lineage, row) in enumerate(df_lineages_count.iterrows()):
+        seqs_in_lineages = df[df['lineage'] == lineage]
+        if row['count'] < seqs_per_lineages:
+            keep_samples |= set(seqs_in_lineages['sample'])
+        else:
+            keep_samples |= set(seqs_in_lineages['sample'].sample(n=seqs_per_lineages))
+        if n_lineages < i + 1:
+            seqs_per_lineages = (max_seqs - len(keep_samples)) / (n_lineages - i + 1)
+    return keep_samples
+
+
+def keep_seqs_from_country(df: pd.DataFrame, country: str, keep_samples: Set[str], max_seqs: int) -> Set[str]:
     country_matching_samples = set(df[df.country.str.contains(country, case=False)].index)
     n_country_keep = len(country_matching_samples | keep_samples)
     if n_country_keep <= max_seqs:
@@ -87,15 +86,18 @@ def keep_seqs_from_country(df: pd.DataFrame, country: str, keep_samples: Set[str
     return keep_samples
 
 
-def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]]) -> Tuple[pd.DataFrame, Set[str]]:
+def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]], df: pd.DataFrame) -> Tuple[pd.DataFrame, Set[str]]:
     seq_recs = []
     for seq, samples in seq_samples.items():
         if samples & keep_samples:
             keep_samples |= samples
             continue
         seq = seq.upper()
+        # There are possible duplicate strains, add lineage column for df_less_n_gaps dataframe
+        sample_lineage = set(df[df.index == list(samples)[0]]['Pango_lineage'])
         seq_recs.append(dict(
             sample=list(samples)[0],
+            lineage=list(sample_lineage)[0],
             seq_n=seq.count('N'),
             seq_gap=seq.count('-'),
         ))
