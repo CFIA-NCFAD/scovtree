@@ -62,7 +62,7 @@ def main(
         mask = mask & df_gisaid['region'].str.contains(region)
         logging.info(f'{mask.sum()} GISAID sequences after filtering for region "{region}"')
     df_subset: pd.DataFrame = df_gisaid.loc[mask, :]
-    logging.info(f'{df_subset.columns}')
+    logging.info(f'{df_subset.shape[0]} interest strains found ')
     if df_subset.index.size > max_gisaid_seqs:
         logging.warning(f'There are {df_subset.index.size} GISAID sequences selected by metadata. '
                         f'Downsampling to {max_gisaid_seqs}')
@@ -129,7 +129,7 @@ def sampling_gisaid(df: pd.DataFrame, max_gisaid_seqs: int) -> Set[str]:
     for i, (lineage, row) in enumerate(df_lineages_count.iterrows()):
         seqs_in_lineages = df[df['Pango_lineage'] == lineage]
         if row['count'] < seqs_per_lineages:
-            logging.info(f'No need to sampling {lineage}')
+            logging.info(f'No need to sample lineage "{lineage}" (sequences count={row["count"]}; less than {seqs_per_lineages} seqs per lineage)')
             sampled_gisaid |= set(seqs_in_lineages.index)
         else:
             try:
@@ -219,6 +219,7 @@ def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
             df = pd.read_table(get_metadata_file_from_tar(tar), index_col=0)
     else:
         df = pd.read_table(gisaid_metadata, index_col=0)
+    logging.info(f'Columns in GISAID metadata file: {df.columns}')
     # Replace non-word characters in column names with '_'
     df.columns = df.columns.str.replace(r'[^\w]+', '_').str.replace(r'_+$', '')
     # Strip whitespace from strain name

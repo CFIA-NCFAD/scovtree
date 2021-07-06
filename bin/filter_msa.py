@@ -64,8 +64,12 @@ def sampling_lineages(df: pd.DataFrame, keep_samples: Set[str], max_seqs: int) -
     for i, (lineage, row) in enumerate(df_lineages_count.iterrows()):
         seqs_in_lineages = df[df['lineage'] == lineage]
         if row['count'] < seqs_per_lineages:
+            logging.info(
+                f'No need to sample lineage "{lineage}" (sequences count={row["count"]}; less than {seqs_per_lineages} seqs per lineage)')
             keep_samples |= set(seqs_in_lineages['sample'])
         else:
+            logging.info(
+                f'Sampling lineage "{lineage}" sequences (sequences count={row["count"]}; greater than {seqs_per_lineages} seqs per lineage)')
             keep_samples |= set(seqs_in_lineages['sample'].sample(n=seqs_per_lineages))
         if n_lineages < i + 1:
             seqs_per_lineages = (max_seqs - len(keep_samples)) / (n_lineages - i + 1)
@@ -86,7 +90,8 @@ def keep_seqs_from_country(df: pd.DataFrame, country: str, keep_samples: Set[str
     return keep_samples
 
 
-def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]], df: pd.DataFrame) -> Tuple[pd.DataFrame, Set[str]]:
+def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]], df: pd.DataFrame) -> Tuple[
+    pd.DataFrame, Set[str]]:
     seq_recs = []
     for seq, samples in seq_samples.items():
         if samples & keep_samples:
@@ -94,7 +99,7 @@ def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]], 
             continue
         seq = seq.upper()
         # There are possible duplicate strains, add lineage column for df_less_n_gaps dataframe
-        sample_lineage = set(df[df.index == list(samples)[0]]['Pango_lineage'])
+        sample_lineage = set(df.loc[list(samples), 'Pango_lineage'])
         seq_recs.append(dict(
             sample=list(samples)[0],
             lineage=list(sample_lineage)[0],
