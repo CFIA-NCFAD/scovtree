@@ -62,27 +62,12 @@ def main(
         mask = mask & df_gisaid['region'].str.contains(region)
         logging.info(f'{mask.sum()} GISAID sequences after filtering for region "{region}"')
     df_subset: pd.DataFrame = df_gisaid.loc[mask, :]
+    logging.info(f'{df_subset.shape[0]} interest strains found ')
     if df_subset.index.size > max_gisaid_seqs:
         logging.warning(f'There are {df_subset.index.size} GISAID sequences selected by metadata. '
                         f'Downsampling to {max_gisaid_seqs}')
-        try:
-            weights = 1.0 - df_subset['N_Content'].values
-            weights[np.isnan(weights)] = 0.0
-            weights = np.clip(weights, 0.0, 1.0)
-            logging.info(f'Using GISAID provided N content for down-sampling weights. Mean N content: {df_subset["N_Content"].mean()}')
-        except KeyError:
-            logging.info(f'Could not find "N_Content" GISAID metadata field. '
-                         f'Using equal probability weights for down-sampling')
-            weights = None
-        sampled_gisaid = df_subset.index.to_series()
-        try:
-            sampled_gisaid = sampled_gisaid.sample(n=max_gisaid_seqs, weights=weights)
-        except ValueError as ex:
-            logging.warning(f'Could not use weights based on "N_Content" GISAID metadata field. Error: "{ex}"')
-            sampled_gisaid = sampled_gisaid.sample(n=max_gisaid_seqs)
+        sampled_gisaid = sampling_gisaid(df_subset, max_gisaid_seqs)
         df_subset = df_subset.loc[sampled_gisaid, :]
-        if weights is not None:
-            logging.info(f'After down-sampling, mean N content: {df_subset["N_Content"].mean()}')
     metadata_filtered_sequences = set(df_subset.index)
     if not metadata_filtered_sequences:
         logging.error(f'No GISAID sequences found matching filters!')
@@ -134,6 +119,33 @@ def main(
         )
         with open(statistics_output, 'w') as fh:
             json.dump(stats, fh)
+
+
+def sampling_gisaid(df: pd.DataFrame, max_gisaid_seqs: int) -> Set[str]:
+    df_lineages_count = df['Pango_lineage'].value_counts(ascending=True).to_frame('count')
+    n_lineages = df_lineages_count.shape[0]
+    sampled_gisaid = set()
+    seqs_per_lineages = int((max_gisaid_seqs - len(sampled_gisaid)) / n_lineages)
+    for i, (lineage, row) in enumerate(df_lineages_count.iterrows()):
+        seqs_in_lineages = df[df['Pango_lineage'] == lineage]
+        if row['count'] < seqs_per_lineages:
+            logging.info(f'No need to sample lineage "{lineage}" (sequences count={row["count"]}; less than {seqs_per_lineages} seqs per lineage)')
+            sampled_gisaid |= set(seqs_in_lineages.index)
+        else:
+            try:
+                weights = 1.0 - seqs_in_lineages['N_Content'].values
+                weights[np.isnan(weights)] = 0.0
+                weights = np.clip(weights, 0.0, 1.0)
+                logging.info(
+                    f'Using GISAID provided N content for down-sampling weights for {lineage}. Mean N content: {seqs_in_lineages["N_Content"].mean()}')
+                sampled_gisaid |= set(seqs_in_lineages.index.to_series().sample(n=seqs_per_lineages, weights=weights))
+            except ValueError as ex:
+                logging.warning(
+                    f'Could not use weights based on "N_Content" GISAID metadata field, using equal probability weights for down-sampling {lineage}. Error: "{ex}"')
+                sampled_gisaid |= set(seqs_in_lineages.index.to_series().sample(n=seqs_per_lineages))
+        if n_lineages < i + 1:
+            seqs_per_lineages = (max_gisaid_seqs - len(sampled_gisaid)) / (n_lineages - i + 1)
+    return sampled_gisaid
 
 
 def write_user_sequences(fasta_output: Path, fout: IO[str], sequences: Path) -> None:
@@ -207,6 +219,7 @@ def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
             df = pd.read_table(get_metadata_file_from_tar(tar), index_col=0)
     else:
         df = pd.read_table(gisaid_metadata, index_col=0)
+    logging.info(f'Columns in GISAID metadata file: {df.columns}')
     # Replace non-word characters in column names with '_'
     df.columns = df.columns.str.replace(r'[^\w]+', '_').str.replace(r'_+$', '')
     # Strip whitespace from strain name
