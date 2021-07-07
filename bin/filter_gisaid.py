@@ -129,7 +129,8 @@ def sampling_gisaid(df: pd.DataFrame, max_gisaid_seqs: int) -> Set[str]:
     for i, (lineage, row) in enumerate(df_lineages_count.iterrows()):
         seqs_in_lineages = df[df['Pango_lineage'] == lineage]
         if row['count'] < seqs_per_lineages:
-            logging.info(f'No need to sample lineage "{lineage}" (sequences count={row["count"]}; less than {seqs_per_lineages} seqs per lineage)')
+            logging.info(
+                f'No need to sample lineage "{lineage}" (sequences count={row["count"]}; less than {seqs_per_lineages} seqs per lineage)')
             sampled_gisaid |= set(seqs_in_lineages.index)
         else:
             try:
@@ -216,7 +217,7 @@ def write_good_seqs(
 def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
     if tarfile.is_tarfile(gisaid_metadata):
         with tarfile.open(gisaid_metadata, "r:*") as tar:
-            df = pd.read_table(get_metadata_file_from_tar(tar), index_col=0)
+            df = pd.read_table(get_file_from_tar(tar), index_col=0)
     else:
         df = pd.read_table(gisaid_metadata, index_col=0)
     logging.info(f'Columns in GISAID metadata file: {df.columns}')
@@ -230,11 +231,6 @@ def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
     return pd.concat([df, df_locations], axis=1)
 
 
-def get_metadata_file_from_tar(tar: tarfile.TarFile) -> Optional[IO[bytes]]:
-    csv_path = [n for n in tar.getnames() if n.endswith('.tsv')][0]
-    return tar.extractfile(csv_path)
-
-
 def count_ambig_nt(seq: str) -> int:
     return sum(1 for x in seq.lower() if x not in {'a', 'g', 'c', 't', '-'})
 
@@ -243,8 +239,7 @@ def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
     """Read first fasta file in a tar file"""
     # Skip any text before the first record (e.g. blank lines, comments)
     with tarfile.open(tarxz_path) as tar:
-        fasta_path = [n for n in tar.getnames() if n.endswith('.fasta')][0]
-        handle = tar.extractfile(fasta_path)
+        handle = get_file_from_tar(tar)
         for line in handle:
             line = line.decode()
             if line[0] == ">":
@@ -263,6 +258,15 @@ def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
                 continue
             lines.append(line.rstrip())
         yield title, "".join(lines).replace(" ", "").replace("\r", "")
+
+
+def get_file_from_tar(tar: tarfile.TarFile) -> Optional[IO[bytes]]:
+    while True:
+        file_member = tar.next()  # next() method is much faster than getnames() method
+        if file_member is None:
+            break
+        if file_member.name.endswith('.fasta') or file_member.name.endswith('.tsv'):
+            return tar.extractfile(file_member)
 
 
 if __name__ == '__main__':
