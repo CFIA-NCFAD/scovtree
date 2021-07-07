@@ -99,11 +99,10 @@ def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]], 
             continue
         seq = seq.upper()
         sample: str = list(samples)[0]
-        # There are possible duplicate strains, add lineage column for df_less_n_gaps dataframe
-        lineage = set(df[df.index == sample]['Pango_lineage'])
+        lineage: str = df.loc[sample, 'Pango_lineage']
         seq_recs.append(dict(
             sample=sample,
-            lineage=list(lineage)[0],
+            lineage=lineage,
             seq_n=seq.count('N'),
             seq_gap=seq.count('-'),
         ))

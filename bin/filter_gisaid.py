@@ -62,6 +62,8 @@ def main(
         mask = mask & df_gisaid['region'].str.contains(region)
         logging.info(f'{mask.sum()} GISAID sequences after filtering for region "{region}"')
     df_subset: pd.DataFrame = df_gisaid.loc[mask, :]
+    # drop duplicate entries of df_subset before filtering/sampling
+    df_subset = df_subset[~df_subset.index.duplicated()]  # default keep first occurrence
     logging.info(f'{df_subset.shape[0]} interest strains found ')
     if df_subset.index.size > max_gisaid_seqs:
         logging.warning(f'There are {df_subset.index.size} GISAID sequences selected by metadata. '
@@ -97,7 +99,6 @@ def main(
                     max_length,
                     max_ambig
                 )
-
     df_filtered = df_subset.loc[keep_samples, :]
     df_filtered.to_csv(filtered_metadata, sep='\t', index=True)
 
@@ -138,11 +139,13 @@ def sampling_gisaid(df: pd.DataFrame, max_gisaid_seqs: int) -> Set[str]:
                 weights[np.isnan(weights)] = 0.0
                 weights = np.clip(weights, 0.0, 1.0)
                 logging.info(
-                    f'Using GISAID provided N content for down-sampling weights for {lineage}. Mean N content: {seqs_in_lineages["N_Content"].mean()}')
+                    f'Using GISAID provided N content for down-sampling weights for {lineage}, (sequences count={row["count"]}; greater than {seqs_per_lineages} seqs per lineage)'
+                    f'. Mean N content: {seqs_in_lineages["N_Content"].mean()}')
                 sampled_gisaid |= set(seqs_in_lineages.index.to_series().sample(n=seqs_per_lineages, weights=weights))
             except ValueError as ex:
                 logging.warning(
-                    f'Could not use weights based on "N_Content" GISAID metadata field, using equal probability weights for down-sampling {lineage}. Error: "{ex}"')
+                    f'Could not use weights based on "N_Content" GISAID metadata field, using equal probability weights for down-sampling {lineage}'
+                    f'(sequences count={row["count"]}; greater than {seqs_per_lineages} seqs per lineage). Error: "{ex}"')
                 sampled_gisaid |= set(seqs_in_lineages.index.to_series().sample(n=seqs_per_lineages))
         if n_lineages < i + 1:
             seqs_per_lineages = (max_gisaid_seqs - len(sampled_gisaid)) / (n_lineages - i + 1)
@@ -206,7 +209,7 @@ def write_good_seqs(
         if (
                 min_length < len(seq) <= max_length
                 and count_ambig_nt(seq) < xambig
-                and strains not in keep_samples
+                and strains not in keep_samples  # There is no duplicate entries at this step
         ):
             keep_samples.add(strains)
             # Write sequence
