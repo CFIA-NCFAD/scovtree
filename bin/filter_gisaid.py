@@ -4,6 +4,7 @@ import sys
 import tarfile
 from pathlib import Path
 from typing import Iterator, Tuple, Optional, IO, Set
+import re
 
 import pandas as pd
 import numpy as np
@@ -62,6 +63,8 @@ def main(
         mask = mask & df_gisaid['region'].str.contains(region)
         logging.info(f'{mask.sum()} GISAID sequences after filtering for region "{region}"')
     df_subset: pd.DataFrame = df_gisaid.loc[mask, :]
+    # drop duplicate entries of df_subset before filtering/sampling
+    df_subset = df_subset[~df_subset.index.duplicated()]  # default keep first occurrence
     logging.info(f'{df_subset.shape[0]} interest strains found ')
     if df_subset.index.size > max_gisaid_seqs:
         logging.warning(f'There are {df_subset.index.size} GISAID sequences selected by metadata. '
@@ -97,7 +100,6 @@ def main(
                     max_length,
                     max_ambig
                 )
-
     df_filtered = df_subset.loc[keep_samples, :]
     df_filtered.to_csv(filtered_metadata, sep='\t', index=True)
 
@@ -129,7 +131,8 @@ def sampling_gisaid(df: pd.DataFrame, max_gisaid_seqs: int) -> Set[str]:
     for i, (lineage, row) in enumerate(df_lineages_count.iterrows()):
         seqs_in_lineages = df[df['Pango_lineage'] == lineage]
         if row['count'] < seqs_per_lineages:
-            logging.info(f'No need to sample lineage "{lineage}" (sequences count={row["count"]}; less than {seqs_per_lineages} seqs per lineage)')
+            logging.info(
+                f'No need to sample lineage "{lineage}" (sequences count={row["count"]}; less than {seqs_per_lineages} seqs per lineage)')
             sampled_gisaid |= set(seqs_in_lineages.index)
         else:
             try:
@@ -137,11 +140,13 @@ def sampling_gisaid(df: pd.DataFrame, max_gisaid_seqs: int) -> Set[str]:
                 weights[np.isnan(weights)] = 0.0
                 weights = np.clip(weights, 0.0, 1.0)
                 logging.info(
-                    f'Using GISAID provided N content for down-sampling weights for {lineage}. Mean N content: {seqs_in_lineages["N_Content"].mean()}')
+                    f'Using GISAID provided N content for down-sampling weights for {lineage}, (sequences count={row["count"]}; greater than {seqs_per_lineages} seqs per lineage)'
+                    f'. Mean N content: {seqs_in_lineages["N_Content"].mean()}')
                 sampled_gisaid |= set(seqs_in_lineages.index.to_series().sample(n=seqs_per_lineages, weights=weights))
             except ValueError as ex:
                 logging.warning(
-                    f'Could not use weights based on "N_Content" GISAID metadata field, using equal probability weights for down-sampling {lineage}. Error: "{ex}"')
+                    f'Could not use weights based on "N_Content" GISAID metadata field, using equal probability weights for down-sampling {lineage}'
+                    f'(sequences count={row["count"]}; greater than {seqs_per_lineages} seqs per lineage). Error: "{ex}"')
                 sampled_gisaid |= set(seqs_in_lineages.index.to_series().sample(n=seqs_per_lineages))
         if n_lineages < i + 1:
             seqs_per_lineages = (max_gisaid_seqs - len(sampled_gisaid)) / (n_lineages - i + 1)
@@ -205,7 +210,7 @@ def write_good_seqs(
         if (
                 min_length < len(seq) <= max_length
                 and count_ambig_nt(seq) < xambig
-                and strains not in keep_samples
+                and strains not in keep_samples  # There is no duplicate entries at this step
         ):
             keep_samples.add(strains)
             # Write sequence
@@ -216,7 +221,7 @@ def write_good_seqs(
 def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
     if tarfile.is_tarfile(gisaid_metadata):
         with tarfile.open(gisaid_metadata, "r:*") as tar:
-            df = pd.read_table(get_metadata_file_from_tar(tar), index_col=0)
+            df = pd.read_table(get_file_from_tar(tar, r'.*\.tsv'), index_col=0)
     else:
         df = pd.read_table(gisaid_metadata, index_col=0)
     logging.info(f'Columns in GISAID metadata file: {df.columns}')
@@ -230,11 +235,6 @@ def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
     return pd.concat([df, df_locations], axis=1)
 
 
-def get_metadata_file_from_tar(tar: tarfile.TarFile) -> Optional[IO[bytes]]:
-    csv_path = [n for n in tar.getnames() if n.endswith('.tsv')][0]
-    return tar.extractfile(csv_path)
-
-
 def count_ambig_nt(seq: str) -> int:
     return sum(1 for x in seq.lower() if x not in {'a', 'g', 'c', 't', '-'})
 
@@ -243,8 +243,7 @@ def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
     """Read first fasta file in a tar file"""
     # Skip any text before the first record (e.g. blank lines, comments)
     with tarfile.open(tarxz_path) as tar:
-        fasta_path = [n for n in tar.getnames() if n.endswith('.fasta')][0]
-        handle = tar.extractfile(fasta_path)
+        handle = get_file_from_tar(tar, r'.*\.fasta$')
         for line in handle:
             line = line.decode()
             if line[0] == ">":
@@ -263,6 +262,15 @@ def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
                 continue
             lines.append(line.rstrip())
         yield title, "".join(lines).replace(" ", "").replace("\r", "")
+
+
+def get_file_from_tar(tar: tarfile.TarFile, name: str) -> Optional[IO[bytes]]:
+    while True:
+        file_member = tar.next()  # next() method is much faster than getnames() method
+        if file_member is None:
+            break
+        if re.match(name, file_member.name):
+            return tar.extractfile(file_member)
 
 
 if __name__ == '__main__':
