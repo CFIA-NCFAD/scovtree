@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### :warning: Major enhancements
 
-* Reade GISAID data files more efficiently, replacing `tarfile.TarFile.getnames()` method by `tarfile.TarFile.next()` method which is much faster for large file
+* Read GISAID data files more efficiently, replacing `tarfile.TarFile.getnames()` method by `tarfile.TarFile.next()` method which is much faster for large file
 * Remove duplicate entries during GISAID filtering
 
 ## [v1.1.0](https://github.com/nhhaidee/scovtree/releases/tag/1.1.0) - [July 06 2021]
