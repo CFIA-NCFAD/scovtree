@@ -11,7 +11,7 @@ Initial release of nhhaidee/scovtree, created with the [nf-core](https://nf-co.r
 
 ### :warning: Major enhancements
 
-* This release addresses an enhancement in which low abundance lineages should be better represented in all possible stages. The sampling is done separately for each unique lineage to ensure that each lineage is properly represented and more balanced in Phyolgenetic Analysis
+* This release addresses an enhancement in which low abundance lineages should be better represented in all possible stages. The sampling is done separately for each unique lineage to ensure that each lineage is properly represented and more balanced in Phyolgenetic Analysis.
 
 ## [v1.2.0](https://github.com/nhhaidee/scovtree/releases/tag/1.2.0) - [July 07 2021]
 
