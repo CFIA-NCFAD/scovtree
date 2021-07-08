@@ -4,6 +4,7 @@ import sys
 import tarfile
 from pathlib import Path
 from typing import Iterator, Tuple, Optional, IO, Set
+import re
 
 import pandas as pd
 import numpy as np
@@ -220,7 +221,7 @@ def write_good_seqs(
 def read_gisaid_metadata(gisaid_metadata: Path) -> pd.DataFrame:
     if tarfile.is_tarfile(gisaid_metadata):
         with tarfile.open(gisaid_metadata, "r:*") as tar:
-            df = pd.read_table(get_file_from_tar(tar), index_col=0)
+            df = pd.read_table(get_file_from_tar(tar, r'.*\.tsv'), index_col=0)
     else:
         df = pd.read_table(gisaid_metadata, index_col=0)
     logging.info(f'Columns in GISAID metadata file: {df.columns}')
@@ -242,7 +243,7 @@ def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
     """Read first fasta file in a tar file"""
     # Skip any text before the first record (e.g. blank lines, comments)
     with tarfile.open(tarxz_path) as tar:
-        handle = get_file_from_tar(tar)
+        handle = get_file_from_tar(tar, r'.*\.fasta$')
         for line in handle:
             line = line.decode()
             if line[0] == ">":
@@ -263,12 +264,12 @@ def read_fasta_tarxz(tarxz_path) -> Iterator[Tuple[str, str]]:
         yield title, "".join(lines).replace(" ", "").replace("\r", "")
 
 
-def get_file_from_tar(tar: tarfile.TarFile) -> Optional[IO[bytes]]:
+def get_file_from_tar(tar: tarfile.TarFile, name: str) -> Optional[IO[bytes]]:
     while True:
         file_member = tar.next()  # next() method is much faster than getnames() method
         if file_member is None:
             break
-        if file_member.name.endswith('.fasta') or file_member.name.endswith('.tsv'):
+        if re.match(name, file_member.name):
             return tar.extractfile(file_member)
 
 
