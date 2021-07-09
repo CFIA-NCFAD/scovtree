@@ -2,6 +2,7 @@
 def modules = params.modules.clone()
 
 include { MAFFT } from '../modules/local/mafft' addParams( options: modules['mafft'] )
+include { PREPARE_INPUT_SEQUENCES}  from '../modules/local/prepare_input_sequences' addParams( options: modules['prepare_input_sequences'] )
 include { AA_MUTATION_MATRIX } from '../modules/local/aa_mutation_matrix' addParams( options: modules['aa_mutation_matrix'] )
 include { IQTREE } from '../modules/local/iqtree' addParams( options: modules['iqtree'] )
 include { ALIGN2ALLELES } from '../modules/local/align2alleles' addParams( options: modules['align2alleles'] )
@@ -18,11 +19,13 @@ workflow PHYLOGENETIC_ANALYSIS {
   ch_input             = Channel.fromPath(params.input)
   ch_ref_sequence      = Channel.fromPath(params.reference_fasta)
 
-  PANGOLIN(ch_input)
+  PREPARE_INPUT_SEQUENCES(ch_input)
+
+  PANGOLIN(PREPARE_INPUT_SEQUENCES.out.fasta)
   ch_software_versions = ch_software_versions.mix(PANGOLIN.out.version.ifEmpty(null))
   
   MAFFT(
-      ch_input,
+      PREPARE_INPUT_SEQUENCES.out.fasta,
       ch_ref_sequence
   )
   ch_software_versions = ch_software_versions.mix(MAFFT.out.version.ifEmpty(null))
@@ -33,7 +36,7 @@ workflow PHYLOGENETIC_ANALYSIS {
   ch_aa_mutation_matrix = Channel.empty()
   if (!params.skip_nextclade) {
     NEXTCLADE(
-        ch_input,
+        PREPARE_INPUT_SEQUENCES.out.fasta,
         'csv'
     )
     AA_MUTATION_MATRIX(NEXTCLADE.out.csv).set { ch_aa_mutation_matrix }
