@@ -16,13 +16,32 @@ and processes data using the following steps:
 
 <!-- TODO: Add pipeline steps -->
 
-1. [Pangolin](#pangolin) lineage assignment
-2. [Filtering GISAID sequences](#filtering-gisaid-sequences) (if specified)
-3. [Multiple sequence alignment](#multiple-sequence-alignment)
-4. [Nextclade](#nextclade) Mutation Calling
-5. [Phylogenetic tree inference](#phylogenetic-tree-inference)
-6. [Phylogenetic tree with SNPs](#phylogenetic-tree-with-SNPs)
-7. [shiptv tree visualization](#shiptv-tree-visualization)
+1. [Prepare Input Sequences](#prepare_input_sequences)
+2. [Pangolin](#pangolin) lineage assignment
+3. [Filtering GISAID sequences](#filtering-gisaid-sequences) (if specified)
+4. [Multiple sequence alignment](#multiple-sequence-alignment)
+5. [Nextclade](#nextclade) Mutation Calling
+6. [Phylogenetic tree inference](#phylogenetic-tree-inference)
+7. [Phylogenetic tree with SNPs](#phylogenetic-tree-with-SNPs)
+8. [shiptv tree visualization](#shiptv-tree-visualization)
+
+### Prepare Input Sequences
+
+Input sequence IDs may be mangled by [Pangolin]. Trimming away the text after the first pipe `|` character or whitespace character so that the results can be easily linked to the original sequences and tree taxa. For example:
+```
+>MW422255.1 Severe acute respiratory syndrome coronavirus 2 isolate SARS-CoV-2/human/USA/SEARCH-5574-SAN/2020|02-03-2020, complete genome
+```
+to 
+```
+>MW422255.1
+```
+
+<details markdown="1">
+<summary>Output files</summary>
+
+* `input_sequences/input_sequences.correctedID.fasta`: 
+
+</details>
 
 ### Pangolin
 

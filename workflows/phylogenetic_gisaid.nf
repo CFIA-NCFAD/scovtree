@@ -4,6 +4,7 @@ def modules = params.modules.clone()
 
 include { PANGOLIN } from '../modules/local/pangolin'
 include { FILTER_GISAID } from '../modules/local/filter_gisaid' addParams( options: modules['filter_gisaid'] )
+include { PREPARE_INPUT_SEQUENCES}  from '../modules/local/prepare_input_sequences' addParams( options: modules['prepare_input_sequences'] )
 include { NEXTALIGN } from '../modules/local/nextalign' addParams( options: modules['nextalign'] )
 include { FILTER_MSA } from '../modules/local/filter_msa' addParams( options: modules['filter_msa'] )
 include { IQTREE } from '../modules/local/iqtree' addParams( options: modules['iqtree'] )
@@ -23,11 +24,13 @@ workflow PHYLOGENETIC_GISAID {
   ch_reference_fasta  = Channel.fromPath(params.reference_fasta)
   ch_input            = Channel.fromPath(params.input)
 
-  PANGOLIN(ch_input)
+  PREPARE_INPUT_SEQUENCES(ch_input)
+
+  PANGOLIN(PREPARE_INPUT_SEQUENCES.out.fasta)
   ch_software_versions = ch_software_versions.mix(PANGOLIN.out.version.ifEmpty(null))
   
   FILTER_GISAID(
-    ch_input,
+    PREPARE_INPUT_SEQUENCES.out.fasta,
     ch_gisaid_sequences,
     ch_gisaid_metadata,
     PANGOLIN.out.report

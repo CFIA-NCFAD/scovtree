@@ -210,10 +210,9 @@ def write_good_seqs(
         if (
                 min_length < len(seq) <= max_length
                 and count_ambig_nt(seq) < xambig
-                and strains not in keep_samples  # There is no duplicate entries at this step
+                and strains not in keep_samples
         ):
             keep_samples.add(strains)
-            # Write sequence
             fasta_output_handle.write(f'>{strains}\n{seq}\n')
     return keep_samples
 
