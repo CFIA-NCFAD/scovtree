@@ -28,18 +28,11 @@ and processes data using the following steps:
 ### Prepare Input Sequences
 
 Input sequence IDs may be mangled by [Pangolin]. Trimming away the text after the first pipe `|` character or whitespace character so that the results can be easily linked to the original sequences and tree taxa. For example:
-```
->MW422255.1 Severe acute respiratory syndrome coronavirus 2 isolate SARS-CoV-2/human/USA/SEARCH-5574-SAN/2020|02-03-2020, complete genome
-```
-to 
-```
->MW422255.1
-```
 
 <details markdown="1">
 <summary>Output files</summary>
 
-* `input_sequences/input_sequences.correctedID.fasta`: 
+* `input_sequences/input_sequences.correctedID.fasta`:
 
 </details>
 
