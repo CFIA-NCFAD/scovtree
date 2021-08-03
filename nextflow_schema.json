@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nhhaidee/scovtree/master/nextflow_schema.json",
-    "title": "nhhaidee/scovtree pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/CFIA-NCFAD/scovtree/master/nextflow_schema.json",
+    "title": "CFIA-NCFAD/scovtree pipeline parameters",
     "description": "SARS-CoV-2 phylogenetic analysis pipeline",
     "type": "object",
     "definitions": {
@@ -31,7 +31,7 @@
                 "reference_fasta": {
                     "type": "string",
                     "description": "Reference SARS-CoV-2 genome sequence FASTA file.",
-                    "default": "https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta",
+                    "default": "https://github.com/CFIA-NCFAD/nf-test-datasets/raw/scovtree/genome/MN908947.3/MN908947.3.fa",
                     "fa_icon": "fas fa-virus"
                 },
                 "gisaid_sequences": {

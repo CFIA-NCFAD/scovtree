@@ -12,7 +12,7 @@ jobs:
   test:
     name: Run test profiles
     # Only run on push if this is dev branch (merged PRs)
-    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nhhaidee/scovtree') }}
+    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'CFIA-NCFAD/scovtree') }}
     runs-on: ubuntu-latest
     env:
       NXF_VER: ${{ matrix.nxf_ver }}

@@ -7,6 +7,6 @@ with open('software_versions.tsv', 'w') as fout:
     for path in Path('.').glob('*.version.txt'):
         software = path.name.replace('.version.txt', '')
         if software == 'pipeline':
-            software = 'nhhaidee/scovtree'
+            software = 'CFIA-NCFAD/scovtree'
         version = path.read_text().strip()
         fout.write(f'{software}\t{version}\n')

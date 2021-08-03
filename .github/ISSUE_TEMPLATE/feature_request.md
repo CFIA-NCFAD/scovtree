@@ -1,11 +1,11 @@
 ---
 name: Feature request
-about: Suggest an idea for the nhhaidee/scovtree pipeline
+about: Suggest an idea for the CFIA-NCFAD/scovtree pipeline
 labels: enhancement
 ---
 
 <!--
-# nhhaidee/scovtree feature request
+# CFIA-NCFAD/scovtree feature request
 
 Hi there!
 
