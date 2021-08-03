@@ -3,7 +3,8 @@
 **SARS-CoV-2 phylogenetic analysis pipeline**.
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.04.0-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
-[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](https://bioconda.github.io/)
+
+[![CI](https://github.com/CFIA-NCFAD/scovtree/actions/workflows/ci.yml/badge.svg)](https://github.com/CFIA-NCFAD/scovtree/actions/workflows/ci.yml)
 
 ## Introduction
 
