@@ -1,4 +1,4 @@
-# nhhaidee/scovtree
+# CFIA-NCFAD/scovtree
 
 **SARS-CoV-2 phylogenetic analysis pipeline**.
 
@@ -7,10 +7,10 @@
 
 ## Introduction
 
-**nhhaidee/scovtree** is a bioinformatics pipeline for [SARS-CoV-2] phylogenetic analysis.
+**CFIA-NCFAD/scovtree** is a bioinformatics pipeline for [SARS-CoV-2] phylogenetic analysis.
 Given an input FASTA file with SARS-CoV-2 sequences, this workflow will generate a maximum-likelihood phylogenetic tree (using [IQ-TREE] from a [MAFFT] or [Nextalign] multiple sequence alignment) and interactive HTML tree visualization ([shiptv]).
 
-This pipeline also allows you to visualize your sequences along with the most closely SARS-CoV-2 sequences from [GISAID] (if both the GISAID sequences and metadata `.tar.xz` files are provided). Amino acid mutations can also be determined using [Nextclade] and shown in the tree visualization.
+This pipeline also allows you to visualize your sequences along with the most closely SARS-CoV-2 sequences from [GISAID][] (if both the GISAID sequences and metadata `.tar.xz` files are provided). Amino acid mutations can also be determined using [Nextclade] and shown in the tree visualization.
 
 The pipeline is built using [Nextflow], a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -23,7 +23,7 @@ The pipeline is built using [Nextflow], a workflow tool to run tasks across mult
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```bash
-    nextflow run nhhaidee/scovtree -profile test,<docker/singularity/conda>
+    nextflow run CFIA-NCFAD/scovtree -profile test,<docker/singularity/conda>
     ```
 
 4. Start running your own analysis!
@@ -31,14 +31,14 @@ The pipeline is built using [Nextflow], a workflow tool to run tasks across mult
     * Typical command for phylogenetic analysis:
 
         ```bash
-        nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
+        nextflow run CFIA-NCFAD/scovtree -profile <docker/singularity/conda> \
             --input your-sars-cov-2-sequences.fasta
         ```
 
     * Typical command for phylogenetic analysis with GISAID SARS-CoV-2 data:
 
         ```bash
-        nextflow run nhhaidee/scovtree -profile <docker/singularity/conda> \
+        nextflow run CFIA-NCFAD/scovtree -profile <docker/singularity/conda> \
             --input your-sars-cov-2-sequences.fasta \
             --gisaid_sequences sequences_fasta_2021_06_14.tar.xz \
             --gisaid_metadata metadata_tsv_2021_06_14.tar.xz
@@ -46,7 +46,7 @@ The pipeline is built using [Nextflow], a workflow tool to run tasks across mult
 
 ## Credits
 
-`nhhaidee/scovtree` was originally written by [Hai Nguyen].
+`CFIA-NCFAD/scovtree` was originally written by [Hai Nguyen].
 
 Contributors:
 
@@ -62,9 +62,8 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi. -->
-<!-- If you use  nhhaidee/scovtree for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-You can cite the `nf-core` publication as follows:
+<!-- If you use  CFIA-NCFAD/scovtree for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+This pipeline tries to follow the best practices for Nextflow workflow development and deployment set by `nf-core`. You can cite the `nf-core` publication as follows:
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**
 >
@@ -74,11 +73,9 @@ You can cite the `nf-core` publication as follows:
 
 In addition, references of tools and data used in this pipeline are as follows:
 
-* [Nextflow]
 * [nf-core]
 * [jts/ncov-tools]
 * [IQ-TREE]
-* [Nextstrain]
 * [Nextalign]
 * [Nextclade]
 * [MAFFT]
@@ -108,6 +105,6 @@ Distributed under the MIT license.
 [Pangolin]: https://github.com/cov-lineages/pangolin/
 [ggtree]: https://bioconductor.org/packages/release/bioc/html/ggtree.html
 [Peter Kruczkiewicz]: https://github.com/peterk87/
-[Hai Nguyen]: https://github.com/nhhaidee/
+[Hai Nguyen]: https://github.com/CFIA-NCFAD/
 [GISAID]: https://www.gisaid.org/
 [SARS-CoV-2]: https://www.ncbi.nlm.nih.gov/nuccore/MN908947.3/
