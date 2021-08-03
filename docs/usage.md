@@ -1,4 +1,4 @@
-# nhhaidee/scovtree: Usage
+# CFIA-NCFAD/scovtree: Usage
 
 ## Introduction
 
@@ -9,7 +9,7 @@ The pipeline has 2 workflows:
 * Phylogenetic analysis with input SARS-CoV-2 sequences
 
   ```bash
-  nextflow run nhhaidee/scovtree \
+  nextflow run CFIA-NCFAD/scovtree \
     -profile docker \
     --input your-sars-cov-2-sequences.fasta
   ```
@@ -17,7 +17,7 @@ The pipeline has 2 workflows:
 * Phylogenetic analysis with input SARS-CoV-2 sequences and related GISAID sequences
 
   ```bash
-  nextflow run nhhaidee/scovtree \
+  nextflow run CFIA-NCFAD/scovtree \
     -profile docker \
     --input your-sars-cov-2-sequences.fasta \
     --gisaid_sequences sequences_fasta_2021_06_14.tar.xz \
@@ -68,7 +68,7 @@ Name of reference sequence.
 
 * Optional
 * Type: string
-* Default: `https://raw.githubusercontent.com/nhhaidee/nf-test-datasets/main/nCoV-2019.reference.fasta`
+* Default: `https://raw.githubusercontent.com/CFIA-NCFAD/nf-test-datasets/scovtree/nCoV-2019.reference.fasta`
 
 Reference SARS-CoV-2 genome sequence FASTA file.
 
@@ -77,14 +77,14 @@ Reference SARS-CoV-2 genome sequence FASTA file.
 * Optional
 * Type: string
 
-Path to GISAID SARS-CoV-2 sequences (e.g. `sequences_fasta_2021_06_14.tar.xz`)
+Path to GISAID SARS-CoV-2 sequences (e.g. `sequences_fasta_2021_08_03.tar.xz`)
 
 #### `--gisaid_metadata`
 
 * Optional
 * Type: string
 
-Path to GISAID SARS-CoV-2 metadata (e.g. `metadata_tsv_2021_06_14.tar.xz`)
+Path to GISAID SARS-CoV-2 metadata (e.g. `metadata_tsv_2021_08_03.tar.xz`)
 
 ### GISAID Sequence Filtering Options
 
@@ -425,14 +425,14 @@ Institutional config URL link.
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
-nextflow pull nhhaidee/scovtree
+nextflow pull CFIA-NCFAD/scovtree
 ```
 
 ### Reproducibility
 
 It's a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nhhaidee/scovtree releases page](https://github.com/nhhaidee/scovtree/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
+First, go to the [CFIA-NCFAD/scovtree releases page](https://github.com/CFIA-NCFAD/scovtree/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.4.0`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 

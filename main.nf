@@ -1,11 +1,11 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-                         nhhaidee/scovtree
+                         CFIA-NCFAD/scovtree
 ========================================================================================
- nhhaidee/scovtree Analysis Pipeline.
+ CFIA-NCFAD/scovtree Analysis Pipeline.
  #### Homepage / Documentation
- https://github.com/nhhaidee/scovtree
+ https://github.com/CFIA-NCFAD/scovtree
 ----------------------------------------------------------------------------------------
 */
 
@@ -15,7 +15,7 @@ log.info Headers.nf_core(workflow, params.monochrome_logs)
 
 def json_schema = "$projectDir/nextflow_schema.json"
 if (params.help) {
-    def command = "nextflow run nhhaidee/scovtree --input your-sars-cov-2-sequences.fasta"
+    def command = "nextflow run CFIA-NCFAD/scovtree --input your-sars-cov-2-sequences.fasta"
     log.info NfcoreSchema.params_help(workflow, params, json_schema, command)
     exit 0
 }

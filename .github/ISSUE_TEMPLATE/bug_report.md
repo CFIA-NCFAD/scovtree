@@ -5,7 +5,7 @@ labels: bug
 ---
 
 <!--
-# nhhaidee/scovtree bug report
+# CFIA-NCFAD/scovtree bug report
 
 Hi there!
 
@@ -17,8 +17,8 @@ Please delete this text and anything that's not relevant from the template below
 
 I have checked the following places for your error:
 
-- [ ] [nhhaidee/scovtree pipeline issues page](https://github.com/nhhaidee/scovtree/issues?q=is%3Aissue)
-- [ ] [nhhaidee/scovtree pipeline documentation](https://github.com/nhhaidee/scovtree/blob/master/docs/usage.md)
+- [ ] [CFIA-NCFAD/scovtree pipeline issues page](https://github.com/CFIA-NCFAD/scovtree/issues?q=is%3Aissue)
+- [ ] [CFIA-NCFAD/scovtree pipeline documentation](https://github.com/CFIA-NCFAD/scovtree/blob/master/docs/usage.md)
 
 ## Description of the bug
 
