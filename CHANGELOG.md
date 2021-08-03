@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Forked [nhhaidee/scovtree](https://github.com/nhhaidee/scovtree/) repo to [CFIA-NCFAD](https://github.com/CFIA-NCFAD) organization
 * Added test data to [CFIA-NCFAD/nf-test-datasets](https://github.com/CFIA-NCFAD/nf-test-datasets) repo under `scovtree` branch.
 
-
 ## [v1.3.0](https://github.com/CFIA-NCFAD/scovtree/releases/tag/1.3.0) - [July 09 2021]
 
 ### :warning: Major enhancements
