@@ -105,6 +105,6 @@ Distributed under the MIT license.
 [Pangolin]: https://github.com/cov-lineages/pangolin/
 [ggtree]: https://bioconductor.org/packages/release/bioc/html/ggtree.html
 [Peter Kruczkiewicz]: https://github.com/peterk87/
-[Hai Nguyen]: https://github.com/CFIA-NCFAD/
+[Hai Nguyen]: https://github.com/nhhaidee/
 [GISAID]: https://www.gisaid.org/
 [SARS-CoV-2]: https://www.ncbi.nlm.nih.gov/nuccore/MN908947.3/
