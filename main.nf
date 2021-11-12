@@ -29,15 +29,14 @@ if (params.validate_params) {
 ////////////////////////////////////////////////////
 log.info NfcoreSchema.params_summary_log(workflow, params, json_schema)
 
+include { PHYLOGENETIC_ANALYSIS } from './workflows/phylogenetic_analysis'
+include { PHYLOGENETIC_GISAID } from './workflows/phylogenetic_gisaid'
+
 workflow {
     if (params.gisaid_sequences && params.gisaid_metadata){
-        include { PHYLOGENETIC_GISAID } from './workflows/phylogenetic_gisaid'
-
         PHYLOGENETIC_GISAID()
     }
     else {
-        include { PHYLOGENETIC_ANALYSIS } from './workflows/phylogenetic_analysis'
-
         PHYLOGENETIC_ANALYSIS()
     }
 }

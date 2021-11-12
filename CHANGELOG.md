@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.5.1](https://github.com/CFIA-NCFAD/scovtree/releases/tag/1.5.1) - [2021-11-12]
+
+### Fixes
+
+* Since Nextflow [v21.06.0-edge](https://github.com/nextflow-io/nextflow/releases/tag/v21.06.0-edge) (commit [7dbf64b](https://github.com/nextflow-io/nextflow/commit/7dbf64bea38907126f44b09a023b8061bf3363d0)), `include` is not allowed within a `workflow` block. Moved `include` from `workflow` block in `main.nf` so that workflow is compatible with later versions of Nextflow.
+
 ## [v1.5.0](https://github.com/CFIA-NCFAD/scovtree/releases/tag/1.5.0) - [2021-11-12]
 
 ### Updates
