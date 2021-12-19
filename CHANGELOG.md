@@ -3,6 +3,25 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.6.0](https://github.com/CFIA-NCFAD/scovtree/releases/tag/1.6.0) - [2021-12-19]
+
+### Updates
+
+* Pangolin: 3.1.16 → 3.1.17
+
+### Enhancements
+
+* Nextclade amino acid (AA) deletions also included in AA mutation matrix and can be visualized along with AA substitutions in shiptv tree.
+* Users can filter GISAID sequences by collection date (`--gisaid_date_start`, `--gisaid_date_end`), Pangolin lineage (`--gisaid_pangolin_lineages "AY.4,AY44"`), multiple countries and regions.  
+* users can specify input sequence metadata table with `--input_metadata` workflow parameter. Must be CSV or TSV file.
+* update usage docs to include how to update process containers/packages (e.g. update Pangolin without changing workflow). Borrowed from nf-core/viralrecon.
+* Log files now output for most processes.
+
+### Fixes
+
+* allocate more memory for `FILTER_GISAID` process by default (6GB -> 16GB) due to growing size of GISAID DB
+* handle all metadata as string so that numeric sequence IDs are not treated as int/float leading to issues with merging of metadata and tracking sequences to keep for further analysis
+
 ## [v1.5.1](https://github.com/CFIA-NCFAD/scovtree/releases/tag/1.5.1) - [2021-11-12]
 
 ### Fixes

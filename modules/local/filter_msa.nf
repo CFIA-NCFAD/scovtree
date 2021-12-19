@@ -26,6 +26,7 @@ process FILTER_MSA {
   output:
   path "msa.filtered.fasta", emit: fasta
   path "metadata.msa.tsv"  , emit: metadata
+  path "filter_msa.py.log" , emit: log
 
   script:  // This script is bundled with the pipeline, in /bin folder
   """
@@ -37,6 +38,7 @@ process FILTER_MSA {
     --country ${params.gisaid_focus_country} \\
     --max-seqs ${params.max_msa_seqs} \\
     --output-fasta msa.filtered.fasta \\
-    --output-metadata metadata.msa.tsv
+    --output-metadata metadata.msa.tsv \\
+    2>&1 | tee -a filter_msa.py.log
   """
 }
