@@ -20,6 +20,7 @@ process MERGE_METADATA{
   path(gisaid_metadata)
   path(aa_mutation_matrix)
   path(pangolin_report)
+  path(user_metadata)
 
   output:
   path "metadata.merged.tsv"
@@ -27,11 +28,12 @@ process MERGE_METADATA{
   script:  // This script is bundled with the pipeline, in /bin folder
   def aa_mutation_matrix_opt = (aa_mutation_matrix) ? "--aa-mutation-matrix $aa_mutation_matrix" : ""
   def select_metadata_fields = (params.select_gisaid_metadata) ? "--select-metadata-fields \"${params.select_gisaid_metadata}\"" : ""
+  def user_metadata_opt = (user_metadata) ? "--user-metadata $user_metadata" : ""
   """
   merge_metadata.py \\
     $gisaid_metadata \\
     $pangolin_report \\
-    $aa_mutation_matrix_opt $select_metadata_fields \\
+    $aa_mutation_matrix_opt $select_metadata_fields $user_metadata_opt \\
     --metadata-output metadata.merged.tsv
   """
 }

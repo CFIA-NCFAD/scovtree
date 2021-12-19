@@ -14,7 +14,7 @@ from rich.logging import RichHandler
 def main(
     newick_tree_input: Path,
     metadata_input: Path,
-    lineage_report: Path = typer.Option(..., help="Pangolin lineage report CSV"),
+    pangolin_report: Path = typer.Argument(..., help="Pangolin lineage report CSV"),
     ref_name: str = typer.Option("MN908947.3", help="Reference/outgroup name"),
     leaflist: Path = typer.Option(Path('leaflist'), help='List of leaves/taxa to filter for in shiptv tree'),
     metadata_output: Path = typer.Option('metadata.leaflist.tsv', help='Metadata for leaflist taxa'),
@@ -29,7 +29,8 @@ def main(
         level=logging.INFO,
         handlers=[RichHandler(rich_tracebacks=True, tracebacks_show_locals=True)],
     )
-    df = pd.read_table(metadata_input, index_col=0)
+    df = pd.read_table(metadata_input, dtype=str)
+    df.set_index(df.columns[0], inplace=True)
     logging.info(f'Read metadata table "{metadata_input}" with {df.shape[0]} rows.')
     tree: Tree = Phylo.read(newick_tree_input, "newick")
     n_taxa = tree.count_terminals()
@@ -42,9 +43,10 @@ def main(
         logging.info(f'Symlinking "{metadata_output}" to "{metadata_input}".')
         metadata_output.symlink_to(metadata_input.resolve())
         sys.exit(0)
-    df_lineage_report = pd.read_csv(lineage_report, index_col=0)
-    logging.info(f'Read Pangolin lineage report with {df_lineage_report.index.size} rows.')
-    user_taxa = set(df_lineage_report.index)
+    df_pangolin = pd.read_csv(pangolin_report, dtype=str)
+    df_pangolin.set_index(df_pangolin.columns[0], inplace=True)
+    logging.info(f'Read Pangolin lineage report with {df_pangolin.index.size} rows.')
+    user_taxa = set(df_pangolin.index.astype(str))
     logging.info(f'User taxa in tree determined to be {user_taxa}')
     logging.info(f'Getting neighboring nodes for user taxa up to {max_taxa} taxa in total.')
     clade_neighbors = get_neighbors(tree, user_taxa, max_taxa - 1)

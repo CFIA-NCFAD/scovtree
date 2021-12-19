@@ -16,6 +16,11 @@
                     "fa_icon": "fas fa-dna",
                     "description": "Path to FASTA file with SARS-CoV-2 sequences."
                 },
+                "input_metadata": {
+                    "type": "string",
+                    "fa_icon": "fas fa-table",
+                    "description": "Path to CSV or tab-delimited table with metadata for user's input SARS-CoV-2 sequences."
+                },
                 "outdir": {
                     "type": "string",
                     "description": "The output directory where the results will be saved.",
@@ -63,6 +68,23 @@
                     "default": "",
                     "description": "Select GISAID sequences from a particular geographical region.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "gisaid_date_start": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Filter for GISAID sequences collected starting on a specified ISO format date (e.g. 2021-06-09 for June 9, 2021)",
+                    "fa_icon": "fas fa-calendar"
+                },
+                "gisaid_date_end": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Filter for GISAID sequences collected ending on a specified ISO format date (e.g. 2021-06-09 for June 9, 2021)",
+                    "fa_icon": "fas fa-calendar"
+                },
+                "gisaid_pangolin_lineages": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Filter for GISAID sequences with specified comma-delimited Pangolin lineages (e.g. \"AY.44,AY.4\" to filter for lineages AY.44 and AY.4 as well as whatever your input sequences are classified as)"
                 },
                 "gisaid_min_length": {
                     "type": "integer",
