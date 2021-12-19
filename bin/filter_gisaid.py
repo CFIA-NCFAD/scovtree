@@ -48,7 +48,8 @@ def main(
     df_pangolin = pd.read_csv(pangolin_report, dtype=str)
     df_pangolin.set_index(df_pangolin.columns[0], inplace=True)
     sample_lineages = set(df_pangolin['lineage'])
-    sample_lineages.remove('None')
+    if 'None' in sample_lineages:
+        sample_lineages.remove('None')
     logging.info(f'{len(sample_lineages)} unique Pangolin lineages for user sequences: {sample_lineages}')
     df_gisaid = read_gisaid_metadata(gisaid_tsv)
     logging.info(f'Read GISAID metadata table from "{gisaid_tsv}"; '
