@@ -41,8 +41,9 @@ The pipeline is built using [Nextflow], a workflow tool to run tasks across mult
         ```bash
         nextflow run CFIA-NCFAD/scovtree -profile <docker/singularity/conda> \
             --input your-sars-cov-2-sequences.fasta \
-            --gisaid_sequences sequences_fasta_2021_06_14.tar.xz \
-            --gisaid_metadata metadata_tsv_2021_06_14.tar.xz
+            --input_metadata your-sars-cov-2-sequences-metadata.tsv \
+            --gisaid_sequences sequences_fasta_2021_12_01.tar.xz \
+            --gisaid_metadata metadata_tsv_2021_12_01.tar.xz
         ```
 
 ## Credits
@@ -62,7 +63,6 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi. -->
 <!-- If you use  CFIA-NCFAD/scovtree for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 This pipeline tries to follow the best practices for Nextflow workflow development and deployment set by `nf-core`. You can cite the `nf-core` publication as follows:
 

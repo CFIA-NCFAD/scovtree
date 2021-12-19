@@ -23,6 +23,7 @@ workflow PHYLOGENETIC_GISAID {
   ch_gisaid_metadata  = Channel.fromPath(params.gisaid_metadata)
   ch_reference_fasta  = Channel.fromPath(params.reference_fasta)
   ch_input            = Channel.fromPath(params.input)
+  ch_input_metadata   = (params.input_metadata) ? Channel.fromPath(params.input_metadata) : Channel.empty()
 
   PREPARE_INPUT_SEQUENCES(ch_input)
 
@@ -72,7 +73,8 @@ workflow PHYLOGENETIC_GISAID {
   MERGE_METADATA(
     PRUNE_TREE.out.metadata,
     ch_aa_mutation_matrix.ifEmpty([]),
-    PANGOLIN.out.report
+    PANGOLIN.out.report,
+    ch_input_metadata.ifEmpty([])
   )
   SHIPTV(
     IQTREE.out.treefile,

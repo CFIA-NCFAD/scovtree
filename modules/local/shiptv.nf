@@ -25,6 +25,7 @@ process SHIPTV {
   path 'shiptv.html'        , emit: html
   path 'metadata.shiptv.tsv', emit: metadata
   path '*.version.txt'      , emit: version
+  path 'shiptv.log'         , emit: log
 
   script:
   """
@@ -35,6 +36,7 @@ process SHIPTV {
     --outgroup ${params.reference_name} \\
     --output-html shiptv.html \\
     --output-metadata-table metadata.shiptv.tsv
+  ln -s .command.log shiptv.log
 
   shiptv --version | sed 's/shiptv version //' > shiptv.version.txt
   """

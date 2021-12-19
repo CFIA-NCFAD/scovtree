@@ -20,7 +20,7 @@ process PRUNE_TREE {
 
   input:
   path (newick)
-  path (lineage_report)
+  path (pangolin_report)
   path (metadata)
 
   output:
@@ -32,7 +32,7 @@ process PRUNE_TREE {
   prune_tree.py \\
     $newick \\
     $metadata \\
-    --lineage-report $lineage_report \\
+    $pangolin_report \\
     --ref-name ${params.reference_name} \\
     --leaflist leaflist \\
     --metadata-output metadata.leaflist.tsv \\

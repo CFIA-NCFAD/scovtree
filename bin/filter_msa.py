@@ -90,8 +90,11 @@ def keep_seqs_from_country(df: pd.DataFrame, country: str, keep_samples: Set[str
     return keep_samples
 
 
-def quality_filter(keep_samples: Set[str], seq_samples: Mapping[str, Set[str]], df: pd.DataFrame) -> Tuple[
-    pd.DataFrame, Set[str]]:
+def quality_filter(
+        keep_samples: Set[str],
+        seq_samples: Mapping[str, Set[str]],
+        df: pd.DataFrame
+) -> Tuple[pd.DataFrame, Set[str]]:
     seq_recs = []
     for seq, samples in seq_samples.items():
         if samples & keep_samples:
@@ -123,7 +126,7 @@ def write_fasta(fasta_output: Path, keep_samples: Set[str], sample_seq: Dict[str
 
 def init_samples_to_keep(lineage_report: Path, ref_name: str) -> Set[str]:
     df_lineage_report = pd.read_csv(lineage_report, index_col=0)
-    keep_samples = set(df_lineage_report.index)
+    keep_samples = set(df_lineage_report.index.astype(str))
     keep_samples.add(ref_name)
     return keep_samples
 
